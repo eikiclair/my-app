@@ -519,6 +519,60 @@ table.daiun-table tr.daiun-ijou.daiun-tenchu{
 }
 .copy-feedback.show{ opacity:1; }
 
+/* ===== 保存済みの命式パネル ===== */
+.saved-panel{ padding: 24px 28px; }
+.saved-header{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+}
+.saved-header h2{ margin:0; }
+.saved-count{ color: var(--paper-dim); font-weight:400; font-size:12px; margin-left:6px; letter-spacing:0; }
+.saved-body{ margin-top:18px; }
+.saved-controls{ margin-bottom:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+#saved-search{
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 9px 12px;
+  border-radius: 3px;
+  width: 100%;
+  max-width: 260px;
+}
+#saved-search:focus{
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200,161,94,0.15);
+}
+.saved-list{ display:flex; flex-direction:column; gap:8px; }
+.saved-item{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(0,0,0,0.15);
+  flex-wrap: wrap;
+}
+.saved-item-info{ display:flex; flex-direction:column; gap:2px; }
+.saved-item-name{ font-family: var(--font-serif); font-size:14px; color: var(--paper); }
+.saved-item-date{ font-size:12px; color: var(--paper-dim); }
+.saved-item-actions{ display:flex; gap:8px; flex-shrink:0; }
+.btn-tiny{
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--paper-dim);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-tiny:hover{ border-color: var(--gold); color: var(--gold-bright); }
+.btn-tiny.btn-delete:hover{ border-color: var(--vermillion); color: #e0a493; }
+.btn-import-label{ display:inline-block; }
+.saved-empty{ font-size:13px; color: var(--paper-dim); margin: 4px 0 0; }
+
 footer{
   text-align:center;
   margin-top: 60px;
@@ -681,6 +735,12 @@ table.daiun-table .ganzhi-cell{
 }
 table.daiun-table .age-cell{ color: var(--paper-dim); font-variant-numeric: tabular-nums; }
 table.daiun-table .year-cell{ color: var(--paper-dim); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+table.daiun-table .isohou-cell{
+  white-space: normal;
+  font-size: 12px;
+  color: var(--paper-dim);
+  min-width: 82px;
+}
 
 /* ===== 年運 table ===== */
 .nenun-header{
@@ -732,9 +792,28 @@ table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
         </select>
       </div>
       <button class="btn-calc" id="btn-calc">命式を出す</button>
+      <button class="btn-secondary" id="btn-save-input" type="button">保存する</button>
+      <span class="copy-feedback" id="save-feedback">保存しました</span>
     </div>
     <p class="hint">対応範囲：1874年〜2048年（節入日は配布教材『４干支暦』の年別早見表に基づく）</p>
     <div class="error-box" id="error-box"></div>
+  </div>
+
+  <div class="card saved-panel">
+    <div class="saved-header">
+      <h2>保存済みの命式<span class="saved-count" id="saved-count">0件</span></h2>
+      <button class="btn-secondary" id="saved-toggle" type="button">開く</button>
+    </div>
+    <div class="saved-body" id="saved-body" style="display:none;">
+      <div class="saved-controls">
+        <input type="text" id="saved-search" placeholder="名前で絞り込み">
+        <button class="btn-tiny" id="btn-export" type="button">エクスポート</button>
+        <label class="btn-tiny btn-import-label" for="import-file">インポート</label>
+        <input type="file" id="import-file" accept="application/json" style="display:none;">
+      </div>
+      <div class="saved-list" id="saved-list"></div>
+      <p class="saved-empty" id="saved-empty">保存された命式はまだありません。</p>
+    </div>
   </div>
 
   <div id="result"></div>
@@ -1128,7 +1207,55 @@ function getIsohouBranchEntries(yearBranch, monthBranch, dayBranch, yearStem, mo
   ];
 }
 
-// ==================== 八格法（部分格） ====================
+// ==================== 位相法（大運・年運×命式の2支ペア比較） ====================
+// 2026-08-21 ユーザー提供の参考画像に基づく。大運・年運の干支と、命式の年支・月支・日支それぞれとの
+// 位相法を1対1で判定し、「西方＝日、中央＝月、東方＝年」の3列に分けて表示する。
+// 「律音（干支完全一致）」は最優先の単独表記とし、それ以外は該当する地支の技法をすべて「・」で
+// つなげて表記する（例：庫気刑・破）。干合（天干のみ）が別途成立していれば「干合＋◯◯」の形で前置する。
+function getIsohouPairLabel(stemA, branchA, stemB, branchB){
+  const hasPair = (list) => list.some(([x,y]) => (x===branchA && y===branchB) || (x===branchB && y===branchA));
+  let branchLabel;
+  if (stemA === stemB && branchA === branchB){
+    branchLabel = '比（律音）';
+  } else {
+    const parts = [];
+    if (SHIGOU_DATA.some(({pair:[x,y]}) => (x===branchA && y===branchB) || (x===branchB && y===branchA))){
+      parts.push('支合');
+    }
+    if (branchA !== branchB){
+      const triad = SANGOU_TRIADS.find(({branches:set}) => set.includes(branchA) && set.includes(branchB));
+      if (triad) parts.push(stemA === stemB ? '大半会' : '半会');
+    }
+    if (hasPair(TAISHOU_PAIRS)){
+      if (stemA === stemB){
+        parts.push('対沖（納音）');
+      } else {
+        const elA = STEM_ELEMENT[STEMS.indexOf(stemA)], elB = STEM_ELEMENT[STEMS.indexOf(stemB)];
+        const isSoukoku = STEM_KOKU_NEXT[elA] === elB || STEM_KOKU_NEXT[elB] === elA;
+        parts.push(isSoukoku ? '対沖（天剋地冲）' : '対沖');
+      }
+    }
+    if (hasPair(KEI_SEIKI_PAIRS)) parts.push('生貴刑');
+    if (hasPair(KEI_KOKI_PAIRS)) parts.push('庫気刑');
+    if (hasPair(KEI_OUKI_PAIRS)) parts.push('旺気刑');
+    if (branchA === branchB && JIKEI_BRANCHES.includes(branchA)) parts.push('自刑');
+    if (hasPair(HA_PAIRS)) parts.push('破');
+    if (hasPair(GAI_PAIRS)) parts.push('害');
+    branchLabel = parts.length ? parts.join('・') : '―';
+  }
+  const kangouEl = getKangouElement(stemA, stemB);
+  return kangouEl ? `干合＋${branchLabel}` : branchLabel;
+}
+// 大運・年運の1件（干支）と命式（年月日の干支）から、西方(日)・中央(月)・東方(年)の3列分を返す
+function getDaiunNenunIsohouRow(targetStem, targetBranch, natal){
+  return {
+    seihou: getIsohouPairLabel(targetStem, targetBranch, natal.dayStem, natal.dayBranch),
+    chuuou: getIsohouPairLabel(targetStem, targetBranch, natal.monthStem, natal.monthBranch),
+    touhou: getIsohouPairLabel(targetStem, targetBranch, natal.yearStem, natal.yearBranch),
+  };
+}
+
+
 // 2026-08-19 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.105〜109に基づく。
 // 2026-08-20 修正：主星＝④月支蔵干の十大主星（陽占人体図④の位置）。旧実装では②月干を主星として
 // いたが誤りだったため修正（ユーザー確認済み）。資料の「他に◯◯がない」は主星自身の位置を除いた
@@ -1963,7 +2090,7 @@ window.Meishiki = {
   getInjuGakuEntries, getIkkiGakuEntries, applyKangouToElements, getHachikakuEntries,
   getZakkiZaikanInjuGakuEntries, getKanshiTokushuGokakuEntries, getShiiJunzenEntries,
   getTokushuMeishikiEntries, JUUNI_STAR_POINTS, getKyokuhouEntries, getKoudouDomain, KOUDOU_DOMAINS,
-  getNishouGakuEntries
+  getNishouGakuEntries, getIsohouPairLabel, getDaiunNenunIsohouRow
 };
 
 })();
@@ -2418,7 +2545,7 @@ function youzenhyouHTML(r){
   `;
 }
 
-function daiunTableHTML(daiun){
+function daiunTableHTML(daiun, natal){
   if (daiun.error){
     return `<div class="block"><p>${daiun.error}</p></div>`;
   }
@@ -2430,12 +2557,16 @@ function daiunTableHTML(daiun){
       p.isTenchu ? 'daiun-tenchu' : '',
     ].filter(Boolean).join(' ');
     const yearStart = daiun.birthYear + p.ageStart;
+    const isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
     return `<tr class="${rowCls}">
       <td class="year-cell">${yearStart}-</td>
       <td class="age-cell">${p.ageStart}〜${p.ageEnd}歳</td>
       <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
       <td>${p.star}</td>
       <td>${p.juuni}</td>
+      <td class="isohou-cell">${isohou.seihou}</td>
+      <td class="isohou-cell">${isohou.chuuou}</td>
+      <td class="isohou-cell">${isohou.touhou}</td>
     </tr>`;
   }).join('');
 
@@ -2456,26 +2587,31 @@ function daiunTableHTML(daiun){
     ${legend}
     <div class="daiun-table-wrap">
       <table class="daiun-table">
-        <thead><tr><th>西暦</th><th>年齢</th><th>大運干支</th><th>十大主星</th><th>十二大従星</th></tr></thead>
+        <thead><tr><th>西暦</th><th>年齢</th><th>大運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
+    <div class="note">※ 西方・中央・東方は、大運の干支と命式の日支・月支・年支それぞれとの位相法（1対1）です。「干合＋」は天干のみで別途干合が成立していることを示します。</div>
   `;
 }
 
-function nenunRowHTML(y, todayYear){
+function nenunRowHTML(y, todayYear, natal){
   const stemChar = M.STEMS[y.stemIdx], branchChar = M.BRANCHES[y.branchIdx];
   const stemEl = M.STEM_ELEMENT[y.stemIdx], branchEl = M.BRANCH_ELEMENT[y.branchIdx];
   const isToday = y.year === todayYear;
+  const isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
   return `<tr class="${isToday ? 'nenun-today' : ''}">
     <td class="age-cell">${y.year}年<span class="nenun-age">（${y.age}歳）</span></td>
     <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
     <td>${y.star}</td>
     <td>${y.juuni}</td>
+    <td class="isohou-cell">${isohou.seihou}</td>
+    <td class="isohou-cell">${isohou.chuuou}</td>
+    <td class="isohou-cell">${isohou.touhou}</td>
   </tr>`;
 }
 
-function nenunTableHTML(nenun){
+function nenunTableHTML(nenun, natal){
   if (nenun.error){
     return `<div class="block"><p>${nenun.error}</p></div>`;
   }
@@ -2483,10 +2619,10 @@ function nenunTableHTML(nenun){
   const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
   const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
 
-  const allRows = nenun.years.map(y => nenunRowHTML(y, todayYear)).join('');
+  const allRows = nenun.years.map(y => nenunRowHTML(y, todayYear, natal)).join('');
   const defaultRows = nenun.years
     .filter(y => y.year >= defaultStart && y.year <= defaultEnd)
-    .map(y => nenunRowHTML(y, todayYear)).join('');
+    .map(y => nenunRowHTML(y, todayYear, natal)).join('');
 
   const rangeNote = nenun.lastYear < nenun.birthYear + 99
     ? `<span class="nenun-note">（データ対応範囲の都合により${nenun.lastYear}年までを表示）</span>`
@@ -2499,11 +2635,12 @@ function nenunTableHTML(nenun){
     </div>
     <div class="daiun-table-wrap">
       <table class="daiun-table" id="nenun-table">
-        <thead><tr><th>西暦（年齢）</th><th>年運干支</th><th>十大主星</th><th>十二大従星</th></tr></thead>
+        <thead><tr><th>西暦（年齢）</th><th>年運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th></tr></thead>
         <tbody id="nenun-tbody-default" style="display:table-row-group;">${defaultRows}</tbody>
         <tbody id="nenun-tbody-all" style="display:none;">${allRows}</tbody>
       </table>
     </div>
+    <div class="note">※ 西方・中央・東方は、年運の干支と命式の日支・月支・年支それぞれとの位相法（1対1）です。「干合＋」は天干のみで別途干合が成立していることを示します。</div>
   `;
 }
 
@@ -2544,6 +2681,12 @@ function buildResultHTML(r, daiun, nenun, name){
       </div>`;
   }
 
+  const natal = {
+    yearStem: M.STEMS[r.year.stemIdx], yearBranch: M.BRANCHES[r.year.branchIdx],
+    monthStem: M.STEMS[r.month.stemIdx], monthBranch: M.BRANCHES[r.month.branchIdx],
+    dayStem: M.STEMS[r.day.stemIdx], dayBranch: M.BRANCHES[r.day.branchIdx],
+  };
+
   return `
     <div class="meishiki-title">
       <span>陰占表</span>
@@ -2569,12 +2712,12 @@ function buildResultHTML(r, daiun, nenun, name){
     <div class="meishiki-title">
       <span>大運（後天運）</span>
     </div>
-    ${daiunTableHTML(daiun)}
+    ${daiunTableHTML(daiun, natal)}
 
     <div class="meishiki-title">
       <span>年運</span>
     </div>
-    ${nenunTableHTML(nenun)}
+    ${nenunTableHTML(nenun, natal)}
     ${koudouIkiHTML(r)}
 
     <div class="actions">
@@ -2589,6 +2732,11 @@ function buildMarkdown(r, daiun, genderLabel, nenun, name){
   const nameLabel = name ? `${name} 様の` : '';
   const y = r.year, mo = r.month, da = r.day;
   const gz = (p)=> M.STEMS[p.stemIdx] + M.BRANCHES[p.branchIdx];
+  const natal = {
+    yearStem: M.STEMS[y.stemIdx], yearBranch: M.BRANCHES[y.branchIdx],
+    monthStem: M.STEMS[mo.stemIdx], monthBranch: M.BRANCHES[mo.branchIdx],
+    dayStem: M.STEMS[da.stemIdx], dayBranch: M.BRANCHES[da.branchIdx],
+  };
 
   let md = '';
   md += `## ${nameLabel}命式（${dateLabel}生まれ・${genderLabel}）\n\n`;
@@ -2741,14 +2889,16 @@ function buildMarkdown(r, daiun, genderLabel, nenun, name){
 
   if (daiun && !daiun.error){
     md += `### 大運（${daiun.junGyaku}／起運${daiun.startAge}歳／節入りまでの日数${daiun.days}日）\n\n`;
-    md += `| 西暦 | 年齢 | 大運干支 | 十大主星 | 十二大従星 | 備考 |\n`;
-    md += `| :-: | :-: | :-: | :-: | :-: | :-: |\n`;
+    md += `| 西暦 | 年齢 | 大運干支 | 十大主星 | 十二大従星 | 西方(日) | 中央(月) | 東方(年) | 備考 |\n`;
+    md += `| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n`;
     daiun.periods.forEach(p=>{
       const notes = [];
       if (p.ijou && p.ijou.length) notes.push(`異常干支(${p.ijou.join('・')})`);
       if (p.isTenchu) notes.push('大運天中殺');
       const yearStart = daiun.birthYear + p.ageStart;
-      md += `| ${yearStart}- | ${p.ageStart}〜${p.ageEnd}歳 | ${M.STEMS[p.stemIdx]}${M.BRANCHES[p.branchIdx]} | ${p.star} | ${p.juuni} | ${notes.join('・') || '－'} |\n`;
+      const pStem = M.STEMS[p.stemIdx], pBranch = M.BRANCHES[p.branchIdx];
+      const isohou = M.getDaiunNenunIsohouRow(pStem, pBranch, natal);
+      md += `| ${yearStart}- | ${p.ageStart}〜${p.ageEnd}歳 | ${pStem}${pBranch} | ${p.star} | ${p.juuni} | ${isohou.seihou} | ${isohou.chuuou} | ${isohou.touhou} | ${notes.join('・') || '－'} |\n`;
     });
     md += `\n`;
   }
@@ -2757,10 +2907,12 @@ function buildMarkdown(r, daiun, genderLabel, nenun, name){
     const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
     const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
     md += `### 年運（${defaultStart}〜${defaultEnd}年。全期間はアプリ上で「生涯分を全て表示」より確認できます）\n\n`;
-    md += `| 西暦（年齢） | 年運干支 | 十大主星 | 十二大従星 |\n`;
-    md += `| :-: | :-: | :-: | :-: |\n`;
+    md += `| 西暦（年齢） | 年運干支 | 十大主星 | 十二大従星 | 西方(日) | 中央(月) | 東方(年) |\n`;
+    md += `| :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n`;
     nenun.years.filter(yy=>yy.year>=defaultStart && yy.year<=defaultEnd).forEach(yy=>{
-      md += `| ${yy.year}年（${yy.age}歳） | ${M.STEMS[yy.stemIdx]}${M.BRANCHES[yy.branchIdx]} | ${yy.star} | ${yy.juuni} |\n`;
+      const yyStem = M.STEMS[yy.stemIdx], yyBranch = M.BRANCHES[yy.branchIdx];
+      const isohou = M.getDaiunNenunIsohouRow(yyStem, yyBranch, natal);
+      md += `| ${yy.year}年（${yy.age}歳） | ${yyStem}${yyBranch} | ${yy.star} | ${yy.juuni} | ${isohou.seihou} | ${isohou.chuuou} | ${isohou.touhou} |\n`;
     });
     md += `\n`;
   }
@@ -2894,6 +3046,287 @@ document.getElementById('in-year').addEventListener('keydown', function(e){ if (
     }, 300); // キーボードが開くアニメーションの完了を待つ
   });
 });
+
+// ==================== 保存機能（localStorage） ====================
+// GitHub Pages（https://）公開により、file://運用時に懸念していたSafariの
+// localStorage制限は解消済み。名前・生年月日・性別のみを保存し、
+// 呼び出し時に毎回calcMeishikiで再計算するため、計算ロジック改善の影響も自動的に反映される。
+const SAVED_STORAGE_KEY = 'meishiki_saved_records_v1';
+
+function loadSavedRecords(){
+  try {
+    const raw = localStorage.getItem(SAVED_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e){
+    console.error('保存データの読み込みに失敗しました', e);
+    return [];
+  }
+}
+
+function persistSavedRecords(records){
+  try {
+    localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(records));
+    return true;
+  } catch (e){
+    console.error('保存データの書き込みに失敗しました', e);
+    return false;
+  }
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, function(ch){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+  });
+}
+
+function formatSavedDate(y, m, d, gender){
+  const genderLabel = gender === 'M' ? '男性' : '女性';
+  return `${y}年${m}月${d}日（${genderLabel}）`;
+}
+
+function renderSavedList(filterText){
+  const listEl = document.getElementById('saved-list');
+  const emptyEl = document.getElementById('saved-empty');
+  const countEl = document.getElementById('saved-count');
+  const records = loadSavedRecords().sort(function(a,b){ return (b.savedAt||0) - (a.savedAt||0); });
+  countEl.textContent = records.length + '件';
+
+  const filter = (filterText || '').trim();
+  const filtered = filter
+    ? records.filter(function(r){ return (r.name||'').includes(filter); })
+    : records;
+
+  if (filtered.length === 0){
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    emptyEl.textContent = records.length === 0
+      ? '保存された命式はまだありません。'
+      : '該当する保存データが見つかりません。';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  listEl.innerHTML = filtered.map(function(r){
+    return `
+    <div class="saved-item" data-id="${r.id}">
+      <div class="saved-item-info">
+        <span class="saved-item-name">${r.name ? escapeHtml(r.name) : '（名前未入力）'}</span>
+        <span class="saved-item-date">${formatSavedDate(r.y, r.m, r.d, r.gender)}</span>
+      </div>
+      <div class="saved-item-actions">
+        <button class="btn-tiny btn-load" data-id="${r.id}">呼び出す</button>
+        <button class="btn-tiny btn-delete" data-id="${r.id}">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  listEl.querySelectorAll('.btn-load').forEach(function(btn){
+    btn.addEventListener('click', function(){ loadSavedRecord(this.getAttribute('data-id')); });
+  });
+  listEl.querySelectorAll('.btn-delete').forEach(function(btn){
+    btn.addEventListener('click', function(){ deleteSavedRecord(this.getAttribute('data-id')); });
+  });
+}
+
+function saveCurrentRecord(){
+  const name = document.getElementById('in-name').value.trim();
+  const y = parseInt(document.getElementById('in-year').value, 10);
+  const m = parseInt(document.getElementById('in-month').value, 10);
+  const d = parseInt(document.getElementById('in-day').value, 10);
+  const gender = document.getElementById('in-gender').value;
+
+  if (!y || !m || !d || m < 1 || m > 12 || d < 1 || d > 31){
+    showError('生年月日を正しく入力してから保存してください。');
+    return;
+  }
+  const testDate = new Date(Date.UTC(y, m-1, d));
+  if (testDate.getUTCFullYear() !== y || testDate.getUTCMonth() !== m-1 || testDate.getUTCDate() !== d){
+    showError('存在しない日付です。もう一度確認してください。');
+    return;
+  }
+
+  const records = loadSavedRecords();
+  // 同一の名前・生年月日・性別が既にあれば保存日時のみ更新、なければ新規追加
+  const existing = records.find(function(r){
+    return r.name === name && r.y === y && r.m === m && r.d === d && r.gender === gender;
+  });
+  let feedbackLabel = '保存しました';
+  if (existing){
+    existing.savedAt = Date.now();
+    feedbackLabel = '更新しました';
+  } else {
+    records.push({
+      id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      name: name, y: y, m: m, d: d, gender: gender,
+      savedAt: Date.now()
+    });
+  }
+
+  const ok = persistSavedRecords(records);
+  if (!ok){
+    showError('保存に失敗しました。ブラウザのプライベートモードなどで保存領域が使用できない可能性があります。');
+    return;
+  }
+  hideError();
+  renderSavedList(document.getElementById('saved-search').value);
+
+  const savedBody = document.getElementById('saved-body');
+  const savedToggle = document.getElementById('saved-toggle');
+  if (savedBody.style.display === 'none'){
+    savedBody.style.display = 'block';
+    savedToggle.textContent = '閉じる';
+  }
+
+  const fb = document.getElementById('save-feedback');
+  fb.textContent = feedbackLabel;
+  fb.classList.add('show');
+  setTimeout(function(){ fb.classList.remove('show'); }, 1800);
+}
+
+function loadSavedRecord(id){
+  const records = loadSavedRecords();
+  const record = records.find(function(r){ return r.id === id; });
+  if (!record) return;
+  document.getElementById('in-name').value = record.name || '';
+  document.getElementById('in-year').value = record.y;
+  document.getElementById('in-month').value = record.m;
+  document.getElementById('in-day').value = record.d;
+  document.getElementById('in-gender').value = record.gender;
+  run();
+  const resultDiv = document.getElementById('result');
+  if (resultDiv) resultDiv.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function deleteSavedRecord(id){
+  const records = loadSavedRecords();
+  const record = records.find(function(r){ return r.id === id; });
+  if (!record) return;
+  const label = record.name ? record.name : formatSavedDate(record.y, record.m, record.d, record.gender);
+  if (!confirm(`「${label}」を削除します。よろしいですか？`)) return;
+  const filtered = records.filter(function(r){ return r.id !== id; });
+  persistSavedRecords(filtered);
+  renderSavedList(document.getElementById('saved-search').value);
+}
+
+document.getElementById('btn-save-input').addEventListener('click', saveCurrentRecord);
+document.getElementById('saved-search').addEventListener('input', function(){
+  renderSavedList(this.value);
+});
+document.getElementById('saved-toggle').addEventListener('click', function(){
+  const body = document.getElementById('saved-body');
+  const isHidden = body.style.display === 'none';
+  body.style.display = isHidden ? 'block' : 'none';
+  this.textContent = isHidden ? '閉じる' : '開く';
+});
+
+// ==================== エクスポート／インポート（バックアップ） ====================
+// localStorageは端末・ブラウザごとに独立しているため、複数端末での共有や
+// 万一のデータ消失に備えてJSONファイルへの書き出し・読み込みを用意する。
+function exportSavedRecords(){
+  const records = loadSavedRecords();
+  if (records.length === 0){
+    showError('保存されている命式がないため、エクスポートするデータがありません。');
+    return;
+  }
+  const payload = {
+    app: 'meishiki-saved-records',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    records: records
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `命式保存データ_${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+function importSavedRecordsFromFile(file){
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    let parsed;
+    try {
+      parsed = JSON.parse(e.target.result);
+    } catch (err){
+      showError('インポートに失敗しました。ファイルの形式が正しくありません（JSON解析エラー）。');
+      return;
+    }
+    const importedRecords = Array.isArray(parsed) ? parsed
+      : (parsed && Array.isArray(parsed.records) ? parsed.records : null);
+    if (!importedRecords){
+      showError('インポートに失敗しました。このアプリで書き出したファイルではないようです。');
+      return;
+    }
+
+    const existing = loadSavedRecords();
+    let addedCount = 0, skippedCount = 0, invalidCount = 0;
+
+    importedRecords.forEach(function(r){
+      const y = parseInt(r.y, 10), m = parseInt(r.m, 10), d = parseInt(r.d, 10);
+      const gender = r.gender === 'F' ? 'F' : (r.gender === 'M' ? 'M' : null);
+      if (!y || !m || !d || !gender){
+        invalidCount++;
+        return;
+      }
+      const name = (r.name || '').toString().trim();
+      const dup = existing.find(function(x){
+        return x.name === name && x.y === y && x.m === m && x.d === d && x.gender === gender;
+      });
+      if (dup){
+        skippedCount++;
+        return;
+      }
+      existing.push({
+        id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+        name: name, y: y, m: m, d: d, gender: gender,
+        savedAt: (typeof r.savedAt === 'number') ? r.savedAt : Date.now()
+      });
+      addedCount++;
+    });
+
+    const ok = persistSavedRecords(existing);
+    if (!ok){
+      showError('インポートしたデータの保存に失敗しました。ブラウザのプライベートモードなどで保存領域が使用できない可能性があります。');
+      return;
+    }
+    hideError();
+    renderSavedList(document.getElementById('saved-search').value);
+    const savedBody = document.getElementById('saved-body');
+    const savedToggle = document.getElementById('saved-toggle');
+    if (savedBody.style.display === 'none'){
+      savedBody.style.display = 'block';
+      savedToggle.textContent = '閉じる';
+    }
+    let msg = `${addedCount}件を読み込みました`;
+    if (skippedCount > 0) msg += `（重複${skippedCount}件はスキップ）`;
+    if (invalidCount > 0) msg += `（不正データ${invalidCount}件は無視）`;
+    const fb = document.getElementById('save-feedback');
+    fb.textContent = msg;
+    fb.classList.add('show');
+    setTimeout(function(){ fb.classList.remove('show'); }, 3200);
+  };
+  reader.onerror = function(){
+    showError('ファイルの読み込みに失敗しました。');
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById('btn-export').addEventListener('click', exportSavedRecords);
+document.getElementById('import-file').addEventListener('change', function(){
+  const file = this.files && this.files[0];
+  importSavedRecordsFromFile(file);
+  this.value = ''; // 同じファイルを続けて選んでもchangeイベントが発火するようリセット
+});
+
+renderSavedList('');
 
 })();
 
