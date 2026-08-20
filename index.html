@@ -1,0 +1,2902 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>命式作成 ｜ 算命学研究所</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Serif+JP:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink: #1c1815;
+  --ink-2: #26211c;
+  --surface: #2c261f;
+  --surface-2: #35302a;
+  --line: #4a4238;
+  --paper: #ece4d3;
+  --paper-dim: #b9ac96;
+  --gold: #c8a15e;
+  --gold-bright: #e0c07f;
+  --vermillion: #b8492f;
+  --ijou-purple: #8a6fb0;
+  --ijou-purple-bg: rgba(138,111,176,0.16);
+  --tenchu-bg: rgba(184,73,47,0.16);
+  --el-wood: #7a9b5e;
+  --el-fire: #c1543a;
+  --el-earth: #c9975c;
+  --el-metal: #cfc9b4;
+  --el-water: #5b84ad;
+  --font-display: "Zen Old Mincho", "Shippori Mincho", serif;
+  --font-serif: "Noto Serif JP", serif;
+  --font-body: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse 1200px 800px at 20% -10%, rgba(200,161,94,0.08), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 100% 10%, rgba(91,132,173,0.07), transparent 55%),
+    var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  min-height: 100vh;
+  padding: 0 0 80px 0;
+}
+.wrap{ max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Header ===== */
+header.top{
+  padding: 56px 20px 36px;
+  text-align:center;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 44px;
+  position: relative;
+  overflow: hidden;
+}
+header.top::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,161,94,0.05) 60px);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family: var(--font-serif);
+  letter-spacing: 0.45em;
+  font-size: 12px;
+  color: var(--gold);
+  margin: 0 0 14px;
+  text-transform: none;
+}
+h1{
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(32px, 6vw, 46px);
+  margin: 0 0 10px;
+  color: var(--paper);
+  letter-spacing: 0.06em;
+}
+.subhead{
+  font-size: 14px;
+  color: var(--paper-dim);
+  letter-spacing: 0.04em;
+}
+
+/* ===== Input Card ===== */
+.card{
+  background: linear-gradient(180deg, var(--surface), var(--ink-2));
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 30px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 12px 30px rgba(0,0,0,0.35);
+}
+.card h2{
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  margin: 0 0 20px;
+  letter-spacing: 0.08em;
+  display:flex; align-items:center; gap:10px;
+}
+.card h2::before{
+  content:"";
+  width:6px; height:6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  display:inline-block;
+}
+.input-row{
+  display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;
+}
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field label{ font-size:12px; color:var(--paper-dim); letter-spacing:0.05em; }
+.field input{
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 18px;
+  padding: 10px 12px;
+  border-radius: 3px;
+  width: 100px;
+  transition: border-color 0.15s;
+}
+.field.year input{ width:120px; }
+.field.name input{ width:180px; }
+.field input:focus{
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200,161,94,0.15);
+}
+.field input::-webkit-outer-spin-button,
+.field input::-webkit-inner-spin-button{
+  opacity: 1;
+  filter: invert(0.85) brightness(1.7);
+  cursor: pointer;
+}
+.field select{
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: 3px;
+  height: 42px;
+}
+.field select:focus{
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200,161,94,0.15);
+}
+.btn-calc{
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: var(--ink);
+  border: none;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  padding: 12px 30px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 0 4px 14px rgba(200,161,94,0.25);
+}
+.btn-calc:hover{ transform: translateY(-1px); box-shadow: 0 6px 18px rgba(200,161,94,0.35); }
+.btn-calc:active{ transform: translateY(0); }
+.hint{ margin-top:14px; font-size:12px; color:var(--paper-dim); }
+.error-box{
+  margin-top:16px; padding:14px 16px;
+  background: rgba(184,73,47,0.12);
+  border: 1px solid rgba(184,73,47,0.4);
+  border-radius: 3px;
+  color: #e0a493;
+  font-size:14px;
+  display:none;
+}
+
+/* ===== Result Section ===== */
+#result{ display:none; }
+
+.meishiki-title{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin: 44px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  display:flex; justify-content:space-between; align-items:baseline;
+}
+.meishiki-title span.date-label{ color: var(--paper-dim); font-size:12px; letter-spacing:0.05em; }
+
+/* ===== 陰占表・陽占表：日/月/年を列にした縦組み表 ===== */
+.chart-table-wrap{
+  overflow-x:auto;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, var(--surface), var(--ink-2));
+}
+table.chart-table{
+  width:100%;
+  border-collapse: collapse;
+  min-width: 380px;
+  table-layout: fixed;
+}
+table.chart-table th, table.chart-table td{
+  border: 1px solid var(--line);
+  text-align:center;
+  padding: 10px 6px;
+}
+table.chart-table thead th{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  letter-spacing: 0.1em;
+  background: rgba(0,0,0,0.22);
+  padding: 10px 6px;
+}
+table.chart-table thead th.corner{ background: transparent; border-color: transparent; width: 92px; }
+table.chart-table tbody th{
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  color: var(--paper-dim);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: rgba(0,0,0,0.14);
+  white-space: nowrap;
+  width: 92px;
+}
+table.chart-table tbody th .sub{ font-size:10px; font-weight:400; opacity:0.8; }
+table.chart-table td.ch-cell{
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.1;
+  padding: 12px 6px;
+}
+table.chart-table tr.r-zoukan-main td.ch-cell{ font-size: 24px; color: var(--gold-bright); }
+table.chart-table tr.r-slot td{ font-size: 19px; }
+table.chart-table td.blank-cell{ color: var(--gold); opacity:0.65; font-size:19px; }
+table.chart-table td.empty-cell{ color: var(--line); }
+table.chart-table tr.r-tenchu td.tenchu-group-cell{
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--vermillion);
+  letter-spacing: 0.08em;
+}
+table.chart-table tr.r-tenchu-seimei td.seimei-mark{
+  font-size: 18px;
+  color: var(--vermillion);
+  font-weight: 700;
+}
+table.chart-table td.self-cell{ color: var(--paper-dim); font-size:12px; }
+table.chart-table td.stage-cell{ font-size:12px; color: var(--paper-dim); }
+table.chart-table tr.r-kan th, table.chart-table tr.r-shi th{ color: var(--gold-bright); }
+table.chart-table tr.r-ganzhi-no td.ganzhi-no-cell{
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  color: var(--paper-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 異常干支：陰占表セルの背景ハイライト（干〜本元） */
+table.chart-table td.ijou-hl{
+  background: var(--ijou-purple-bg);
+  box-shadow: inset 0 0 0 1px rgba(138,111,176,0.35);
+}
+table.chart-table tr.r-ijou td.ijou-label-cell{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--ijou-purple);
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+/* 位相法（干合など）：陰占表の一番下の行。列区切りなしの1セルで発生箇所をまとめて表記。今は干合のみ、将来的に位相法本体を同じ行に追加予定 */
+table.chart-table tr.r-isohou td.isohou-label-cell{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  letter-spacing: 0.04em;
+  text-align: center;
+  line-height: 1.9;
+}
+table.chart-table tr.r-isohou td.isohou-label-cell .isohou-entry{
+  display: inline-block;
+  white-space: nowrap;
+  margin: 0 6px;
+}
+
+/* 生年天中殺・生月天中殺・生日天中殺：陰占表セルの背景ハイライト（干〜本元） */
+table.chart-table td.seimei-hl{
+  background: var(--tenchu-bg);
+  box-shadow: inset 0 0 0 1px rgba(184,73,47,0.35);
+}
+/* 異常干支・生年月天中殺の両方が重なる列は斜めグラデーションで両方を示す */
+table.chart-table td.ijou-hl.seimei-hl{
+  background: linear-gradient(135deg, var(--ijou-purple-bg) 0%, var(--ijou-purple-bg) 50%, var(--tenchu-bg) 50%, var(--tenchu-bg) 100%);
+  box-shadow: inset 0 0 0 1px rgba(184,73,47,0.35);
+}
+
+/* 大運：異常干支・大運天中殺の行ハイライト */
+table.daiun-table tr.daiun-ijou{ background: var(--ijou-purple-bg); }
+table.daiun-table tr.daiun-tenchu{ background: var(--tenchu-bg); }
+table.daiun-table tr.daiun-ijou.daiun-tenchu{
+  background: linear-gradient(90deg, var(--ijou-purple-bg) 0%, var(--ijou-purple-bg) 50%, var(--tenchu-bg) 50%, var(--tenchu-bg) 100%);
+}
+.daiun-legend{
+  display:flex; gap:16px; margin-bottom:10px; font-size:11.5px; color:var(--paper-dim);
+}
+.legend-item{ display:flex; align-items:center; gap:6px; }
+.legend-swatch{ display:inline-block; width:12px; height:12px; border-radius:2px; }
+.legend-swatch.legend-ijou{ background: var(--ijou-purple-bg); box-shadow: inset 0 0 0 1px rgba(138,111,176,0.5); }
+.legend-swatch.legend-tenchu{ background: var(--tenchu-bg); box-shadow: inset 0 0 0 1px rgba(184,73,47,0.5); }
+
+/* element color coding */
+.el-木{ color: var(--el-wood); }
+.el-火{ color: var(--el-fire); }
+.el-土{ color: var(--el-earth); }
+.el-金{ color: var(--el-metal); }
+.el-水{ color: var(--el-water); }
+.dot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+.dot.el-木{ background: var(--el-wood); }
+.dot.el-火{ background: var(--el-fire); }
+.dot.el-土{ background: var(--el-earth); }
+.dot.el-金{ background: var(--el-metal); }
+.dot.el-水{ background: var(--el-water); }
+
+/* Info blocks */
+.info-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+@media (max-width: 640px){
+  .info-grid{ grid-template-columns: 1fr; }
+}
+.block{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.block h3{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  margin: 0 0 12px;
+  letter-spacing: 0.06em;
+}
+.block .line{ font-size: 13.5px; margin-bottom:6px; color: var(--paper); }
+.block .line .k{ color: var(--paper-dim); margin-right:6px; }
+.tenchu-branches{
+  display:flex; gap:8px; margin-top:4px;
+}
+.tenchu-branches .b{
+  font-family: var(--font-display);
+  font-size: 20px;
+  width:34px; height:34px;
+  display:flex; align-items:center; justify-content:center;
+  border: 1px solid var(--vermillion);
+  color: var(--vermillion);
+  border-radius: 50%;
+}
+
+.guardian-block{
+  background: linear-gradient(180deg, rgba(200,161,94,0.06), transparent);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+}
+.guardian-block h3{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  margin: 0 0 6px;
+  letter-spacing:0.06em;
+}
+.guardian-block .cand{
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--gold-bright);
+  margin: 4px 0 10px;
+}
+.guardian-block p{
+  font-size: 13.5px;
+  color: var(--paper);
+  margin: 0;
+  line-height: 1.85;
+}
+.guardian-block .kijin-row{
+  display:flex;
+  align-items:baseline;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.guardian-block .kijin-label{
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--paper-dim);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+.guardian-block .kijin-val{
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--vermillion);
+}
+.guardian-block .note{
+  margin-top:12px; font-size:11.5px; color:var(--paper-dim);
+}
+/* 身強・身弱ブロック：guardian-blockと同系の見た目を流用 */
+.shinkyo-block{
+  background: linear-gradient(180deg, rgba(200,161,94,0.06), transparent);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ijou-purple);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+}
+.shinkyo-block h3{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  margin: 0 0 8px;
+  letter-spacing:0.06em;
+}
+.shinkyo-block .level{
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ijou-purple);
+  margin: 0 0 8px;
+}
+.shinkyo-block .detail{
+  font-size: 13px;
+  color: var(--paper-dim);
+  line-height: 1.8;
+}
+
+/* 完全格（従化五格）ブロック：shinkyo-blockと同系だが朱色の左ボーダーで区別 */
+.gokaku-block{
+  background: linear-gradient(180deg, rgba(184,73,47,0.08), transparent);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--vermillion);
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+}
+.gokaku-block h3{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  margin: 0 0 10px;
+  letter-spacing:0.06em;
+}
+.gokaku-list{ display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.gokaku-item{
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--vermillion);
+}
+.gokaku-block .note{
+  font-size: 11.5px; color: var(--paper-dim); line-height: 1.6;
+}
+
+/* 行動領域：干支番号を4領域に分けた円グラフ */
+.koudou-block{
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 18px 16px;
+  margin-bottom: 14px;
+}
+.koudou-block h3{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold-bright);
+  margin: 0 0 12px;
+  letter-spacing:0.06em;
+}
+.koudou-svg-wrap{ display:flex; justify-content:center; }
+.koudou-summary{
+  display:flex; flex-direction:column; gap:4px; margin-top:14px;
+}
+.koudou-summary-item{ font-size:13px; color: var(--paper); }
+.koudou-summary-item .dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+.koudou-block .note{
+  font-size: 11.5px; color: var(--paper-dim); line-height: 1.6; margin-top:10px;
+}
+
+.actions{
+  display:flex; gap:10px; margin: 22px 0 6px;
+  flex-wrap: wrap;
+}
+.btn-secondary{
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-secondary:hover{ border-color: var(--gold); color: var(--gold-bright); }
+.copy-feedback{
+  font-size:12px; color: var(--gold-bright); align-self:center; opacity:0; transition:opacity .3s;
+}
+.copy-feedback.show{ opacity:1; }
+
+footer{
+  text-align:center;
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--paper-dim);
+  letter-spacing: 0.03em;
+}
+footer a{ color: var(--gold); }
+
+.calc-detail{
+  font-size: 11.5px;
+  color: var(--paper-dim);
+  margin-top: 6px;
+}
+
+/* ===== 陽占表：人体図（①〜⑧のクロス配置） ===== */
+.jintaizu-wrap{
+  margin-bottom: 24px;
+}
+.jintaizu-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow:hidden;
+  background: linear-gradient(180deg, var(--surface), var(--ink-2));
+}
+.jt-cell{
+  border: 1px solid var(--line);
+  padding: 16px 10px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 6px;
+  min-height: 90px;
+}
+.jt-cell.jt-empty{ background: rgba(0,0,0,0.25); border-color: transparent; }
+.jt-star{
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height:1.2;
+}
+.jt-star.jt-jusei{ color: var(--gold-bright); }
+.jt-star.jt-juuni{ color: var(--paper); }
+/* 十二大従星の点数（⑥⑦⑧のみ）：星名の下に小さく表示 */
+.jt-point{
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--paper-dim);
+  letter-spacing: 0.05em;
+}
+/* 中央（④）を強調：十大主星の一つだが、やや大きいサイズを維持 */
+.jt-pos4{ background: rgba(200,161,94,0.07); }
+.jt-pos4 .jt-star{ font-size: 23px; }
+/* 生年天中殺・生月天中殺：対応する陽占の位置を朱色でハイライト（生日天中殺は対象外） */
+.jt-cell.jt-seimei-hl{
+  background: var(--tenchu-bg);
+  box-shadow: inset 0 0 0 1px rgba(184,73,47,0.4);
+}
+.jintaizu-legend{
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--paper-dim);
+  line-height:1.7;
+}
+@media (max-width: 480px){
+  .jt-cell{ padding:10px 4px; min-height:74px; }
+  .jt-star{ font-size:17px; }
+  .jt-pos4 .jt-star{ font-size: 19px; }
+  .jt-point{ font-size: 10px; }
+}
+
+/* ===== 五行メモ ===== */
+.gogyou-memo-wrap{
+  margin-bottom: 24px;
+}
+.gogyou-memo-title{
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.gogyou-memo-row{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.gogyou-col{ display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.gogyou-label{
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--paper-dim);
+  letter-spacing: 0.06em;
+}
+.gogyou-arrow{
+  font-size: 20px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+table.gogyou-table{
+  border-collapse: collapse;
+}
+table.gogyou-table td{
+  border: 1px solid var(--line);
+  width: 44px;
+  height: 40px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 20px;
+  background: linear-gradient(180deg, var(--surface), var(--ink-2));
+}
+
+/* ===== 大運 table ===== */
+.daiun-header{
+  display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;
+  margin-bottom:14px;
+}
+.daiun-header .meta{
+  font-size:13px; color:var(--paper-dim);
+}
+.daiun-header .meta b{ color: var(--gold-bright); font-weight:700; }
+.daiun-table-wrap{
+  overflow-x:auto;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+table.daiun-table{
+  width:100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 560px;
+}
+table.daiun-table th, table.daiun-table td{
+  padding: 10px 12px;
+  text-align:center;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.daiun-table th{
+  background: rgba(0,0,0,0.25);
+  color: var(--gold-bright);
+  font-family: var(--font-serif);
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:0.03em;
+}
+table.daiun-table tbody tr:hover{ background: rgba(200,161,94,0.06); }
+table.daiun-table tbody tr:last-child td{ border-bottom:none; }
+table.daiun-table .ganzhi-cell{
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+table.daiun-table .age-cell{ color: var(--paper-dim); font-variant-numeric: tabular-nums; }
+table.daiun-table .year-cell{ color: var(--paper-dim); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+
+/* ===== 年運 table ===== */
+.nenun-header{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  margin-bottom:14px;
+}
+.nenun-header .meta{ font-size:13px; color:var(--paper-dim); }
+.nenun-header .meta b{ color: var(--gold-bright); font-weight:700; }
+.nenun-note{ font-size:11px; color:var(--paper-dim); opacity:0.8; margin-left:4px; }
+.btn-nenun-toggle{ white-space:nowrap; }
+table.daiun-table .nenun-age{ font-size:11px; color:var(--paper-dim); }
+table.daiun-table tr.nenun-today{ background: rgba(200,161,94,0.1); }
+table.daiun-table tr.nenun-today td{ color: var(--gold-bright); font-weight:700; }
+table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">算命学研究所</p>
+    <h1>命式作成</h1>
+    <p class="subhead">生年月日から年・月・日の三柱と蔵干、十大主星・十二大従星、天中殺、守護神候補を算出します</p>
+  </header>
+
+  <div class="card">
+    <h2>生年月日を入力</h2>
+    <div class="input-row">
+      <div class="field name">
+        <label for="in-name">お名前（任意）</label>
+        <input type="text" id="in-name" placeholder="例：山田 花子">
+      </div>
+      <div class="field year">
+        <label for="in-year">西暦（年）</label>
+        <input type="number" id="in-year" value="1990" min="1874" max="2048">
+      </div>
+      <div class="field">
+        <label for="in-month">月</label>
+        <input type="number" id="in-month" value="1" min="1" max="12">
+      </div>
+      <div class="field">
+        <label for="in-day">日</label>
+        <input type="number" id="in-day" value="1" min="1" max="31">
+      </div>
+      <div class="field">
+        <label for="in-gender">性別（大運の順逆に使用）</label>
+        <select id="in-gender">
+          <option value="M">男性</option>
+          <option value="F">女性</option>
+        </select>
+      </div>
+      <button class="btn-calc" id="btn-calc">命式を出す</button>
+    </div>
+    <p class="hint">対応範囲：1874年〜2048年（節入日は配布教材『４干支暦』の年別早見表に基づく）</p>
+    <div class="error-box" id="error-box"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <footer>
+    算出根拠：配布教材『４干支暦（算命学暦）』年別早見表・蔵干表（初元・中元・本元、日数0〜20〜）・十大主星表・十二大従星表・守護神法（十干守護神法）・大運法<br>
+    節入日ベースの年月柱判定、六十干支による日柱の周期計算を使用。守護神は候補の提示であり、最終判定には他の透干状況・身強身弱・後天運との組み合わせの考察が必要です。
+  </footer>
+</div>
+
+<script>
+/* 算命学研究所 命式作成アプリ — データ本体
+   出典: 配布教材『４干支暦（算命学暦）』年別早見表（明治6年/1873〜令和30年/2048）を
+   算命学研究所ナレッジベースより抽出。守護神データは同教材巻末付録「十干守護神法」より抽出。 */
+
+window.CALENDAR_DATA = [[9,5,4,5,5,6,6,7,7,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[10,5,4,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[11,6,4,6,5,6,6,8,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[12,6,4,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[13,5,4,5,5,5,6,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[14,5,4,6,5,6,6,7,8,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[15,6,4,6,5,6,6,7,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[16,6,4,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[17,5,4,5,5,5,6,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[18,5,4,6,5,6,6,7,8,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[19,6,4,6,5,6,6,7,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[20,6,4,5,4,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[21,5,4,5,5,5,6,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[22,5,4,6,5,6,6,7,8,8,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[23,6,4,6,5,6,6,7,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[24,6,4,5,4,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[25,5,3,5,5,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[26,5,4,6,5,6,6,7,8,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[27,6,4,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[28,6,4,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[29,5,3,5,4,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[30,5,4,5,5,5,6,7,7,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[31,5,4,6,5,6,6,7,8,8,8,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[32,6,4,5,4,5,5,7,7,7,8,7,6,25,26,27,28,29,30,31,32,33,34,35,36],[33,5,3,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[34,5,4,5,5,5,6,7,7,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[35,5,4,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[36,6,4,6,5,6,6,8,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[37,6,4,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[38,6,5,6,6,6,7,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[39,6,5,7,6,7,7,8,9,9,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[40,7,5,6,5,6,6,7,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[41,6,4,6,5,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[42,6,5,6,6,6,7,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[43,6,5,7,6,7,7,8,9,9,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[44,7,5,6,5,6,6,7,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[45,6,4,6,5,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[46,6,5,6,6,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[47,6,5,7,6,7,7,8,9,9,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[48,7,5,6,5,6,6,7,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[49,6,4,6,5,6,6,8,8,8,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[50,6,5,6,6,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[51,6,5,7,6,7,7,8,9,9,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[52,7,5,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[53,6,4,6,5,6,6,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[54,6,4,6,5,6,6,8,8,8,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[55,6,5,7,6,6,7,8,8,9,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[56,6,5,6,5,6,6,7,8,8,8,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[57,6,4,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[58,6,4,6,5,6,6,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[59,6,5,6,6,6,7,8,8,9,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[0,6,5,6,5,6,6,7,8,8,8,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[1,6,4,6,5,6,6,8,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[2,6,4,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[3,6,5,6,6,6,7,8,8,9,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[4,6,5,6,5,6,6,7,8,8,8,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[5,6,4,6,5,6,6,8,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[6,6,4,6,5,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[7,6,5,6,6,6,7,8,8,9,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[8,6,5,6,5,6,6,7,8,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[9,6,4,6,5,6,6,7,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[10,6,4,6,5,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[11,6,5,6,6,6,7,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[12,6,5,6,5,6,6,7,8,8,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[13,6,4,6,5,6,6,7,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[14,6,4,6,5,6,6,8,8,8,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[15,6,5,6,6,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[16,6,5,6,5,6,6,7,8,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[17,6,4,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[18,6,4,6,5,6,6,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[19,6,5,6,6,6,6,8,8,8,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[20,6,5,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[21,6,4,6,5,6,6,7,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[22,6,4,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[23,6,5,6,6,6,6,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[24,6,5,6,5,6,6,7,8,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[25,6,4,6,5,6,6,7,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[26,6,4,6,5,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[27,6,5,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[28,6,5,6,5,5,6,7,7,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[29,6,4,6,5,6,6,7,8,8,8,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[30,6,4,6,5,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[31,6,4,6,5,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[32,6,5,5,5,5,6,7,7,8,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[33,5,4,6,5,6,6,7,8,8,8,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[34,6,4,6,5,6,6,8,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[35,6,4,6,5,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[36,6,5,5,5,5,6,7,7,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[37,5,4,6,5,6,6,7,8,8,8,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[38,6,4,6,5,6,6,7,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[39,6,4,6,5,6,6,8,8,8,9,8,8,49,50,51,52,53,54,55,56,57,58,59,0],[40,6,5,5,5,5,6,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[41,5,4,6,5,6,6,7,8,8,8,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[42,6,4,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[43,6,4,6,5,6,6,8,8,8,9,8,8,37,38,39,40,41,42,43,44,45,46,47,48],[44,6,5,5,5,5,6,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[45,5,4,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[46,6,4,6,5,6,6,7,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[47,6,4,6,5,6,6,8,8,8,9,8,8,25,26,27,28,29,30,31,32,33,34,35,36],[48,6,5,5,5,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[49,5,4,6,5,6,6,7,8,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[50,6,4,6,5,6,6,7,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[51,6,4,6,5,6,6,8,8,8,9,8,8,13,14,15,16,17,18,19,20,21,22,23,24],[52,6,5,5,5,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[53,5,4,6,5,5,6,7,8,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[54,6,4,6,5,6,6,7,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[55,6,4,6,5,6,6,8,8,8,9,8,8,1,2,3,4,5,6,7,8,9,10,11,12],[56,6,5,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[57,5,4,6,5,5,6,7,7,8,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[58,6,4,6,5,6,6,7,8,8,8,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[59,6,4,6,5,6,6,8,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[0,6,4,5,4,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[1,5,4,6,5,5,6,7,7,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[2,5,4,6,5,6,6,7,8,8,8,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[3,6,4,6,5,6,6,8,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[4,6,4,5,4,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[5,5,4,5,5,5,6,7,7,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[6,5,4,6,5,6,6,7,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[7,6,4,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[8,6,4,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[9,5,4,5,5,5,6,7,7,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[10,5,4,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[11,6,4,6,5,6,6,7,8,8,9,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[12,6,4,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[13,5,4,5,5,5,6,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[14,5,4,6,5,6,6,7,8,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[15,6,4,6,5,6,6,7,8,8,9,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[16,6,4,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[17,5,4,5,5,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[18,5,4,6,5,6,6,7,8,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[19,6,4,6,5,6,6,7,8,8,9,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[20,6,4,5,4,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[21,5,4,5,5,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[22,5,4,6,5,6,6,7,8,8,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[23,6,4,6,5,6,6,7,8,8,9,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[24,6,4,5,4,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[25,5,4,5,5,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[26,5,4,6,5,5,6,7,7,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[27,6,4,6,5,6,6,7,8,8,9,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[28,6,4,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[29,5,4,5,5,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[30,5,4,6,5,5,6,7,7,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[31,6,4,6,5,6,6,7,8,8,8,8,7,13,14,15,16,17,18,19,20,21,22,23,24],[32,6,4,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[33,5,4,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[34,5,4,6,5,5,6,7,7,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[35,6,4,6,5,6,6,7,8,8,8,8,7,1,2,3,4,5,6,7,8,9,10,11,12],[36,6,4,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[37,5,3,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[38,5,4,5,5,5,6,7,7,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[39,6,4,6,5,6,6,7,8,8,8,8,7,49,50,51,52,53,54,55,56,57,58,59,0],[40,6,4,5,4,5,5,6,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[41,5,3,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[42,5,4,5,5,5,6,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[43,5,4,6,5,6,6,7,8,8,8,8,7,37,38,39,40,41,42,43,44,45,46,47,48],[44,6,4,5,4,5,5,6,7,7,8,7,6,49,50,51,52,53,54,55,56,57,58,59,0],[45,5,3,5,4,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[46,5,4,5,5,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[47,5,4,6,5,6,6,7,8,8,8,8,7,25,26,27,28,29,30,31,32,33,34,35,36],[48,6,4,5,4,5,5,6,7,7,8,7,6,37,38,39,40,41,42,43,44,45,46,47,48],[49,5,3,5,4,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[50,5,4,5,5,5,5,7,7,7,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[51,5,4,6,5,6,6,7,8,8,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[52,6,4,5,4,5,5,6,7,7,8,7,6,25,26,27,28,29,30,31,32,33,34,35,36],[53,5,3,5,4,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[54,5,4,5,5,5,5,7,7,7,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[55,5,4,6,5,6,6,7,8,8,8,7,7,1,2,3,4,5,6,7,8,9,10,11,12],[56,6,4,5,4,5,5,6,7,7,8,7,6,13,14,15,16,17,18,19,20,21,22,23,24],[57,5,3,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[58,5,4,5,5,5,5,7,7,7,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[59,5,4,6,5,5,6,7,7,8,8,7,7,49,50,51,52,53,54,55,56,57,58,59,0],[0,6,4,5,4,5,5,6,7,7,8,7,6,1,2,3,4,5,6,7,8,9,10,11,12],[1,5,3,5,4,5,5,7,7,7,8,7,7,13,14,15,16,17,18,19,20,21,22,23,24],[2,5,4,5,4,5,5,7,7,7,8,7,7,25,26,27,28,29,30,31,32,33,34,35,36],[3,5,4,6,5,5,6,7,7,8,8,7,7,37,38,39,40,41,42,43,44,45,46,47,48],[4,6,4,5,4,5,5,6,7,7,7,7,6,49,50,51,52,53,54,55,56,57,58,59,0]];
+window.CALENDAR_START_YEAR = 1873;
+window.CALENDAR_END_YEAR = 2048;
+window.GUARDIAN_DATA = {"丁":{"寅":{"zoukan":"庚・甲","text":"丁火は常に火源を必要とするが、寅月は甲木が司令するため急を要しない。庚金を第一守護神、甲木を後にする。木旺の地のため金がなければ甲木を燃やせない。〈木旺のとき、庚金をもって甲を割り、庚金の補神に土を取る〉"},"卯":{"zoukan":"庚・甲","text":"卯木は春草のため丁火を助けられない。庚金を第一守護神とし木を除去、その木で丁火を生じる。癸水の透干を特に忌む。〈庚金を用いて乙木を去り甲木を劈いて丁火を引く〉"},"辰":{"zoukan":"甲・庚","text":"湿土であり丁火の気を洩らして弱めるため、甲木を第一守護神とし疏土と火源の両用とする。庚金を補佐とするが、この庚金も甲木を劈き旺土を洩らす両用となる。〈厚土を開く用は甲木、次に庚で丁を引き、強木には庚金、盛水には戊土で防ぐ〉"},"巳":{"zoukan":"壬・庚・甲","text":"旺に乗っている時のため解炎の用として壬水を必要とするが、火源の甲木も不離。日干と月支以外に火がある場合は壬水第一・庚金第二・甲木第三、火ない場合は甲木第一・庚金第二・壬水第三。丙火の晦光を特に嫌う。〈身強には制炎に壬水、水源に庚金。身弱に甲と庚で丁を引く、多木には庚金〉"},"午":{"zoukan":"壬・庚・甲","text":"火は頂点に達し解炎の用として壬水を第一守護神。壬水は蒸発の恐れがあるため水源の庚金を補佐。丁火は火源の甲木を神とするため次の用。壬水は丁火と干合の恐れがあるため、透干する場合は一つ隔てて年干にある方が良い。〈丁火禄旺、壬庚を両用、壬水がなければ癸水を代用〉"},"未":{"zoukan":"甲・庚・壬","text":"丁火は退気となり三伏の寒を生じるので、再び甲木を第一守護神とする。甲木を打って丁火を生じる庚金を次にとる。炎燥を押さえる壬水を補佐。夏で火強ければ壬水を先にとる。〈寒気生じるので甲が先、庚金で割り丁火を引く、火気強ければ壬水で制す〉"},"申":{"zoukan":"甲・庚・丙","text":"三秋の丁火は気が退いて段々弱くなっていくので甲木を第一守護神。庚金を次の補佐とするが金が司令する時のため甲木の方が非常に価値が高い。金を調節するため丙火も用とする。〈制金の丙が先、甲あれば庚で裂き火を引く、乙木代用には丙併用、盛水に戊〉"},"酉":{"zoukan":"甲・庚・丙","text":"申月と同様。金は頂点に達するため甲木の必要性はますます高くなる。甲木を第一、庚金を第二とするが差は大きい。金を調整する丙火も用とする。甲木のない場合は乙木を用とし、癸水の透干を嫌う。〈制金の丙が先、甲あれば庚で裂き火を引く、乙木代用には丙併用、盛水に戊土〉"},"戌":{"zoukan":"甲・庚","text":"晩秋であり丁火は火庫に会い弱まる。故に丁火を生じ、火を洩らす土を制する甲木を第一守護神。次に甲木を劈く庚金を補佐。丁火を弱める癸水を忌むが、土用のため土の多過も嫌う。〈厚土開拓に甲木が先、庚があれば火を引く、甲木なければ戊金を用いて従格で富む〉"},"亥":{"zoukan":"甲・庚","text":"亥月は壬水の当権する地のため甲木を第一守護神とし、甲木と庚金を両用することで麗光復明の喜びとなる。水の旺地のため水は共に忌神で、水多ければ戊土を用として丁火を救わなければならない。〈甲木をもって水を化し、庚で木を割り火を引く〉"},"子":{"zoukan":"甲・庚","text":"丁火は最弱となるため火源の甲木を第一守護神とし庚金を補佐。甲木庚金の両透を得れば功名を順調に獲得できる。丁火を剋去する水が頂点を極めるので水の氾濫を特に忌み、水多ければ丁火を守るため戊土が必要。〈甲木をもって水を化し、庚で木を割り火を引く〉"},"丑":{"zoukan":"甲・庚","text":"寒気が更に加わり土は凍土となる。火気は凍土に洩れ身弱の極となる。子月同様、甲木を第一・庚金を第二の守護神とする。甲木は凍土を押さえる用もするため甲木の価値は高い。土用の月だが水を嫌うため、戊土はその時々の配合をみて取用する。〈甲木をもって水を化し、庚で木を割り火を引く〉"}},"丙":{"寅":{"zoukan":"壬・庚","text":"太陽の火は湖海の水で反映させ寿命を長めるため壬水を第一守護神。三春の丙火は母（木）が旺のため壬水を生じる庚金を補佐。壬庚両透でバランスが取れ水火既済の功が成る。〈火気漸増のとき制火に壬水を用い、干の甲か支の辛金が水源となれば有用〉"},"卯":{"zoukan":"壬・庚","text":"陽気上昇期のため壬水を第一守護神。壬水が弱地に向かうため庚金を補佐。壬水弱で戊土の透干を忌むが、水金共にない場合は己土を守護神にできる。〈壬水を専用、丁合を忌む。金を水源とし、水多ければ甲木をとる〉"},"辰":{"zoukan":"壬・甲・庚","text":"丙火はますます強くなるため壬水を離れられない。土用月のため甲木を補佐にしないと壬水の力が半減するので、水庫を剋す甲木を次の用とする。壬水を助ける庚金をその次に取る。〈炎勢上昇のとき、申が壬庚の根となれば戊土必要。弱火には印比の生扶必要〉"},"巳":{"zoukan":"壬・庚","text":"三夏の丙火は激しさを増し大地は燥の一語につきるため壬水を専用し第一守護神。弱水を生じる庚金を次の用。壬水が透干せず亥水のみの場合は無用になりやすい。〈火勢炎々、水は絶、金を水源とし壬が用。癸も代用なる。戊の透干嫌う〉"},"午":{"zoukan":"壬・庚","text":"丙火炎烈を極めるため壬水庚金の高透をもって美とする。壬庚両全なら名声万里に渡る上格。制するものがなければその用をなさない。火強く水の全くないものは炎上格に入らない限り役に立たない。〈刃旺のとき、申が壬庚の根となれば至妙。庚金がなければ辛金を取る〉"},"未":{"zoukan":"壬・庚","text":"火気後退の季節だが三夏の常として壬水不離のため壬水を第一守護神、水源の庚金を補佐。辛金の場合は丙辛干合の恐れがあるので二十八元（蔵干）にあるのが望ましい。〈炎威衰えず、壬水を用とし金気を水源にとる〉"},"申":{"zoukan":"壬・甲","text":"壬水を第一守護神に取るが、秋冬の壬水は西に傾く太陽を補映させるため土の透干を特に忌む。丙火は病人の場所のため甲木を次の用とし水火のバランスをとる。〈壬は申に通根するので、水多ければ戊土必要。弱火には印比の生扶必要〉"},"酉":{"zoukan":"壬・甲","text":"丙火はいよいよ潜み余光は湖海に残るのみのため補映してくれる壬水を第一守護神とする。戊土の透干を嫌うため甲木は疏土の用もする。〈丙火多見に一壬高透は奇、無壬には癸を代用。金気多見には寅か午が必要〉"},"戌":{"zoukan":"甲・壬","text":"秋の土用、土司権の処。土は陽火を暗くする力を持ち、冬へ向かい火気はますます衰えるため甲木を第一守護神。土を制し丙火を生じた後、西山の陽光を湖海に導かせる壬水を用とする。〈火光暗くなるとき、疏土の甲が先、次に壬水を取る〉"},"亥":{"zoukan":"甲・壬・戊","text":"時を失い太陽の力はほとんどないため、火を生ずる甲木を第一守護神とする。丙火は壬水を離れられないため次の用。水旺の地のため戊土の制も用とする。〈火は絶地、甲木が透れば復明、身殺両旺には戊、火旺には壬、木旺には庚を取る〉"},"子":{"zoukan":"壬・戊・甲","text":"冬至に一陽を生じるので弱中に強が帰る。そのため壬水を用とすることができる。水の旺地のため水火のバランス上、水を押さえる戊土を補佐。甲木も用とするが、甲木は水を洩らし丙火を生じるため価値は高く、戊土甲木はほとんど同価値。〈冬至前は亥月と同様。冬至後は復明のとき印あれば壬を取り、戊を補佐とする〉"},"丑":{"zoukan":"壬・甲","text":"気が二陽に進み徐々に強くなっていく。そのため壬水を第一守護神とする。土用の月であるから丙火の力は弱められるため、甲木を補佐とする必要がある。水火既済は万物を栄えさせ、水火の偏りは万物を衰えさせる。〈陽光漸増の時、壬水を用とし、土多ければ甲を取る〉"}},"乙":{"寅":{"zoukan":"丙・癸","text":"余寒の状態のため丙火の照暖を第一守護神、雨露の癸水を補佐とする。乙木は常に生木としての使命を持ち丙火・癸水と不離。成長を止める金性を嫌う。〈余寒峻厳、解凍の用は丙火、木根を潤すは癸水、火多なれば癸水を先に取る〉"},"卯":{"zoukan":"丙・癸","text":"太陽の丙火・雨露の癸水を守護神とする。丙火癸水が両透し庚金が透干しないものは大富大貴。無い場合は丁火壬水を守護神にできるが劣る。〈癸水の雨露で木を潤し、丙火は秀気にして大輪の花咲く、金を見るのを忌む〉"},"辰":{"zoukan":"癸・丙","text":"生木のため春でも庚金は使えず、陽気盛んなため癸水を第一守護神とする。丙火は次の用。金性・土性（癸水を尅去）も嫌う。〈陽気上昇、木を潤す癸水を先にし次に丙の照暖をとり水多なれば戊土の堤防必要〉"},"巳":{"zoukan":"癸・丙・辛","text":"三夏の乙木は季節調候の急務から癸水を第一守護神。夏でも丙火の照暖がなければ不作となるため次にとる。弱水を助ける辛金を補佐。〈丙火司令、炎熱漸増の時、天恵の雨露癸水を尊とし、辛または庚が水源〉"},"午":{"zoukan":"癸・丙・辛","text":"午月は丁火の司権地で禾稼が水の力を求めるため癸水を第一守護神、丙火を補佐。弱水を助ける辛金を水源の用に取り、癸水を制する戊土を忌む。〈上半月は炎暑の時、癸水の雨露を専用、夏至後は陰生じるので丙火と癸水を併用〉"},"未":{"zoukan":"癸・丙","text":"三伏の寒を生じるとはいえ、燥土の上の草木は水を欲するため癸水を第一守護神。火気は衰えるため丙火を補佐。癸水を尅す土性が透干するものは甲木が必要。〈潤木潤土に癸水をとり、金水多なれば丙火を先にす〉"},"申":{"zoukan":"丙・癸・己","text":"金の司令する時期のため、気候を調和する丙火を第一守護神。癸水の滋潤も次の用とする。申金の岩石は草木を苦しめるため己土を補佐。金の透干を特に忌む。〈庚金が正気のとき、制金の丙または洩金の癸を用にとる。いずれも己土が補佐〉"},"酉":{"zoukan":"癸・丙","text":"秋分前は癸水第一・丙火第二、秋分後は乙木が進気に入り火が陰地に回るため丙火第一・癸水第二とする。火水共にないものは貧賤夭折の命。〈丙火照暖を先とし、癸水を潤木の用ととる。金気盛んなれば丁火で制金〉"},"戌":{"zoukan":"癸・丙","text":"秋気荒涼として燥土当令のため癸水の滋養は不可欠で第一守護神。丙火も必要。旺土を押さえる甲木・水源の辛金を共に用にできる。〈土乾燥し根枯れて葉落ちるとき滋養の癸水が貴重。金を水源とし、疏土に甲木〉"},"亥":{"zoukan":"丙・戊","text":"乙木は天極星であり陽和の暖が第一。丙火を守護神とし、次に水を制する戊土を用とする。丙火の透干は木秀火明となる。〈壬水氾濫のとき乙木は生気を受けない。丙火の照暖と戊土の堤防が必要〉"},"子":{"zoukan":"丙・戊","text":"仲冬の乙木は根幹共に凍る時であり、丙火の解凍をもって第一守護神。亥月同様戊土を欠かせない。最も忌むのは水の透干で、水多ければ戊土を先にする。丙火の代わりに丁火を用いる場合は甲木があるのが望ましい。〈寒木向陽に丙火を専用、水の透干を切に忌み、水の害は戊土で守る〉"},"丑":{"zoukan":"丙","text":"寒谷回春を急ぐため丙火を第一守護神。丑土は凍土であり乙木は寒木凍結するのを恐れるため、丁火も用とできる。火の全くない者は一生清貧となる。"}},"壬":{"寅":{"zoukan":"戊・庚・丙","text":"旺洋の象となり水は氾濫する。壬水は形を求めるため氾濫を止め堤防を築くことを必要とし戊土を第一守護神。壬水は弱く源流の枯渇を嫌うため庚金を次の用とする。春初めのため水温は低く暖を得る丙火を補佐とする。木旺の地のため洩気多過であれば庚金を先とする。〈丙火透れば春水温み清澄する。水多ければ戊で防ぎ、水源に庚をとり三者斉透は大貴〉"},"卯":{"zoukan":"戊・辛","text":"氾濫の度合いは強くなる。故に戊土の制を必要とし第一守護神。水は退気に向かい枯渇を恐れるため金母の生助を求め水源の辛金を用とする。本来壬水は庚金を水源とするが、卯月は乙木の司令する所であるため庚金は力が出しにくい。ただし辛金の代わりに庚金を用としても差し支えない。〈陽気上昇し諸用合して奔流となる。戊土で整流し水源は辛金、戊なければ庚金を専用〉"},"辰":{"zoukan":"甲・庚","text":"旺土は海を塞ぎ患となる。壬水は水庫に会い動を止められる。故に疏土の用として甲木を第一守護神。甲木を欲すること切なる。退気の水は水源を必要とするため庚金を次の用とする。ただし庚金は甲木を剋去する力を持つので、金の大過を嫌う。〈戊土司令の時、甲木で厚土を開発し、庚金を水源に取る〉"},"巳":{"zoukan":"壬・庚","text":"夏の壬水は弱を極める。夏水は比助を緊急の用とする故に壬水を第一守護神とする。次に源流を求めて安定するため金を補佐とする。壬水の代わりに癸水の比助を頼むことができる。〈水は絶地に臨むので、壬水の比助があれば富み、庚金の水源があれば名を成す〉"},"午":{"zoukan":"癸・庚","text":"夏至に至り丁火の司令する地となる。壬水は更に弱まるため水の比助を緊急の用とする。癸水を第一守護神とし、壬水の比助と丁火を剋す両用とする。しかる後枯渇を防ぐ水源の庚金を補佐とする。癸水の代わりに壬水を用としてもよい。〈丁火旺じ暗合するので、壬水は弱い。消火に癸水を用い、金を癸水の水源に取る〉"},"未":{"zoukan":"庚・甲・癸","text":"己土が当権し燥土は水を涸らす。火は盛りを過ぎるため水源の庚金を第一守護神とする。次に燥土を押さえる甲木を用とし、更に癸水を比助と甲木の生助の用にとる。土多ければ甲木が先、火多ければ癸水が先となる。〈水源に辛金、疏土に甲木、輔神に癸水、辛金がなければ庚金を代用〉"},"申":{"zoukan":"戊・丁","text":"壬水は進気に入り、更に水源を備えて源遠長流を得る。故に壬水を留めるため堤防を必要とし戊土を第一守護神とする。戊土の力は弱く、戊土を生助し水源を調節する丁火を次の用とする。〈秋水通源のとき、水に映える丙を専用、盛水に戊堤が先〉"},"酉":{"zoukan":"甲・辛","text":"辛金が司令するので壬水は清くなり金白水清をする。壬水を濁す土を嫌うため甲木を守護神とする。甲木は土を制し水清を維持する洩水の用をなす。静かなる水源は金白水清を保つため辛金を次の用とする。〈辛金司令し金白水清、濁水の土を制する甲木を専用、甲なければ庚金が先〉"},"戌":{"zoukan":"甲・丙","text":"進気の壬水は月令に戊土を得て自然に堅固な堤防を備える。堤防を調土する甲木を必要とし第一守護神とする。堤防は亥月において弱の極となるため丙火の助けを頼み次の用とする。丙火は暖をもたらす用もなす。水の旺地のため水の氾濫を特に忌む。また戊土が弱いため堤防を破壊する甲木を嫌い、甲木のあるものは庚金も用とする。〈水冷える候、水温める丙火高透すれば富貴双全。重土には甲木を並用〉"},"亥":{"zoukan":"戊・丙","text":"壬水が司権し旺となる。故に戊土を第一守護神とする。堤防は亥月において弱の極となるため丙火の助けを頼み次の用とする。丙火は暖をもたらす用もなす。水の旺地のため水の氾濫を特に忌む。また戊土が弱いため堤防を破壊する甲木を嫌い、甲木のあるものは庚金も用とする。〈戊土制水を先にし次に調候の丙火を取る。戊を破る甲木が透れば庚金の制が必要〉"},"子":{"zoukan":"戊・丙","text":"壬水は極旺となり、制することを必要とするため戊土を守護神とする。次に凍結を防ぎ戊土を生助する丙火も欠かすことはできない。戊土丙火はほとんど同価値である。戊土の透干者は水の氾濫による脚下崩壊を最も忌む。〈刃旺の時、沖奔の水を戊土で整流し、寒土凍氷を暖める丙火を用とする〉"},"丑":{"zoukan":"丙・甲","text":"丑月は土用であるため寒冷を解くことを急務とし丙火を第一守護神とする。丙火の力は弱く、甲木の補佐を必要とする。水は進気を過ぎたとはいえその力衰えず、堤防を強固にする必要があるため戊土を次の用にとることができる。〈水土凝寒の時解凍の用に丙火が先。上半月は丁を輔用、下半月は甲が用〉"}},"己":{"寅":{"zoukan":"丙・戊","text":"余寒が残り万物照暖のため丙火を第一守護神。田園は水の奔流を嫌うため戊土を次にとる。更に田園を守ってくれる甲木を用とする。作物が育つ前の時期のため癸水は特に必要としない。〈余寒除去に丙火、水を多見すれば戊土、土多ければ甲木、多木には庚金をとる〉"},"卯":{"zoukan":"甲・丙・癸","text":"田園はまだ開けないため先に甲木を取り第一守護神とする。甲木は耕作に欠かせない。次に丙火の照暖を必要とする。その上に土を潤す癸水を用とする。これらが揃えば万物は自然に開花し豊穣が約束される。〈丙火照暖を先、甲で耕し、潤土の癸水があれば万物養成〉"},"辰":{"zoukan":"丙・癸・甲","text":"五穀栽培の時となり丙火を第一守護神とする。土を暖かくして後に癸水で潤す。故に甲木を次の用とする。丙火癸水の価値はほとんど同じ。土用のため土多ければ甲木を先にする。〈上半月は丙火の照暖、甲で田を耕す。下半月は丙火不要、金を見れば賢良〉"},"巳":{"zoukan":"癸・丙・辛","text":"初夏の田園は潤沢を喜ぶため癸水を第一守護神。禾稼の成長に丙火を欠かせないため次の用。癸水は水源を必要とするため辛金を補佐とする。癸水を合去する戊土を忌む。〈癸潤は天恵豊、壬水は労力を要し、金は水源。潤土に丙火を見て万物生育〉"},"午":{"zoukan":"壬・丙・辛","text":"炎烈を極めるので壬水を第一守護神とする。五穀豊穣のためには丙火を欠かせないため次の用。癸水は水源を必要とするため辛金を補佐とする。癸水を合去する戊土を忌む。〈癸潤は天恵豊、壬水は労力を要し、金は水源。潤土に丙火を見て万物生育〉"},"未":{"zoukan":"癸・丙","text":"禾稼は燥土に会い何よりも水を求めるため癸水を第一守護神。更に豊実させるため太陽の照暖（丙火）を必要とする。旺土の月だが甲木は癸水を洩らすため特に用としない。〈癸潤は天恵豊、壬水は労力を要し、金は水源。潤土に丙火を見て万物生育〉"},"申":{"zoukan":"丙・癸","text":"金の旺地となるので旺金を押さえるためと豊穣のために丙火を第一守護神。次に洩金と滋潤の用として癸水をとる。丙火癸水は併用。金の透干を特に忌む。〈照暖の丙火あれば生気増大、木を見れば努力で成果、癸水の潤があれば達識〉"},"酉":{"zoukan":"丙・癸","text":"禾稼が豊実を得て収穫を待つのみ。丙火で土を暖め癸水で田土を潤すと稼穡は見事になり田園は有効となる。丙火癸水の両透は併用。金の透干を特に忌む。〈癸潤は天恵豊、壬水は労力を要し、金は水源。潤土に丙火を見て万物生育〉"},"戌":{"zoukan":"甲・丙・癸","text":"旺土を押さえる甲木を第一守護神とする。向寒の時期のため丙火も用とする。次に燥土を滋潤する癸水をとる。甲木は弱く金に剋される役に立たないため、金多ければ丙火を先にとり、丙火なければ代わりに丁火を用とできる。〈丙火で照暖、厚土を甲木で耕し、癸水潤があれば好命〉"},"亥":{"zoukan":"丙・甲・戊","text":"己土は湿潤にして寒に入り凍土となる。故に丙火を第一守護神とする。次に凍土を動かす甲木を用にとる。冬土は収蔵の時のため丙火を補佐する甲木が必要となる。水旺のため戊土の制を用とし、水多ければ戊土を先にとる。〈三冬の除寒には丙火が貴重。丁も代用可能、甲木は火に必需、犯水には戊堤を要す〉"},"子":{"zoukan":"丙・甲・戊","text":"亥月と同様に考え解凍の力を持つ丙火を第一守護神とする。次に洩水と丙火を支える甲木を必要とする。水の旺地のため戊土の制を必要とし、水多ければ戊土を先にとる。〈三冬の除寒には丙火が貴重。丁も代用可能、甲木は火に必需、犯水には戊堤を要す〉"},"丑":{"zoukan":"丙・甲","text":"水泥寒凍の時期のため丙火を第一守護神とする。疏土の用と丙火を生ずるために甲木を次にとる。水多ければ戊土も用とできる。土旺の月のため甲木の必要性は亥月・子月より大である。〈三冬の除寒には丙火が貴重。丁も代用可能、甲木は火に必需、犯水には戊堤を要す〉"}},"庚":{"寅":{"zoukan":"丙・甲","text":"自然界の気が動き始め、庚金は淘汰の役目の準備を始める。まず水を取り除き暖を与える丙火を第一守護神。土を剋し丙火を生じる甲木を次の用。火多過すれば戊土を用にできる。丙火の代わりに丁火も用とできる。〈丙で金を暖め、厚土に甲、火多ければ戊、火局には壬をとり、土あれば丁をとる〉"},"卯":{"zoukan":"丁・甲・庚","text":"月支と暗合し庚金は己を失う。故に丁火の制を必要とし第一守護神。丁火の生母甲木を次の用とし、甲木を劈く庚金を次に用いる。丁火なければ代わりに丙火を用とする。〈暗に金が強化するので、丁火専用。甲で火を引き、他柱の庚で甲を劈き、丙は代用〉"},"辰":{"zoukan":"甲・丁","text":"戊土司令の月のため埋金の恐れがある。故に甲木を第一守護神とする。次に庚金を錬磨する丁火を用とする。土の多過を最も忌み、甲木を劈く庚金も嫌う。火強なら壬水をとることもできる。〈土を耕す甲が先、次に丁の精錬で名利双全、干の強火に壬制、支の強火には癸制〉"},"巳":{"zoukan":"壬・丙","text":"巳中の戊土が火炎を防ぐといえども火土偏燥の恐れがあるので壬水の救応を頼み第一守護神。壬水を用とすれば成型のため丙火を用とする。三夏の庚金は強炎を戊土で押さえるので、水のない場合は戊土を通関の用にとる。水源に辛金を補佐にすることもできる。〈壬水で炎熱を押え、戊土で養金、丙は輔用。金局が成れば丁制要す〉"},"午":{"zoukan":"壬・辛","text":"火炎は旺じ烈しく壬水の救応がないと立ちゆかない。故に壬水を第一守護神とする。壬水なければ癸水をとる。次に水源の用として金を求める。水のないものは火炎を防ぐ戊土を用とする。〈炎暑を壬で冷却し癸を併用。支に水源の金必要。無水は丑土を喜ぶ〉"},"未":{"zoukan":"丁・甲","text":"三伏の寒を生ずるので丁火を第一守護神とする。次に丁火の生母の用と疏土の用として甲木を先とし丁火を後にする。火土偏燥を恐れるので火炎が強ければ壬水を用いるが、火強でなければ水は必要ない。〈陰気を生じるので、丁で精錬し甲を生火の用とする〉"},"申":{"zoukan":"丁・甲","text":"金は剛鋭の極となるので丁火を専用し第一守護神。金旺のため甲木があれば必ず丁火を引くので、丁火甲木の両透は科挙となる。水は進気でもあり火に対して用を失わしめるので、水の透干を特に忌む。〈庚金は禄地にあり、丁火で精錬し甲を燃料として、美器が成る〉"},"酉":{"zoukan":"丁・甲・丙","text":"金は最旺となり自然界において猛威を奮う。正しい淘汰のためには錬磨されることが必要であり、故に丁火を第一守護神とする。次に丁火を生助する甲木を用とする。気が寒に向かうため丙火も補佐とする。申月・酉月の火なきものは周囲を破壊し自滅の道を歩む。〈刃旺の時、丙制丁錬の官殺混雑を厭わず、甲木は燃料〉"},"戌":{"zoukan":"甲・壬","text":"土旺となるため埋金を防ぐ甲木を第一守護神。自然界の回転は陰に向かい庚金は役目を終える。故に陶洗を求めるため壬水を次の用にとる。戌月は丁火を蔵する故に丁火を特に用としない。金を埋め壬水を濁す土を特に忌む。〈土厚ければ甲木が先。丙は調候、丁は錬金、火がなければ壬水をとる〉"},"亥":{"zoukan":"丁・甲・丙","text":"鍛錬を第一に考え丁火を第一守護神とする。丁火は力が弱く甲木の生助を頼む故に甲木を次の用にとる。次に寒気を除く丙火を補佐とする。冬の庚金は官殺両透を忌まない。水の旺地のため丁火が剋去される恐れがあるため水の透干を嫌う。〈水冷えて金寒し、丙は照暖丁甲を錬金にとる。寅午巳未に通根を貴とする〉"},"子":{"zoukan":"丁・甲・丙","text":"亥月と同様に考える。厳寒を増すので丁火を錬金の用にとり第一守護神とし、丁火を生じる甲木を次にとる。更に寒気凍寒のために丙火を補佐とする。〈丙で金を暖め、丁甲を錬金の用にとる。木火に強根が必要〉"},"丑":{"zoukan":"丙・丁・甲","text":"寒気大過し多湿の泥土は庚金を閉じこめ隠してしまう。故に金庫を解凍する事を急務とし丙火を第一守護神とする。次に錬金の用として丁火を取り、更に火を生じる甲木を補佐とする。土用月のため土多ければ甲木を先にするが、冬の庚金は水を最も忌むため水多ければ戊土を用いなければならない。〈厳寒凍土を丙の照暖で解き錬金に丁火・甲木を取る。木火の強根を要す〉"}},"戊":{"寅":{"zoukan":"丙・甲・癸","text":"残寒のため丙火の照暖を第一守護神。戊土を疏通させるため甲木を次の守護神とする。癸水の滋潤は必要だが寒があるため緊急の用ではない。金の透干を特に忌む。〈春寒に丙光が先、開墾に甲木を用い、潤土の癸水があれば万物発生の喜びあり〉"},"卯":{"zoukan":"丙・甲・癸","text":"寅月と同様に考える。丙火の照暖を第一とし、万物育成に欠かせない甲木を補佐にとる。癸水丙火は併用。地支の水局を恐れる。〈春寒に丙光が先、開墾に甲木を用い、潤土の癸水があれば万物発生の喜びあり〉"},"辰":{"zoukan":"甲・癸・丙","text":"戊土が司令するので甲木を第一守護神として疏土の用。次に癸水を季節調和と甲木の生助の用にとる。丙火も万物育成に欠かせず補佐にとる。地支の水局を恐れる。〈戊土司令、開拓の甲木が先、潤土に癸水、丙火強ければ水と水源の金が必要〉"},"巳":{"zoukan":"癸・甲・丙","text":"火旺の地に入り水の枯渇は万物を衰えさせるため雨露の癸水を第一守護神。旺土を疏通する甲木を次に用とする。巳月は外が暑・内が寒のため火炎を恐れず、万物育成をもたらす丙火を補佐とするが水火相済が望ましい。〈火旺じ土は燥、壬水と庚金あれば貴、辛癸は代用だが子や丑が必要〉"},"午":{"zoukan":"壬・甲・丙","text":"仲夏の烈火が盛旺を極めるので壬水を第一守護神。癸水では微力。次に甲木を疏土の用とする。更に滋育のため丙火を取る（壬水が解炎の役をすればこそ丙火が用いられる）。辛金を補佐に用いることもできる。〈土焦げるので灌漑に壬水、水源の金と湿土が必要、更に開拓の甲があれば貴重〉"},"未":{"zoukan":"癸・甲・丙","text":"夏の乾枯に遭うので癸水を第一守護神。土用の月のため疏土のため甲木を用いる。次に火が衰え始めるので丙火をとる。癸水の代わりに壬水を用いることもできる。〈土乾く時癸水を先にし、甲木で耕す。丁を温剤とし、庚を癸水の水源とする〉"},"申":{"zoukan":"丙・癸・甲","text":"寒気が徐々に忍び寄るので丙火を第一守護神。戊土は退気に入り丙火の照暖は必要となる。次に癸水雨露の滋潤が最適。土の寒滞を防ぐため更に甲木を用とする。金の旺地のため金の透干を特に嫌う。〈陽気衰退するので、照暖の丙を先にし次に甲、支の癸は妙用。金強ければ丁で制す〉"},"酉":{"zoukan":"丙・癸","text":"戊土は金に洩れ身は寒く生機が伸びない。故に丙火を第一守護神とし、その生助を頼む秋土は乾枯となるので癸水で滋潤する。月令旺金が秀気を洩らし、また甲木は死木となるため特に用としない。〈向寒のとき、照暖の丙を先にし、生火疏土に甲を取り、支中に癸があれば好命〉"},"戌":{"zoukan":"甲・癸・丙","text":"戊土が当令するので先に甲木を取り第一守護神とする。燥土のため甲木を生助する癸水を次の用とする。戊土との合を忌む。次に丙火の燥土を用とする。〈燥厚の土を耕す甲木を先に、潤土の癸水が次用、丁火を補佐に取る〉"},"亥":{"zoukan":"甲・丙","text":"凍土を防ぐ甲木を第一守護神とし、次に丙火の解寒を必要とする。亥月に甲木は発動の時期のためその存在は重要。丙火は万物照暖の用もする。水旺の地のため水の多過は脚下崩壊を招くことになるため、水の氾濫を特に忌む。〈丙火の照暖で土の生機を促し甲木で土を耕せば特達〉"},"子":{"zoukan":"丙・甲","text":"寒気厳しく、氷凍を解く丙火を第一守護神とする。丙火は冬至で弱の極となるので、甲木を補佐とする。甲木は洩水の役目も果たす。水の氾濫を特に忌み、水多ければ制水のために戊土を用とすることができる。〈厳寒の時、解凍に丙火を先にし、次に甲をもって耕す。丙がなければ丁を代用〉"},"丑":{"zoukan":"丙・甲","text":"寒気が残存するため、丙火を第一守護神とする。次に甲木を疏土の用と丙火の生助の両用とする。丙火甲木の両透は寒谷回春の象となる。丙火は湿土に会って弱となるので甲木の生助を必要とする。〈凍土中の寒金を丁で制し甲で耕せば大器。丁がないものは丙を照暖に取る〉"}},"甲":{"寅":{"zoukan":"丙・癸","text":"余寒が残るため丙火を第一守護神、進気の木性に水が欠かせないため癸水を第二守護神とする。丙癸が透干すれば富貴双全。金に芽を切られることを忌む。〈余寒残るので丙火の調候をとり、癸水で根を潤せば舒暢の喜びあり〉"},"卯":{"zoukan":"癸・己・丁","text":"帝王の地で制する庚金を第一守護神、衰地の庚金を助ける己土を補佐、庚金を鍛える丁火を補佐とする。木性最強の地のため木の過多を嫌う。〈旺木は庚金で制し、生金には己土、庚金には丁火、金無は丙丁を取用する〉"},"辰":{"zoukan":"庚・壬・丁","text":"枝葉繁茂のため庚金を第一守護神、季節調和のため壬水を補佐、庚金を鍛える丁火を次に取る。癸水は庚金を傷める恐れがある。〈繁茂の枝葉は庚金で切除、根が乾くので壬潤が必要、強金には丁火の制〉"},"巳":{"zoukan":"癸・丁・庚","text":"滋潤として癸水を第一守護神、水火バランスのため丁火を次、癸水微弱のため水源の庚金を補佐とする。癸水を制する土を嫌う。〈暑熱解消に癸水先用、水源には金、根潤えば秀気を丁火で発揮〉"},"午":{"zoukan":"癸・庚・丁","text":"夏至前は季節調和を急ぐため癸水第一・庚金第二・丁火第三。夏至後は癸水第一・丁火第二・庚金第三。〈木気虚焦癸水先、水源金、壬代用、湿土あれば丁火〉"},"未":{"zoukan":"庚・丁・癸","text":"火性旺地を過ぎ枝葉茂るため制裁する庚金を第一守護神、庚金を錬磨する丁火を補佐とする。暑さ残れば癸水を先に取る必要あり。〈上半月は午月に同じ、下半月は丁火を先にし庚金を次に取り癸水は無用〉"},"申":{"zoukan":"丁・庚・丙","text":"老いた枝葉を落とすため、庚金を錬磨する丁火を第一守護神とする（丁なければ丙代用）。その後庚金を取り、甲木を能才とする。〈丁火制金、庚金透干で美格、丁火不見に壬代用するも富むだけ〉"},"酉":{"zoukan":"丁・庚・丙","text":"甲木死地で極弱、死木のまま役立たせるため丁火を第一守護神、庚金を次に取る。金は最強のため丙火も補佐とする。火がなく金の多い者は僧道の命となる。〈丁火制金貴重、丙火調候、庚金透干卓抜〉"},"戌":{"zoukan":"丁・庚・壬","text":"金気が相当強いため丁火を守護神として不離とし、庚金を能材の用とする。甲木は進気に回るため壬水の滋扶を次の用とする。〈土乾く重土には別に甲を欲する。盛木には庚金が用。丁壬癸は補佐〉"},"亥":{"zoukan":"庚・丁・戊","text":"初冬、樹木の越冬に枝葉の制裁が急務のため庚金を第一守護神、錬金と暖を取る丁火を次に取る。水旺を押さえるため戊土を補佐とする。〈調候には丙火、伐採には庚金、錬金には丁火を用とし、水盛んなれば戊土で防ぐ〉"},"子":{"zoukan":"丁・庚・丙","text":"初冬、甲木にとって丁火・庚金が神。厳寒のため丁火を先に守護神とし、庚金を次の用とする。氷結を防ぐため丙火を補佐に加える。弱丁を制する癸水を特に忌むため戊土を補佐につけてもよい。〈木気凍結除寒に丙火、庚金で伐採して丁火を錬金に取る〉"},"丑":{"zoukan":"丁・庚","text":"冬至後の厳寒で天地は寒を極め生発の力に乏しいため丁火を第一守護神とする。丁火の力を起こすため庚金を次の用とする。丁庚両透は木火通明の象。〈厳寒で木気凝固のとき、照暖の丙火を先にし、庚金で甲木を裂き丁火を引く〉"}},"癸":{"寅":{"zoukan":"辛・丙","text":"水は退気に入り衰弱する。水源を第一の用とし辛金を第一守護神とする。辛金の代わりに庚金を用とすることができる。癸水は本来至弱であり、水源の金は癸水にとっての神である。金の存在をみて後に、残寒を去る丙火を用とする。〈除寒に丙火、水源に金をとるが、金気絶地にあるので支中己土を要す〉"},"卯":{"zoukan":"辛・庚・丙","text":"木旺となり癸水は洩弱となる。故に水源の辛金を第一守護神とする。卯月は金の衰地であるため辛金は弱を極める。故に庚金を補佐とする。次に気候の調和から丙火を用とする。丙辛両透による干合を忌む。〈精気が洩れて水弱るので庚金を尊とし、辛己を輔神とする。三者斉透すれば大発〉"},"辰":{"zoukan":"辛・丙・甲","text":"癸水にとって欠かすことができない辛金を第一守護神とする。気候は暖に向かうが支に水を蔵し水は多いため、火を求め水火の調和を保つ必要がある。故に丙火を次の用とする。旺土は癸水を押さえる。癸水は土を特に忌むため土を制する甲木を補佐とする。〈庫中の水は庚金を尊とし、壬を耕す甲木を臣とする。二者並透すれば富貴双全〉"},"巳":{"zoukan":"辛・壬","text":"火旺となり水源を必要とする。故に辛金を第一守護神とする。弱金のため庚金もまた守護神とできる。巳中の庚金は水源としての用をなしにくい。火旺を押さえるため水の比助を必要とし次の用とする。丙火より丁火を忌む。〈火旺のとき庚を水源とし壬を輔用。辛金が加われば尚佳〉"},"午":{"zoukan":"辛・壬","text":"炎上する火力は強く癸水は蒸発する。蒸発を防ぐ水源を緊急の用とし辛金を第一守護神とする。水源は弱いため火旺を鎮める水の比助もまた守護神とする。壬水の方が癸水より有用である。〈水源に庚をとる。金気衰弱の時暑熱を押えるのは壬なければ癸代用〉"},"未":{"zoukan":"辛・壬","text":"火気は退気となるもその力衰えず、燥土にある癸水は蒸発の恐れがあり役に立たない。巳午月同様水源の金と比助の水は共に欠かすことができない。金水共に守護神で価値はほとんど同じである。また火土を共に忌む。〈金を水源とするが、上半月は火気を払う水が必要。下半月は水不要〉"},"申":{"zoukan":"丁・甲・辛","text":"癸水は申月に死地となるが旺母のため嫌わない。つまり弱は強に助けられる。しかし弱水は強金に調和を崩される恐れがあるため、丁火を第一守護神とする。剛金は丁火によって節度を保つ。弱丁を強める甲木を次の用とする。甲木は疏土の役もする。丁制あれば辛金も用とする。〈庚金が旺じるので水濁る。制金に丁火専用。午未申に通根妙となる〉"},"酉":{"zoukan":"辛・丙","text":"秋水は清冷である。これを保つために水源を欠いてはいけない。故に辛金を第一守護神とする。辛金の透干は金白水清を司る。冷を和らげる丙火があれば水温み気候の調節を保てるので丙火を次の用とする。丙火は調金の用もする。丙辛の干合を特に忌む。〈辛金当令するも水濁るので丙火を調候とし、水源には庚、水の清明は甲木に待つ〉"},"戌":{"zoukan":"辛・甲","text":"戊土が司権し癸水は涸れる。故に遠源を求め辛金を第一守護神とする。次に旺土を制する甲木を用とする。辛金甲木の両透は静流を永く保たせる。甲木は燥土に会うため弱水であれば水を比助の用とする。戊土の透干を特に忌む。〈水源に庚、暗火を破るに壬を取る、厚土を開くには甲木をとる。三者斉透すれば貴〉"},"亥":{"zoukan":"辛・丙","text":"旺中に弱がある。亥中の甲木が弱を呼ぶ。故に水源となる辛金を第一守護神とする。季節調和のため丙火を次にとる。旺水は氾濫の恐れがあるため、水が多ければ戊土を用とする。〈亥中の甲木が動くので癸水は洩弱、制木癸水の用に庚、辛の輔があれば貴〉"},"子":{"zoukan":"丙・辛","text":"癸水は氷凍し清流の動きは止まる。解凍し動を求めることを急務とし丙火を第一守護神とする。次に辛金を癸水の動を助ける用にとる。丙辛の干合を特に忌む。また寒を呼ぶ壬水の透干を嫌い、水多ければ戊土で押さえる。〈寒凍の水は氷結するので、調候に丙。更に戊土で火を護れ功は宏大〉"},"丑":{"zoukan":"丙・辛・甲","text":"寒極まり氷凍する。万物を開泰させるために解凍を急務とし丙火を第一守護神とする。水源の辛金、流れ先の甲木を用とし、癸水を疏通される補佐とする。また甲木は丙火を助ける用もする。〈厳寒の凍土氷結を解かす丙火を尊とし、己土を化すには厳寒を用とする〉"}},"辛":{"寅":{"zoukan":"己・壬","text":"余寒の退かぬ時期だが木旺の地のため生身を第一とし己土を第一守護神。戊土では辛金が痛む恐れがある。次に辛金を発功させてくれる壬水を用にとる。壬水なき辛金は輝きを失い実力があっても認められぬ者となる。木強ければ庚金を用とする。〈金は絶地にあり、生金の己土を先にとり、壬水あれば発功、庚金で木を制す〉"},"卯":{"zoukan":"壬・甲","text":"壬水を発功の用とし第一守護神とする。壬水を剋去する戊土を最も嫌いそれを除く甲木を次の用とする。甲木を用とすれば埋金を防ぎ、壬水が土で汚されるのを防ぐことができる。〈壬水を尊とし土が病となるので甲木を制土にとる。壬甲両透すれば好命〉"},"辰":{"zoukan":"壬・甲","text":"湿土のなかの辛金は陶洗を必要とするため壬水を第一守護神。壬水は調候としての役目もなす。次に疏土の用として甲木をとる。土用の月のため埋金の恐れがあるので、土多ければ甲木を先にする。この月は壬水が水庫に会うので甲木の価値は高い。〈壬水は陶洗と調候の両用、厚土を制する甲木を取り、水多ければ戊土を取る〉"},"巳":{"zoukan":"壬・癸・庚","text":"丙火の炎烈を特に嫌うので壬水の陶洗を最も喜び第一守護神とする。壬水を緊急の用とするが代わりに癸水を用いることができる。水弱のため壬癸共にあるも用とできる。次に水源の庚金を補佐とする。三夏の辛金は火強を特に忌む。〈壬水の陶洗が用、庚金を輔けとし、丙が透れば癸水を併用〉"},"午":{"zoukan":"壬・己・癸","text":"丁火が当令し辛金は己を失う。旺火を押さえ辛金を陶洗する壬水を第一守護神とする。弱金を助け丁火の七殺を洩らす己土を補佐にする（己土は病に対する薬）。火旺のため癸水も用とする。また水弱であれば水源の庚金も用とする。〈解炎に癸水、壬水は秀気、更に丑土を見れば生気洗剌、丑がなければ己土で代用〉"},"未":{"zoukan":"壬・庚・甲","text":"己土が司令するので、補助の大過となり金光は奪われる。故に発功を待つために壬水を第一守護神とし、水源の庚金を次の用とする。更に燥土は辛金を困苦させるので、土用を押さえる甲木を補佐にとる。〈壬水は余熱解消の用、補強に庚金、土気が出干すれば甲木の制を取る〉"},"申":{"zoukan":"壬・甲","text":"陶洗を目的として壬水を第一守護神とする。金の旺地のため壬水は洩金の役目も果たす。辛金は旺地にあっても丁火の制を用いることはできない。また戊土の制を嫌うため甲木を次の用とする。甲木が透れば戊土を押さえ壬水を守り辛金を発功させることができる。〈壬の生地にして珠玉輝く、多壬に丁を取り、癸水を嫌う〉"},"酉":{"zoukan":"壬・甲","text":"旺金は洩気を求める。壬水を第一守護神とし洩金・陶洗の両用とする。酉月の辛金は月支に当令し身が清令のため壬水の透干は金白水清となる。守護神として壬水のみで充分だが、身が汚れる土を嫌うため甲木を補佐にとることもできる。〈当令の時、壬水の陶洗によって光彩を放つ。金局がなれば丁火をとる〉"},"戌":{"zoukan":"壬・甲","text":"母（土）が旺じ子（金）は相となる。陶洗を第一とし壬水を守護神とする。旺母は忌神となるため甲木を次の用にとる。土用の月のため、戌月の甲木は申月・酉月に比べ価値が高い。〈土気を排除するには甲木、壬水がなれば珠玉光らず火土を病とする〉"},"亥":{"zoukan":"壬・丙","text":"辛金の性は暖冷に関係なく輝光第一である。そのため陶洗は必要なものである。故に壬水を第一守護神とする。次に寒気強まり解凍を求め丙火を守護神とする。〈水多見は短命、防水に土を取り、除寒には丁火、壬がなければ秀気なし〉"},"子":{"zoukan":"丙・壬","text":"水の旺地に入り辛金は凍結し光を発することができない。故に丙火による解凍を必要とし第一守護神とする。丙火は弱く辛金を傷めることは少ない。解凍をした後、輝光を発する用に壬水を求める。また丙火を生じ壬水を動かす甲木を補佐することができる。〈解凍に丙が先、丙なければ丁、防水に戊土をとり、壬は清秀の気、三者斉透は貴〉"},"丑":{"zoukan":"丙・壬","text":"暖を与え凍土を解かす丙火を第一守護神とする。次に壬水を陶洗の用として取用する。凍土に会うため丙火の必要性は子月より大である。甲木を補佐にしても良い。〈丁火は解凍の用、壬は清秀の気、両者並透を貴とするも密接を嫌う〉"}}};
+
+/* 忌神データ: 陰干・陽干の守護神と忌神 一覧表（教材写真）より抽出。null=条件により異なる（要個別判断） */
+window.KIJIN_DATA = {"乙":{"丑":["癸","壬","庚","辛"],"子":["癸","壬","庚","辛"],"亥":["癸","壬","庚","辛"],"戌":["戊","己"],"酉":["庚","辛"],"申":["庚","辛"],"未":["戊","己"],"午":["戊","己"],"巳":["戊","己"],"辰":["庚","辛","戊","己"],"卯":["庚","辛"],"寅":["庚","辛"]},"丁":{"丑":["癸"],"子":["癸"],"亥":["癸"],"戌":["戊","癸"],"酉":["癸"],"申":["癸"],"未":["丙","癸"],"午":["丙","戊"],"巳":["丙","丁"],"辰":["癸","壬","戊","己"],"卯":["癸","壬"],"寅":["癸","壬"]},"己":{"丑":["壬","癸"],"子":["壬","癸","庚","辛"],"亥":["壬","癸","庚","辛"],"戌":["庚","辛"],"酉":["庚","辛"],"申":["庚","辛"],"未":["戊","己"],"午":["戊","己"],"巳":["戊","己"],"辰":["戊","己"],"卯":["庚","辛"],"寅":["庚","辛"]},"辛":{"丑":["戊","己"],"子":["戊","己"],"亥":["戊","己"],"戌":["戊","己"],"酉":["戊","己"],"申":["戊","己","丁"],"未":["丁"],"午":["丁"],"巳":["丁"],"辰":["戊","丁"],"卯":["丁","戊"],"寅":["丁","戊"]},"癸":{"丑":["壬","癸"],"子":["壬","癸"],"亥":["壬","癸"],"戌":["戊","己"],"酉":["戊","己"],"申":["戊","己"],"未":["丙","丁","戊","己"],"午":["丙","丁"],"巳":["丙","丁"],"辰":["戊","己"],"卯":["戊","己"],"寅":["戊","己"]},"甲":{"丑":["壬","癸"],"子":["壬","癸"],"亥":["壬","癸"],"戌":["甲","乙"],"酉":["壬","癸"],"申":["壬","癸"],"未":["戊","己"],"午":["戊","己"],"巳":["戊","己"],"辰":["甲","乙"],"卯":["甲","乙"],"寅":["庚","辛"]},"丙":{"丑":["戊","己"],"子":null,"亥":null,"戌":["戊","己","庚","辛"],"酉":["戊","己","庚","辛"],"申":["戊","己"],"未":["戊","己"],"午":["戊","己"],"巳":["戊","己","丙","甲"],"辰":["戊","己","丙","甲"],"卯":["戊","己"],"寅":["戊","己","甲","乙"]},"戊":{"丑":["壬","癸"],"子":["壬","癸"],"亥":["壬","癸","庚","辛"],"戌":["庚","辛"],"酉":["庚","辛"],"申":["庚","辛"],"未":["戊","己"],"午":["戊","己"],"巳":["戊","己"],"辰":["戊","己","庚","辛"],"卯":["庚","辛"],"寅":["庚","辛"]},"庚":{"丑":["癸","壬"],"子":["癸","壬"],"亥":["癸","壬"],"戌":["戊","己"],"酉":["癸"],"申":["癸"],"未":["戊","己","癸"],"午":["戊","己"],"巳":["戊","己"],"辰":["戊","己","癸","壬"],"卯":["癸"],"寅":["癸","壬"]},"壬":{"丑":["壬"],"子":["壬"],"亥":["壬","癸"],"戌":["庚","辛"],"酉":["戊","己"],"申":["庚","辛"],"未":["戊","己"],"午":["丙","丁"],"巳":["戊","丙","丁"],"辰":["戊","己"],"卯":["甲","乙"],"寅":["甲","乙"]}};
+
+/* ==================== 算命学 命式計算エンジン ====================
+   検証済み: 明治6年(1873)〜令和30年(2048)の年別早見表 176年分・2112データ点との
+   突合で日柱計算式の不一致ゼロを確認。十二大従星は長生位置と回転方向の数式から
+   算出し、教材付録表の118/120セルと一致（残り2セルは教材側の転記ゆれと判断し、
+   数式による整合値を採用）。
+*/
+(function(){
+
+const STEMS = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+const BRANCHES = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const STEM_YOMI = ["こう(きのえ)","おつ(きのと)","へい(ひのえ)","てい(ひのと)","ぼ(つちのえ)","き(つちのと)","こう(かのえ)","しん(かのと)","じん(みずのえ)","き(みずのと)"];
+const BRANCH_YOMI = ["ね","うし","とら","う","たつ","み","うま","ひつじ","さる","とり","いぬ","い"];
+const STEM_ELEMENT = ["木","木","火","火","土","土","金","金","水","水"];
+const STEM_YINYANG = ["陽","陰","陽","陰","陽","陰","陽","陰","陽","陰"];
+const BRANCH_ELEMENT = ["水","土","木","木","土","火","火","土","金","金","土","水"];
+const CALENDAR_START_YEAR = window.CALENDAR_START_YEAR;
+const CALENDAR_END_YEAR = window.CALENDAR_END_YEAR;
+
+// ==================== 異常干支・日座中殺・日居中殺 ====================
+// 通常異常干支：6種（2026-08-18 ユーザー提供「決定版」リストに準拠。旧データの丙子を削除、戊戌・辛亥を追加）
+const IJOU_TSUJOU = [10, 11, 34, 36, 47, 53]; // 甲戌・乙亥・戊戌・庚子・辛亥・丁巳
+// 暗合異常干支：7種（2026-08-18 決定版に準拠。旧データの壬戌を削除）
+const IJOU_ANGOU = [17, 18, 22, 23, 24, 29, 35]; // 辛巳・壬午・丙戌・丁亥・戊子・癸巳・己亥
+// 日座中殺：日柱が甲戌・乙亥の場合（甲子旬の天中殺=戌亥と、地支そのものが一致）
+const NIZA_CHUSATSU = [10, 11];
+// 日居中殺：日柱が甲辰・乙巳の場合
+const NIKYO_CHUSATSU = [40, 41];
+
+function getIjouLabels(ganzhiIdx, isDayPillar){
+  const labels = [];
+  if (IJOU_TSUJOU.includes(ganzhiIdx)) labels.push('通常');
+  if (IJOU_ANGOU.includes(ganzhiIdx)) labels.push('暗合');
+  if (isDayPillar && NIZA_CHUSATSU.includes(ganzhiIdx)) labels.push('日座');
+  if (isDayPillar && NIKYO_CHUSATSU.includes(ganzhiIdx)) labels.push('日居');
+  return labels;
+}
+
+// ==================== 位相法（干合） ====================
+// 干合５種：甲己合土・乙庚合金・丙辛合水・丁壬合木・戊癸合火
+// 2026-08-19 ユーザー確認：日干・月干・年干の全組み合わせ（日×月／月×年／日×年）を判定。
+//   「合」の成立有無のみを見る（「化」＝変化五行の実現条件までは判定しない）。
+//   将来的に位相法本体もこの技法データと同じ行で表記する予定のため、関数名・行クラスは isohou で統一。
+const KANGOU_PAIRS = {
+  '甲': ['己', '土'], '己': ['甲', '土'],
+  '乙': ['庚', '金'], '庚': ['乙', '金'],
+  '丙': ['辛', '水'], '辛': ['丙', '水'],
+  '丁': ['壬', '木'], '壬': ['丁', '木'],
+  '戊': ['癸', '火'], '癸': ['戊', '火'],
+};
+function getKangouElement(stemA, stemB){
+  const pair = KANGOU_PAIRS[stemA];
+  if (pair && pair[0] === stemB) return pair[1];
+  return null;
+}
+// 命式（年干・月干・日干）の干合を全ペアで判定し、各柱ごとに相手柱と変化五行のリストを返す
+function getKangouByPillar(yearStem, monthStem, dayStem){
+  const stems = { '年': yearStem, '月': monthStem, '日': dayStem };
+  const pillarOrder = ['年','月','日'];
+  const result = { '年': [], '月': [], '日': [] };
+  for (let i=0; i<pillarOrder.length; i++){
+    for (let j=i+1; j<pillarOrder.length; j++){
+      const a = pillarOrder[i], b = pillarOrder[j];
+      const el = getKangouElement(stems[a], stems[b]);
+      if (el){
+        result[a].push({ partner: b, element: el });
+        result[b].push({ partner: a, element: el });
+      }
+    }
+  }
+  return result;
+}
+
+// ==================== 位相法（地支の技法：支合・三合・半会・大半会・方三位・対沖・天剋地冲・刑・破・害） ====================
+// 2026-08-19 ユーザー提供の教材写真（カラー図_局法_格法_位相法）より転記。
+// 表記方針は干合と統一：「技法名（日・月）」のように発生箇所を示す。
+// 支合は教材の図にある五行変化をそのまま表記（卯戌・辰酉・午未は複数候補のため「/」区切りで併記）。
+const SHIGOU_DATA = [
+  { pair: ['子','丑'], elements: ['水'] },
+  { pair: ['寅','亥'], elements: ['木'] },
+  { pair: ['巳','申'], elements: ['金'] },
+  { pair: ['卯','戌'], elements: ['木','火','土'] },
+  { pair: ['辰','酉'], elements: ['金','土'] },
+  { pair: ['午','未'], elements: ['火','土'] },
+];
+const TAISHOU_PAIRS = [['子','午'],['丑','未'],['寅','申'],['卯','酉'],['辰','戌'],['巳','亥']];
+const HA_PAIRS = [['丑','辰'],['未','戌'],['亥','寅'],['申','巳'],['卯','午'],['子','酉']]; // 四庫同志／四勢同志／四正同志
+const GAI_PAIRS = [['辰','卯'],['巳','寅'],['午','丑'],['未','子'],['申','亥'],['酉','戌']];
+const KEI_SEIKI_PAIRS = [['寅','巳'],['巳','申'],['申','寅']]; // 三刑・生貴刑（寅巳申の相互関係）
+const KEI_KOKI_PAIRS = [['丑','戌'],['戌','未'],['未','丑']]; // 三刑・庫気刑（丑戌未の相互関係）
+const KEI_OUKI_PAIRS = [['子','卯']]; // 三刑・旺気刑
+const JIKEI_BRANCHES = ['亥','酉','午','辰']; // 自刑：同じ支が2つ揃うと成立
+const SANGOU_TRIADS = [
+  { branches: ['亥','卯','未'], name: '木局' },
+  { branches: ['寅','午','戌'], name: '火局' },
+  { branches: ['申','子','辰'], name: '水局' },
+  { branches: ['巳','酉','丑'], name: '金局' },
+]; // 三合・半会・大半会で共通利用（2026-08-19 ユーザー指定：局名付きで表記）
+const HOUSANI_TRIADS = [['亥','子','丑'],['寅','卯','辰'],['巳','午','未'],['申','酉','戌']]; // 方三位
+// 天干の相剋（このアプリの局法データと同じ並び：水剋火・火剋金・金剋木・木剋土・土剋水）
+const STEM_KOKU_NEXT = { '水':'火', '火':'金', '金':'木', '木':'土', '土':'水' };
+// 相生（木生火・火生土・土生金・金生水・水生木）
+const GOGYOU_SEI_NEXT = { '木':'火', '火':'土', '土':'金', '金':'水', '水':'木' };
+// 相剋の逆引き（Xを剋するものは何か）／相生の逆引き（Xを生じるものは何か）
+const STEM_KOKU_PREV = {};
+Object.keys(STEM_KOKU_NEXT).forEach(k => { STEM_KOKU_PREV[STEM_KOKU_NEXT[k]] = k; });
+const GOGYOU_SEI_PREV = {};
+Object.keys(GOGYOU_SEI_NEXT).forEach(k => { GOGYOU_SEI_PREV[GOGYOU_SEI_NEXT[k]] = k; });
+
+// ==================== 完全格（従化五格） ====================
+// 2026-08-19 ユーザー指定：判定対象は「日干以外の5つ＝年干・月干・年支・月支・日支」の五行（蔵干は使わず地支そのものの五行）。
+// 5つ全てが条件に合致すれば純粋格、4つだけ合致し1つだけ外れる場合は「一点破格」として別途表記する。
+// 干合・支合等で「化けた」場合の下格判定は今回のスコープ外（地支側の変化ロジックが未実装のため）。
+const JUUKA_GOKAKU_DEFS = [
+  { name: '従生格', getAllowed: (de) => [GOGYOU_SEI_NEXT[de]] },
+  { name: '従財格', getAllowed: (de) => [STEM_KOKU_NEXT[de]] },
+  { name: '従生財格', getAllowed: (de) => [GOGYOU_SEI_NEXT[de], STEM_KOKU_NEXT[de]] },
+  { name: '従官格', getAllowed: (de) => [STEM_KOKU_PREV[de]] },
+  { name: '殺印相生格', getAllowed: (de) => [STEM_KOKU_PREV[de], GOGYOU_SEI_PREV[de]] },
+];
+// 命式（日干＋日干以外5つの五行＋各要素がどの柱かのラベル）から、従化五格・一点破格を判定する
+function getJuukaGokakuEntries(dayElement, others){
+  // others: [{label:'年干', el:'木'}, ...] の5要素配列
+  const completeMatches = [];
+  const brokenMatches = [];
+  JUUKA_GOKAKU_DEFS.forEach(({name, getAllowed}) => {
+    const allowed = getAllowed(dayElement);
+    // 単一要素パターン（従生格・従財格・従官格）は、混合パターン（従生財格・殺印相生格）と重複させないよう、
+    // allowedの要素数が1のものは「全てその1種類のみ」を、要素数が2のものは「両方とも登場する」ことを条件にする。
+    const matched = others.filter(o => allowed.includes(o.el));
+    const unmatched = others.filter(o => !allowed.includes(o.el));
+    if (allowed.length === 2){
+      // 2種混合パターン：両方の五行が実際に登場していないと、単一パターン側の格とみなす（重複回避）
+      const kindsPresent = new Set(matched.map(m => m.el));
+      if (kindsPresent.size < 2) return;
+    }
+    if (matched.length === 5){
+      completeMatches.push(`${name}（完全格）`);
+    } else if (matched.length === 4 && unmatched.length === 1){
+      brokenMatches.push(`${name}・一点破格（破＝${unmatched[0].label}[${unmatched[0].el}]）`);
+    }
+  });
+  // 純粋格（5つ全て一致）が1つでも成立していれば、それを優先して返す
+  // （例：4生+1財は「従生格の一点破格」ではなく、純粋な「従生財格」として扱う）
+  return completeMatches.length ? completeMatches : brokenMatches;
+}
+
+// ==================== 完全格（印綬格） ====================
+// 日干以外の5つ（年干・月干・年支・月支・日支、地支は蔵干ではなく支そのもの）がすべて
+// 日干を「生」（＝印）とするもの。日干の五行ごとに5種類あるが判定ロジックは共通。
+function getInjuGakuEntries(dayElement, others){
+  const inn = GOGYOU_SEI_PREV[dayElement];
+  const matched = others.filter(o => o.el === inn);
+  const unmatched = others.filter(o => o.el !== inn);
+  if (matched.length === 5){
+    return [`日干${dayElement}の印綬格（完全格）`];
+  } else if (matched.length === 4 && unmatched.length === 1){
+    return [`日干${dayElement}の印綬格・一点破格（破＝${unmatched[0].label}[${unmatched[0].el}]）`];
+  }
+  return [];
+}
+
+// ==================== 完全格（一気格） ====================
+// 宿命6文字（年干・月干・日干・年支・月支・日支）がすべて同じ五行になるもの。
+// 干合によって「化けた」ことで揃う場合も成立するが、変化が多い分下格となる
+// （2026-08-19時点：地支側の半会・支合による変化判定は未対応、干合＝天干側のみ対応）。
+// 2026-08-20 カラー図（算命学奥義書p.101前後）により追記：一気格の6つのうち5つが同じ五行で
+// 残り1つだけ異なる五行が混ざる場合、それが「印星」（一気格の五行を生じる五行）なら一気成因格、
+// 「洩星」（一気格の五行が生じる五行）なら一気洩気格となり、いずれも破格ではなく完全格のまま。
+// それ以外（財星・官星にあたる五行が1つ混ざる場合）は従来通り一点破格（下格）。
+// さらに、6つのうち4つが同じ五行＋印星（または洩星）1つ＋それ以外1つ、という一段階崩れた構造は
+// それぞれ「一気成因格・一点破格」「一気洩気格・一点破格」（いずれも下格）となる。
+const IKKI_NAMES = {
+  '木': '木性一気格（曲直格）', '火': '火性一気格（炎上格）', '土': '土性一気格（稼穡格）',
+  '金': '金性一気格（従革格）', '水': '水性一気格（潤下格）',
+};
+// カラー図（算命学奥義書p.101〜102前後）記載の個別名称
+const IKKI_SEIIN_NAMES = { '木': '曲直成因格', '火': '炎上成因格', '土': '稼穡成因格', '金': '従革成因格', '水': '潤下成因格' };
+const IKKI_EIKI_NAMES = { '木': '曲直洩気格', '火': '炎上洩気格', '土': '稼穡洩気格', '金': '従革洩気格', '水': '潤下洩気格' };
+function getIkkiGakuEntries(sixElements){
+  // sixElements: [{label, el}] の6要素（年干・月干・日干・年支・月支・日支）
+  const kinds = new Set(sixElements.map(s => s.el));
+  if (kinds.size === 1){
+    return [`${IKKI_NAMES[sixElements[0].el]}（完全格）`];
+  }
+  const counts = {};
+  sixElements.forEach(s => { counts[s.el] = (counts[s.el] || 0) + 1; });
+  const majorEl = Object.keys(counts).find(el => counts[el] >= 4);
+  if (!majorEl) return [];
+  const inseiEl = WUXING_PREV[majorEl]; // 印星の五行（一気格の五行を生じる五行）
+  const eikiEl = WUXING_NEXT[majorEl];  // 洩星の五行（一気格の五行が生じる五行）
+  const others = sixElements.filter(s => s.el !== majorEl);
+
+  if (counts[majorEl] === 5){
+    const breakOne = others[0];
+    if (breakOne.el === inseiEl){
+      return [`${IKKI_NAMES[majorEl]}・${IKKI_SEIIN_NAMES[majorEl]}（${breakOne.label}に${breakOne.el}が混在／完全格）`];
+    }
+    if (breakOne.el === eikiEl){
+      return [`${IKKI_NAMES[majorEl]}・${IKKI_EIKI_NAMES[majorEl]}（${breakOne.label}に${breakOne.el}が混在／完全格）`];
+    }
+    return [`${IKKI_NAMES[majorEl]}・一点破格（破＝${breakOne.label}[${breakOne.el}]）`];
+  }
+
+  if (counts[majorEl] === 4){
+    const inseiHits = others.filter(s => s.el === inseiEl);
+    const eikiHits = others.filter(s => s.el === eikiEl);
+    // 4つ同じ五行＋印星1つ＋残り1つ（残りは洩星でも財官星でも可）→ 一気成因格の一点破格
+    // 印星が2つとも揃う場合は「残り」が無いため対象外（別枠の扱いは今回未対応）
+    if (inseiHits.length === 1){
+      const b = others.find(s => s.el !== inseiEl);
+      if (b){
+        return [`${IKKI_NAMES[majorEl]}・${IKKI_SEIIN_NAMES[majorEl]}・一点破格（破＝${b.label}[${b.el}]）`];
+      }
+    }
+    // 4つ同じ五行＋洩星1つ＋残り1つ（印星は無い場合のみ。印星があれば上の成因格側を優先）→ 一気洩気格の一点破格
+    if (eikiHits.length === 1){
+      const b = others.find(s => s.el !== eikiEl);
+      if (b){
+        return [`${IKKI_NAMES[majorEl]}・${IKKI_EIKI_NAMES[majorEl]}・一点破格（破＝${b.label}[${b.el}]）`];
+      }
+    }
+    return [];
+  }
+
+  return [];
+}
+
+// ==================== 完全格（二象格） ====================
+// 2026-08-20 カラー図（算命学奥義書）＋ユーザー確認に基づく：宿命6文字（年干・月干・日干・
+// 年支・月支・日支）が、ちょうど2種類の五行のみで、かつ3:3の比率で構成されるもの。
+// 4:2など3:3以外の比率は対象外（ユーザー確認済み）。五行の組み合わせは10通り。
+const GOGYOU_ORDER = ['木', '火', '土', '金', '水'];
+function getNishouGakuEntries(sixElements){
+  const counts = {};
+  sixElements.forEach(s => { counts[s.el] = (counts[s.el] || 0) + 1; });
+  const kinds = Object.keys(counts);
+  if (kinds.length !== 2) return [];
+  if (counts[kinds[0]] !== 3 || counts[kinds[1]] !== 3) return [];
+  const ordered = GOGYOU_ORDER.filter(el => kinds.includes(el));
+  return [`${ordered[0]}性と${ordered[1]}性の二象格（完全格）`];
+}
+// label が「年干」「月干」「日干」のものだけ干合変化の対象とし（支は対象外）、
+// 従化五格・印綬格（5要素）にも一気格（6要素）にも共通で使える。
+const KANGOU_LABEL_TO_PILLAR = { '年干': '年', '月干': '月', '日干': '日' };
+function applyKangouToElements(yearStem, monthStem, dayStem, elements){
+  const kangou = getKangouByPillar(yearStem, monthStem, dayStem);
+  return elements.map(item => {
+    const pillarKey = KANGOU_LABEL_TO_PILLAR[item.label];
+    if (!pillarKey) return item; // 支はそのまま
+    const changed = [...new Set(kangou[pillarKey].filter(h => h.element !== item.el).map(h => h.element))];
+    return changed.length ? { label: item.label, el: changed[0] } : item;
+  });
+}
+
+const PILLAR_COMBOS = [['日','月'],['月','年'],['日','年']];
+
+// 2支ペア系の技法（対沖・破・害・刑）を年月日の全組み合わせで判定
+function getBranchPairEntries(branchByKey, pairList, label){
+  const entries = [];
+  PILLAR_COMBOS.forEach(([a,b]) => {
+    const ba = branchByKey[a], bb = branchByKey[b];
+    const hit = pairList.some(([x,y]) => (x===ba && y===bb) || (x===bb && y===ba));
+    if (hit) entries.push(`${label}（${a}・${b}）`);
+  });
+  return entries;
+}
+// 支合：教材の五行変化（複数候補は/区切り）を付けて判定
+function getShigouEntries(branchByKey){
+  const entries = [];
+  PILLAR_COMBOS.forEach(([a,b]) => {
+    const ba = branchByKey[a], bb = branchByKey[b];
+    const hit = SHIGOU_DATA.find(({pair:[x,y]}) => (x===ba && y===bb) || (x===bb && y===ba));
+    if (hit) entries.push(`支合[${hit.elements.join('/')}]（${a}・${b}）`);
+  });
+  return entries;
+}
+// 対沖／天剋地冲／納音：地支が対沖の関係にあるとき、天干が同一なら「納音」、天干が相剋なら「天剋地冲」、
+// どちらでもなければ「対沖」と表記（2026-08-19 ユーザー指定：納音を追加）
+function getTaishouEntries(branchByKey, stemByKey){
+  const entries = [];
+  PILLAR_COMBOS.forEach(([a,b]) => {
+    const ba = branchByKey[a], bb = branchByKey[b];
+    const isTaishou = TAISHOU_PAIRS.some(([x,y]) => (x===ba && y===bb) || (x===bb && y===ba));
+    if (!isTaishou) return;
+    const stemA = stemByKey[a], stemB = stemByKey[b];
+    if (stemA === stemB){
+      entries.push(`納音（${a}・${b}）`);
+      return;
+    }
+    const elA = STEM_ELEMENT[STEMS.indexOf(stemA)];
+    const elB = STEM_ELEMENT[STEMS.indexOf(stemB)];
+    const isSoukoku = STEM_KOKU_NEXT[elA] === elB || STEM_KOKU_NEXT[elB] === elA;
+    entries.push(isSoukoku ? `天剋地冲（${a}・${b}）` : `対沖（${a}・${b}）`);
+  });
+  return entries;
+}
+// 律音：天干・地支ともに完全に同一（干支そのものが一致）（2026-08-19 ユーザー指定）
+function getRitsuinEntries(branchByKey, stemByKey){
+  const entries = [];
+  PILLAR_COMBOS.forEach(([a,b]) => {
+    if (stemByKey[a] === stemByKey[b] && branchByKey[a] === branchByKey[b]){
+      entries.push(`律音（${a}・${b}）`);
+    }
+  });
+  return entries;
+}
+// 自刑（同じ支が2つ揃う）を判定
+function getJikeiEntries(branchByKey){
+  const entries = [];
+  PILLAR_COMBOS.forEach(([a,b]) => {
+    if (branchByKey[a] === branchByKey[b] && JIKEI_BRANCHES.includes(branchByKey[a])){
+      entries.push(`自刑（${a}・${b}）`);
+    }
+  });
+  return entries;
+}
+// 3支フルセット系の技法（方三位など）を判定。年月日の3支が揃って一致した場合のみ成立
+function getBranchTripleEntries(branchByKey, tripleList, label){
+  const branches = [branchByKey['日'], branchByKey['月'], branchByKey['年']];
+  const uniqueBranches = [...new Set(branches)];
+  if (uniqueBranches.length < 3) return [];
+  const matched = tripleList.some(set => set.every(b => uniqueBranches.includes(b)));
+  return matched ? [`${label}（日・月・年）`] : [];
+}
+// 三合・半会・大半会：3支フルセットのうち3つ揃えば「三合◯局」、2つだけなら「半会（◯）」
+// （2026-08-19 ユーザー指定）。さらに、半会が成立した2柱の天干が同一なら「大半会（◯）」に格上げする。
+// 三合が成立している（3支揃っている）場合でも、その中の2柱の天干が一致していれば大半会は別途併記する
+// （半会側は三合内に埋没するため、天干が一致しない場合の重複表記はしない）。
+function getSangouHankaiEntries(branchByKey, stemByKey){
+  const branches = [branchByKey['日'], branchByKey['月'], branchByKey['年']];
+  const uniqueBranches = [...new Set(branches)];
+  const entries = [];
+  SANGOU_TRIADS.forEach(({branches: set, name}) => {
+    const element = name.replace('局', ''); // '火局' -> '火'
+    const presentCount = set.filter(b => uniqueBranches.includes(b)).length;
+    if (presentCount === 3){
+      entries.push(`三合${name}（日・月・年）`);
+    }
+    PILLAR_COMBOS.forEach(([a,b]) => {
+      const ba = branchByKey[a], bb = branchByKey[b];
+      if (ba === bb || !set.includes(ba) || !set.includes(bb)) return;
+      const isSameStem = stemByKey[a] === stemByKey[b];
+      if (isSameStem){
+        entries.push(`大半会[${element}]（${a}・${b}）`);
+      } else if (presentCount === 2){
+        entries.push(`半会[${element}]（${a}・${b}）`);
+      }
+    });
+  });
+  return entries;
+}
+// 命式（年支・月支・日支、年干・月干・日干）から位相法（地支）の該当箇所をすべて集めて返す
+function getIsohouBranchEntries(yearBranch, monthBranch, dayBranch, yearStem, monthStem, dayStem){
+  const branchByKey = { '年': yearBranch, '月': monthBranch, '日': dayBranch };
+  const stemByKey = { '年': yearStem, '月': monthStem, '日': dayStem };
+  return [
+    ...getShigouEntries(branchByKey),
+    ...getSangouHankaiEntries(branchByKey, stemByKey),
+    ...getBranchTripleEntries(branchByKey, HOUSANI_TRIADS, '方三位'),
+    ...getTaishouEntries(branchByKey, stemByKey),
+    ...getRitsuinEntries(branchByKey, stemByKey),
+    ...getBranchPairEntries(branchByKey, KEI_SEIKI_PAIRS, '刑（生貴刑）'),
+    ...getBranchPairEntries(branchByKey, KEI_KOKI_PAIRS, '刑（庫気刑）'),
+    ...getBranchPairEntries(branchByKey, KEI_OUKI_PAIRS, '刑（旺気刑）'),
+    ...getJikeiEntries(branchByKey),
+    ...getBranchPairEntries(branchByKey, HA_PAIRS, '破'),
+    ...getBranchPairEntries(branchByKey, GAI_PAIRS, '害'),
+  ];
+}
+
+// ==================== 八格法（部分格） ====================
+// 2026-08-19 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.105〜109に基づく。
+// 2026-08-20 修正：主星＝④月支蔵干の十大主星（陽占人体図④の位置）。旧実装では②月干を主星として
+// いたが誤りだったため修正（ユーザー確認済み）。資料の「他に◯◯がない」は主星自身の位置を除いた
+// 残り4箇所（年干・月干・年支蔵干・日支蔵干）を指すものとして実装。
+// fiveStars の並び：[①年干, ②月干, ③年支蔵干, ④月支蔵干(=主星), ⑤日支蔵干]
+function starCount(fiveStars, name){ return fiveStars.filter(s => s === name).length; }
+function anyStarPresent(fiveStars, names){ return fiveStars.some(s => names.includes(s)); }
+// 月支がらみの位相法（冲・天剋地冲・納音・刑・自刑・害・支合・半会・大半会）が1つもないか判定
+function isMonthBranchClean(isohouEntries){
+  const prefixes = ['対沖', '天剋地冲', '納音', '刑（', '自刑', '害', '支合', '半会', '大半会'];
+  return !isohouEntries.some(e => e.includes('月') && prefixes.some(p => e.startsWith(p)));
+}
+function getHachikakuEntries(fiveStars, dayHasNiza, seimeiMonth, isohouEntries, dayHasKangou){
+  const shusei = fiveStars[3]; // ④月支蔵干の十大主星＝主星
+  const monthClean = isMonthBranchClean(isohouEntries);
+  const entries = [];
+
+  // 正官格：主星＝牽牛星。他に車騎・牽牛・貫索・石門・鳳閣・調舒がなく、日座・生月天中殺もなく、月支が冲刑害支合半会に遭わない
+  if (shusei === '牽牛星' && monthClean && !dayHasNiza && !seimeiMonth
+      && starCount(fiveStars, '車騎星') === 0
+      && starCount(fiveStars, '牽牛星') === 1
+      && !anyStarPresent(fiveStars, ['貫索星', '石門星', '鳳閣星', '調舒星'])){
+    entries.push('正官格');
+  }
+
+  // 偏官格・七殺格・元殺格：主星＝車騎星。鳳閣・調舒があれば偏官格、なければ七殺格。
+  // 七殺格でさらに日支蔵干（⑤）も車騎星なら元殺格を追加。
+  if (shusei === '車騎星' && monthClean && !seimeiMonth){
+    if (anyStarPresent(fiveStars, ['鳳閣星', '調舒星'])){
+      entries.push('偏官格');
+    } else {
+      entries.push('七殺格');
+      if (fiveStars[4] === '車騎星') entries.push('元殺格');
+    }
+  }
+
+  // 正財格：主星＝司禄星。他に禄存・貫索・石門がない。
+  if (shusei === '司禄星' && monthClean && !seimeiMonth
+      && !anyStarPresent(fiveStars, ['禄存星', '貫索星', '石門星'])){
+    entries.push('正財格');
+  }
+
+  // 偏財格：主星＝禄存星。他に貫索・石門がない。
+  if (shusei === '禄存星' && monthClean && !seimeiMonth
+      && !anyStarPresent(fiveStars, ['貫索星', '石門星'])){
+    entries.push('偏財格');
+  }
+
+  // 正印格：主星＝玉堂星。日干の干合がなく、天干（年干・月干）に龍高・玉堂がなく、禄存・司禄もない。
+  if (shusei === '玉堂星' && monthClean && !seimeiMonth && !dayHasKangou
+      && fiveStars[0] !== '龍高星' && fiveStars[0] !== '玉堂星'
+      && fiveStars[1] !== '龍高星' && fiveStars[1] !== '玉堂星'
+      && !anyStarPresent(fiveStars, ['禄存星', '司禄星'])){
+    entries.push('正印格');
+  }
+
+  // 偏印格：主星＝龍高星。禄存・司禄がない。
+  if (shusei === '龍高星' && monthClean && !seimeiMonth
+      && !anyStarPresent(fiveStars, ['禄存星', '司禄星'])){
+    entries.push('偏印格');
+  }
+
+  // 食神格：主星＝鳳閣星（3つ以上あると成立しない）。
+  if (shusei === '鳳閣星' && monthClean && !seimeiMonth
+      && starCount(fiveStars, '鳳閣星') < 3){
+    entries.push('食神格');
+  }
+
+  // 傷官格：主星＝調舒星。他に玉堂・龍高がない。
+  if (shusei === '調舒星' && monthClean && !seimeiMonth
+      && !anyStarPresent(fiveStars, ['玉堂星', '龍高星'])){
+    entries.push('傷官格');
+  }
+
+  // 破官格：鳳閣・禄存・司禄・牽牛・玉堂が一切なく、宿命に害と破があり、支合・半会がない
+  if (!anyStarPresent(fiveStars, ['鳳閣星', '禄存星', '司禄星', '牽牛星', '玉堂星'])){
+    const hasGai = isohouEntries.some(e => e.startsWith('害'));
+    const hasHa = isohouEntries.some(e => e.startsWith('破'));
+    const hasShigou = isohouEntries.some(e => e.startsWith('支合'));
+    const hasHankai = isohouEntries.some(e => e.startsWith('半会') || e.startsWith('大半会'));
+    if (hasGai && hasHa && !hasShigou && !hasHankai){
+      entries.push('破官格');
+    }
+  }
+
+  return entries;
+}
+
+
+// 子丑寅卯辰巳午未申酉戌亥の各支について、節入りからの経過日数(0始まり)で段階が変わる。
+const ZOUKAN_SEGMENTS = {
+  '子': [[20,'癸','本元']],
+  '丑': [[9,'癸','初元'],[12,'辛','中元'],[20,'己','本元']],
+  '寅': [[7,'戊','初元'],[14,'丙','中元'],[20,'甲','本元']],
+  '卯': [[20,'乙','本元']],
+  '辰': [[9,'乙','初元'],[12,'癸','中元'],[20,'戊','本元']],
+  '巳': [[5,'戊','初元'],[14,'庚','中元'],[20,'丙','本元']],
+  '午': [[19,'己','中元'],[20,'丁','本元']],
+  '未': [[9,'丁','初元'],[12,'乙','中元'],[20,'己','本元']],
+  '申': [[10,'戊','初元'],[13,'壬','中元'],[20,'庚','本元']],
+  '酉': [[20,'辛','本元']],
+  '戌': [[9,'辛','初元'],[12,'丁','中元'],[20,'戊','本元']],
+  '亥': [[12,'甲','中元'],[20,'壬','本元']],
+};
+function getZoukan(branchChar, dayIndex0based){
+  const d = Math.min(dayIndex0based, 20);
+  const segs = ZOUKAN_SEGMENTS[branchChar];
+  let selectedIdx = segs.length - 1;
+  for (let i=0;i<segs.length;i++){
+    if (d <= segs[i][0]){ selectedIdx = i; break; }
+  }
+  const selectedStem = segs[selectedIdx][1];
+  const selectedLabel = segs[selectedIdx][2];
+  // 参照用：その支が実際に持つ段（初元・中元・本元のうち存在するもの）のうち、
+  // 採用した段だけ空欄（上へ移動済み）にした一覧
+  const slots = segs.map((seg, idx)=>{
+    if (idx === selectedIdx) return { label: seg[2], stem: null, blank: true };
+    return { label: seg[2], stem: seg[1], blank: false };
+  });
+  return { stem: selectedStem, label: selectedLabel, slots };
+}
+
+// 十大主星表：行=星名, 列=日干(甲..癸)、値=表出十干（教材『奥義書』巻末付録より転記）
+const JUUDAI_SHUSEI_TABLE = {
+  '貫索星': ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],
+  '石門星': ['乙','甲','丁','丙','己','戊','辛','庚','癸','壬'],
+  '鳳閣星': ['丙','丁','戊','己','庚','辛','壬','癸','甲','乙'],
+  '調舒星': ['丁','丙','己','戊','辛','庚','癸','壬','乙','甲'],
+  '禄存星': ['戊','己','庚','辛','壬','癸','甲','乙','丙','丁'],
+  '司禄星': ['己','戊','辛','庚','癸','壬','乙','甲','丁','丙'],
+  '車騎星': ['庚','辛','壬','癸','甲','乙','丙','丁','戊','己'],
+  '牽牛星': ['辛','庚','癸','壬','乙','甲','丁','丙','己','戊'],
+  '龍高星': ['壬','癸','甲','乙','丙','丁','戊','己','庚','辛'],
+  '玉堂星': ['癸','壬','乙','甲','丁','丙','己','戊','辛','庚'],
+};
+const STAR_ELEMENT = {
+  '貫索星':'木','石門星':'木','鳳閣星':'火','調舒星':'火','禄存星':'土',
+  '司禄星':'土','車騎星':'金','牽牛星':'金','龍高星':'水','玉堂星':'水'
+};
+
+const STAR_FROM_STEM = Array.from({length:10}, ()=>Array(10).fill(null));
+for (const star in JUUDAI_SHUSEI_TABLE){
+  JUUDAI_SHUSEI_TABLE[star].forEach((targetStem, dayStemIdx)=>{
+    STAR_FROM_STEM[dayStemIdx][STEMS.indexOf(targetStem)] = star;
+  });
+}
+
+// ==================== 雑気財官印綬格 ====================
+// 2026-08-20 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.110に基づく。
+// 条件：月支が土旺（辰・未・戌・丑）であり、天干に財星（禄存・司禄）・官星（牽牛・車騎）・
+// 印星（玉堂・龍高）のいずれかが透干し、その根が月支の蔵干にあること。
+// ユーザー確認済みの解釈（2026-08-20訂正：奥義書本文の細川護煕氏の実例に基づく）：
+//   ・「天干に透干」は月干のみが対象（月柱内＝月干とその真下の月支の関係。年干は対象外）
+//   ・「月支の蔵干」は生年月日によらず固定の早見表（初元・中元・本元の全段）で判定
+//   ・「根がある」は五行が同じであれば陰陽が違っても可（例：天干「甲」に対し蔵干「乙」でも根とみなす）
+function getZakkiZaikanInjuGakuEntries(monthBranchChar, monthStemChar, dayStemIdx){
+  const DOOU_BRANCHES = ['辰','未','戌','丑'];
+  if (!DOOU_BRANCHES.includes(monthBranchChar)) return [];
+  const zoukanElements = ZOUKAN_SEGMENTS[monthBranchChar].map(seg => STEM_ELEMENT[STEMS.indexOf(seg[1])]);
+  const CATEGORY_BY_STAR = {
+    '禄存星': '財星', '司禄星': '財星',
+    '牽牛星': '官星', '車騎星': '官星',
+    '玉堂星': '印星', '龍高星': '印星',
+  };
+  const stemIdx = STEMS.indexOf(monthStemChar);
+  const star = STAR_FROM_STEM[dayStemIdx][stemIdx];
+  const category = CATEGORY_BY_STAR[star];
+  if (!category) return [];
+  const stemElement = STEM_ELEMENT[stemIdx];
+  if (!zoukanElements.includes(stemElement)) return [];
+  return [`雑気財官印綬格：月干＝${monthStemChar}（${category}・${star}）`];
+}
+
+// ==================== 干支特殊格（一気成生格・天干一気格・地支一気格・連珠格） ====================
+// 2026-08-20 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.113〜117に基づく。
+// 主星や蔵干を介さず、年・月・日の干支の並び方のみで判定できるためシンプルに実装。
+const IKKI_SEISEI_NAMES = {
+  '甲戌': '凡夫入城', '乙酉': '胎元', '丙申': '泥土の大権', '丁未': '非業運',
+  '戊午': '長寿運', '己巳': '貧の人貴', '庚辰': '大ごう', '辛卯': '貴', '壬寅': '大富格',
+};
+const WUXING_NEXT = { '木':'火', '火':'土', '土':'金', '金':'水', '水':'木' };
+// 五行相生の逆（前の五行＝自分を生じてくれる五行）。一気成因格・一気洩気格の判定に使用。
+const WUXING_PREV = { '火':'木', '土':'火', '金':'土', '水':'金', '木':'水' };
+function getKanshiTokushuGokakuEntries(yearP, monthP, dayP){
+  const entries = [];
+  const yStem = STEMS[yearP.stemIdx], mStem = STEMS[monthP.stemIdx], dStem = STEMS[dayP.stemIdx];
+  const yBranch = BRANCHES[yearP.branchIdx], mBranch = BRANCHES[monthP.branchIdx], dBranch = BRANCHES[dayP.branchIdx];
+
+  // 一気成生格：年・月・日の干支（天干＋地支）がすべて完全一致する宿命（全9種類の特殊名あり）
+  if (yearP.ganzhiIdx === monthP.ganzhiIdx && monthP.ganzhiIdx === dayP.ganzhiIdx){
+    const ganzhiStr = yStem + yBranch;
+    const specialName = IKKI_SEISEI_NAMES[ganzhiStr];
+    entries.push(specialName ? `一気成生格（${ganzhiStr}＝${specialName}）` : `一気成生格（${ganzhiStr}）`);
+  }
+
+  // 天干一気格：年・月・日の天干がすべて同じ十干
+  if (yStem === mStem && mStem === dStem){
+    entries.push(`天干一気格（${yStem}${mStem}${dStem}）`);
+  }
+
+  // 地支一気格：年・月・日の地支がすべて同じ十二支
+  if (yBranch === mBranch && mBranch === dBranch){
+    entries.push(`地支一気格（${yBranch}${mBranch}${dBranch}）`);
+  }
+
+  // 天干連珠格：年干→月干→日干が相生の順生ルート（五行が一方向に生じる）で繋がる
+  const yEl = STEM_ELEMENT[yearP.stemIdx], mEl = STEM_ELEMENT[monthP.stemIdx], dEl = STEM_ELEMENT[dayP.stemIdx];
+  const tenkanRenju = (WUXING_NEXT[yEl] === mEl) && (WUXING_NEXT[mEl] === dEl);
+  if (tenkanRenju) entries.push('天干連珠格');
+
+  // 地支連珠格：年支→月支→日支が十二支の順番通り（例：子→丑→寅）に並ぶ
+  const chishiRenju = ((yearP.branchIdx + 1) % 12 === monthP.branchIdx) && ((monthP.branchIdx + 1) % 12 === dayP.branchIdx);
+  if (chishiRenju) entries.push('地支連珠格');
+
+  // 天地連珠格：天干連珠格・地支連珠格が同時に成立する極めて稀な構造（四大貴格の一つ）
+  if (tenkanRenju && chishiRenju) entries.push('天地連珠格（四大貴格の一つ）');
+
+  return entries;
+}
+
+// ==================== 四位純全格（四鎮貴格・四正格・四生格）※リーチ状態の表示 ====================
+// 2026-08-20 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.111〜112に基づく。
+// 条件：地支に該当4支のうち3つが揃い、後天運（大運）であと1つが巡って4つすべてが揃うこと。
+// このアプリには時柱がなく地支は年支・月支・日支の3つしかないため、「3つ揃う」は必然的に
+// 年支・月支・日支の全部が同グループの支であることを意味する。3つ揃った時点を将棋・麻雀の
+// 「リーチ」（待ち）状態とみなし、「※格名」の表記で紹介する（大運で実際に4つ目が巡る時期が
+// あれば年齢を併記、無ければ「巡ってこない」旨を表記）。
+const SHII_JUNZEN_GROUPS = [
+  { name: '四鎮貴格', branches: ['辰','未','戌','丑'] },
+  { name: '四正格', branches: ['子','卯','午','酉'] },
+  { name: '四生格', branches: ['寅','巳','申','亥'] },
+];
+function getShiiJunzenEntries(yearBranchChar, monthBranchChar, dayBranchChar, daiunPeriods){
+  const present = [yearBranchChar, monthBranchChar, dayBranchChar];
+  const entries = [];
+  SHII_JUNZEN_GROUPS.forEach(g => {
+    const matched = g.branches.filter(b => present.includes(b));
+    if (matched.length !== 3) return;
+    const missing = g.branches.find(b => !matched.includes(b));
+    let daiunNote = '大運では巡ってきません';
+    if (daiunPeriods && daiunPeriods.length){
+      const hit = daiunPeriods.find(p => BRANCHES[p.branchIdx] === missing);
+      if (hit){
+        daiunNote = `${hit.ageStart}〜${hit.ageEnd}歳の大運で「${missing}」が巡り成立`;
+      }
+    }
+    entries.push(`※${g.name}（宿命に${matched.join('・')}が揃い、${daiunNote}）`);
+  });
+  return entries;
+}
+
+// ==================== 特殊格（実例のある命式パターン） ====================
+// 2026-08-20 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.118〜126に基づく。
+// 判定条件が数値・構造的に明確なもののみを実装（干支双連格＝2人分の命式比較が必要なため対象外、
+// 干支持旺格＝旺地対応表なし、墓殺格・夾殺禄丘格＝透干範囲の確認待ち、
+// 閉畢命式・畢命式＝条件が不明瞭なため、いずれも今回は未実装）。
+// 生処集生格は『十二大従星表』の点数データ（2026-08-20ユーザー提供）により実装。
+// 大運・年運のどちらかで巡ってくる場合を「※」付きのリーチ表記にする（六甲印徳格・壬騎三奇格）。
+function findReachAge(targetBranchChar, daiunPeriods, nenunYears){
+  if (daiunPeriods && daiunPeriods.length){
+    const hit = daiunPeriods.find(p => BRANCHES[p.branchIdx] === targetBranchChar);
+    if (hit) return `${hit.ageStart}〜${hit.ageEnd}歳の大運`;
+  }
+  if (nenunYears && nenunYears.length){
+    const hit = nenunYears.find(yy => BRANCHES[yy.branchIdx] === targetBranchChar);
+    if (hit) return `${hit.year}年（${hit.age}歳）の年運`;
+  }
+  return null;
+}
+function getTokushuMeishikiEntries(yearP, monthP, dayP, dayStemIdx, isohouEntries, dayHasKangou, daiunPeriods, nenunYears){
+  const entries = [];
+  const yStem = STEMS[yearP.stemIdx], mStem = STEMS[monthP.stemIdx], dStem = STEMS[dayStemIdx];
+  const yBranch = BRANCHES[yearP.branchIdx], mBranch = BRANCHES[monthP.branchIdx], dBranch = BRANCHES[dayP.branchIdx];
+  const yGanzhi = yStem + yBranch, mGanzhi = mStem + mBranch, dGanzhi = dStem + dBranch;
+  const branches = [yBranch, mBranch, dBranch];
+  const juuniList = [yearP.juuni, monthP.juuni, dayP.juuni];
+
+  // 子逢巳格（干支圧伏）：日干支が甲子で、月干支も甲子。日と年が同じ甲子は準ずる。
+  if (dGanzhi === '甲子' && mGanzhi === '甲子'){
+    entries.push('子逢巳格（干支圧伏）');
+  } else if (dGanzhi === '甲子' && yGanzhi === '甲子'){
+    entries.push('子逢巳格（準ずる・干支圧伏）');
+  }
+
+  // 冲禄格：宿命に天禄星がなく、天馳星が2つ
+  if (!juuniList.includes('天禄星') && juuniList.filter(s => s === '天馳星').length === 2){
+    entries.push('冲禄格');
+  }
+
+  // 干合支刑格：日干が干合し、地支が刑になる（子卯の旺気刑を伴うものが最強）
+  if (dayHasKangou && isohouEntries.some(e => e.startsWith('刑（'))){
+    const isOuki = isohouEntries.some(e => e.startsWith('刑（旺気刑）'));
+    entries.push(isOuki ? '干合支刑格（子卯の旺気刑を伴う・最強）' : '干合支刑格');
+  }
+
+  // 井欄斜格・井欄叉格：日干支が庚子/庚辰/庚申＋申子辰の三合(水局)または半会＋冲動の有無
+  if (['庚子','庚辰','庚申'].includes(dGanzhi)){
+    const hasSuikyoku = isohouEntries.some(e => e.startsWith('三合水局') || e.startsWith('半会[水]') || e.startsWith('大半会[水]'));
+    if (hasSuikyoku){
+      const hasChuudou = isohouEntries.some(e => e.startsWith('対沖'));
+      entries.push(hasChuudou ? '井欄叉格' : '井欄斜格');
+    }
+  }
+
+  // 子午双包格：地支が子・午の2種類のみで3つとも埋まる（午午子、子午子など）
+  const uniqueBranches = [...new Set(branches)];
+  if (uniqueBranches.length === 2 && uniqueBranches.every(b => ['子','午'].includes(b))){
+    entries.push('子午双包格');
+  }
+
+  // 六甲趨乾格・六甲印徳格：日干が甲木、地支に亥（2つ揃えばリーチ表示）
+  if (dStem === '甲' && branches.includes('亥')){
+    entries.push('六甲趨乾格');
+    if (branches.filter(b => b === '亥').length === 2){
+      const reach = findReachAge('亥', daiunPeriods, nenunYears);
+      if (reach) entries.push(`※六甲印徳格（${reach}で3つ目の「亥」が巡り成立）`);
+    }
+  }
+
+  // 王騎龍背格・壬騎三奇格：日干支が壬辰、年支または月支にもう1つ辰（リーチで3つ目待ち）
+  if (dGanzhi === '壬辰' && (yBranch === '辰' || mBranch === '辰')){
+    entries.push('王騎龍背格');
+    const reach = findReachAge('辰', daiunPeriods, nenunYears);
+    if (reach) entries.push(`※壬騎三奇格（${reach}で3つ目の「辰」が巡り成立）`);
+  }
+
+  // 専印合禄格：日干が癸水、月干支が庚申
+  if (dStem === '癸' && mGanzhi === '庚申'){
+    entries.push('専印合禄格');
+  }
+
+  // 八専禄旺格：日干支が甲寅・乙卯・庚申・辛酉のいずれか
+  if (['甲寅','乙卯','庚申','辛酉'].includes(dGanzhi)){
+    entries.push('八専禄旺格');
+  }
+
+  // 潤下破格：宿命六つ（年月日の干＋年月日の支）の五行のうち土が1つだけ、残り5つがすべて水
+  const sixElements = [
+    STEM_ELEMENT[yearP.stemIdx], STEM_ELEMENT[monthP.stemIdx], STEM_ELEMENT[dayStemIdx],
+    BRANCH_ELEMENT[yearP.branchIdx], BRANCH_ELEMENT[monthP.branchIdx], BRANCH_ELEMENT[dayP.branchIdx],
+  ];
+  const doCount = sixElements.filter(e => e === '土').length;
+  const suiCount = sixElements.filter(e => e === '水').length;
+  if (doCount === 1 && suiCount === 5){
+    entries.push('潤下破格');
+  }
+
+  // 土局潤下格：日干が戊土、地支に申子辰の三合水局（または半会）が揃う
+  if (dStem === '戊'){
+    const hasSuikyoku2 = isohouEntries.some(e => e.startsWith('三合水局') || e.startsWith('半会[水]') || e.startsWith('大半会[水]'));
+    if (hasSuikyoku2){
+      entries.push('土局潤下格');
+    }
+  }
+
+  // 生処集生格：①天干（年干・月干）に玉堂星が透干、②日干から日支を見て天貴星、
+  // ③その透干した玉堂星の位置から日支を見て強い従星（7点以上）となる（ユーザー提供『十二大従星表』の点数による）
+  if (dayP.juuni === '天貴星'){
+    const gyokudouCandidates = [
+      { label: '年干', stemIdx: yearP.stemIdx },
+      { label: '月干', stemIdx: monthP.stemIdx },
+    ];
+    gyokudouCandidates.forEach(c => {
+      if (STAR_FROM_STEM[dayStemIdx][c.stemIdx] !== '玉堂星') return;
+      const juuniFromGyokudou = STAR_FROM_BRANCH[c.stemIdx][dayP.branchIdx];
+      const point = JUUNI_STAR_POINTS[juuniFromGyokudou];
+      if (point >= 7){
+        entries.push(`生処集生格（${c.label}＝玉堂星透干、日支から見て${juuniFromGyokudou}＝${point}点）`);
+      }
+    });
+  }
+
+  return entries;
+}
+
+// ==================== 局法（特殊五局＝八相局・別格＝鳳蘭局） ====================
+// 2026-08-20 ユーザー提供資料（算命学_局法_全二十六局の成立条件と運勢体系図）に基づく。
+// 全26局のうち、「人体図の五星（①〜⑤の十大主星）が特定の星のみで構成される」という
+// 判定条件が明確な6局（特殊五局＝八相局5種＋別格＝鳳蘭局1種）のみ実装。
+// 残り20局（相生局10種・相剋局10種）は「人体図の縦線・横線が相生/相剋して止まる」という
+// 図形的アルゴリズムの詳細確認待ちのため今回は未実装。
+// ==================== 行動領域（干支番号1〜60を円周上の4領域にマッピング） ====================
+// 2026-08-20 ユーザー提供画像に基づく。干支番号（甲子=1〜癸亥=60）を円周上に時計回りに配置し、
+// 1（真上）を起点に4等分：第一領域(1-15・守備安定)／第二領域(16-30・伝達創造)／
+// 第三領域(31-45・攻撃開拓)／第四領域(46-60・習得知恵)。
+const KOUDOU_DOMAINS = [
+  { name: '第一領域', keyword: '守備安定', desc: '知性的だが感情的でもある', min: 1, max: 15 },
+  { name: '第二領域', keyword: '伝達創造', desc: '情的で庶民性がある', min: 16, max: 30 },
+  { name: '第三領域', keyword: '攻撃開拓', desc: '庶民性と合理性を併せ持つ', min: 31, max: 45 },
+  { name: '第四領域', keyword: '習得知恵', desc: '合理的、理屈屋、知性豊か', min: 46, max: 60 },
+];
+function getKoudouDomain(ganzhiNo){
+  return KOUDOU_DOMAINS.find(d => ganzhiNo >= d.min && ganzhiNo <= d.max);
+}
+
+const KYOKUHOU_FIVE_GROUPS = [
+  { name: '劫局', stars: ['貫索星','石門星'], element: '木', feature: '黒幕・ボスとしての強大な政治力' },
+  { name: '食局', stars: ['鳳閣星','調舒星'], element: '火', feature: '知能指数が高く、哲学・医学・芸術が天職' },
+  { name: '財局', stars: ['禄存星','司禄星'], element: '土', feature: '物欲を捨てるほど財が流れ込む圧倒的な財運' },
+  { name: '官局', stars: ['車騎星','牽牛星'], element: '金', feature: '家系の因縁を強く引き、台頭か断絶かの両極端' },
+  { name: '印局', stars: ['龍高星','玉堂星'], element: '水', feature: '極めて頭が良いが完全な秘密主義' },
+];
+function getKyokuhouEntries(yearP, monthP, dayP){
+  const entries = [];
+  const fiveStars = [yearP.star, monthP.star, yearP.starZoukan, monthP.starZoukan, dayP.starZoukan];
+
+  // 特殊五局（八相局）：人体図の五星（①〜⑤）がすべて同一グループ（同五行）の星のみで構成される
+  KYOKUHOU_FIVE_GROUPS.forEach(g => {
+    if (fiveStars.every(s => g.stars.includes(s))){
+      entries.push(`${g.name}（特殊五局・八相局／${g.element}性一色）：${g.feature}`);
+    }
+  });
+
+  // 鳳蘭局（別格）：五星がすべて完全に同じ星（例：すべて貫索星）
+  const uniqueStars = [...new Set(fiveStars)];
+  if (uniqueStars.length === 1){
+    entries.push(`鳳蘭局（別格・五星すべて${uniqueStars[0]}）：一代で爆発的に栄達し一代で終わる強大な一代運`);
+  }
+
+  // 相生局（幸運局）・相剋局（凶運局）
+  entries.push(...getKyokuhouFlowEntries(yearP, monthP, dayP));
+
+  return entries;
+}
+
+// ==================== 局法：相生局（幸運局10種）・相剋局（凶運局10種） ====================
+// 2026-08-20 ユーザー提供のカラー図（算命学奥義書p.80〜90の図解）に基づき確定。
+// 位置対応：主星＝④月支蔵干（中央）、北＝①年干、南＝②月干（縦線）、東＝③年支蔵干、西＝⑤日支蔵干（横線）。
+// 十二大従星の⑥⑦⑧（斜めの位置）は「斜めに飛ばない」ルールにより対象外。
+//
+// 【相生局】縦線（北・主星・南）または横線（東・主星・西）の3つの星の五行を、位置に関係なく
+// 「集合」として見る。
+//   ・五行が2種類（例：水・水・木）の場合：一方が他方を生じていれば、生じられた方が終星。
+//   ・五行が3種類（例：金・水・木）の場合：五行相生の環で3つ連続する組み合わせに一致すれば、
+//     その中で最も下流（最後に生じられる）の五行が終星。
+//   ・上記に当てはまらなければ不成立（カラー図の「当てはまらない例」＝土・水・木で確認）。
+// 縦線・横線の両方が同じ終星に至る場合は、上位の双方向局（6〜10局）にアップグレードする。
+//
+// 【相剋局】主星と、北または南（横線なら東または西）のどちらか一方が、資料記載の5パターン
+// いずれかの相剋関係にある場合に成立（カラー図の「通関星」表示位置＝関与しない側から確認済み）。
+const WUXING_KE = { '木':'土', '土':'水', '水':'火', '火':'金', '金':'木' };
+// 五行相生の環で3つ連続する窓（例：金→水→木）と、その終星（最も下流の五行）
+const WUXING_WINDOWS = [
+  { set: ['木','火','土'], terminal: '土' },
+  { set: ['火','土','金'], terminal: '金' },
+  { set: ['土','金','水'], terminal: '水' },
+  { set: ['金','水','木'], terminal: '木' },
+  { set: ['水','木','火'], terminal: '火' },
+];
+// 幸運局1〜5（縦線または横線のどちらか一方が止まる型）の終星→局名
+const KOUUN_TANDOKU_NAMES = { '木':'芳順局', '火':'八寿局', '土':'三麗局', '金':'相法局', '水':'玄流局' };
+// 幸運局6〜10（縦線・横線の双方が同じ星で止まる上位型）の終星→局名
+const KOUUN_RYOUHOU_NAMES = { '木':'劫法局', '火':'天華局', '土':'連財局', '金':'法官局', '水':'命龍局' };
+// 凶運局：縦線（奇数番号）の相剋関係→局名
+const KYOUUN_TATE_NAMES = { '水→火':'推逆局', '火→金':'生殺局', '金→木':'井乱局', '木→土':'破財局', '土→水':'地財局' };
+// 凶運局：横線（偶数番号）の相剋関係→局名
+const KYOUUN_YOKO_NAMES = { '水→火':'円推局', '火→金':'殺局', '金→木':'乱命局', '木→土':'曲財局', '土→水':'叉財局' };
+
+function getKyokuhouFlowEntries(yearP, monthP, dayP){
+  const entries = [];
+  const centerEl = STAR_ELEMENT[monthP.starZoukan]; // ④主星の五行
+  const kitaEl = STAR_ELEMENT[yearP.star];           // ①年干＝北
+  const minamiEl = STAR_ELEMENT[monthP.star];        // ②月干＝南
+  const higashiEl = STAR_ELEMENT[yearP.starZoukan];  // ③年支蔵干＝東
+  const nishiEl = STAR_ELEMENT[dayP.starZoukan];     // ⑤日支蔵干＝西
+
+  // ---- 相生局（幸運局）：3つの星の五行を集合として見て終星を判定 ----
+  function findShuuseiEl(elA, elCenter, elB){
+    const unique = [...new Set([elA, elCenter, elB])];
+    if (unique.length === 2){
+      const [a, b] = unique;
+      if (WUXING_NEXT[a] === b) return b;
+      if (WUXING_NEXT[b] === a) return a;
+      return null;
+    }
+    if (unique.length === 3){
+      const key = [...unique].sort().join(',');
+      const match = WUXING_WINDOWS.find(w => [...w.set].sort().join(',') === key);
+      return match ? match.terminal : null;
+    }
+    return null;
+  }
+  const tateShuusei = findShuuseiEl(kitaEl, centerEl, minamiEl);
+  const yokoShuusei = findShuuseiEl(higashiEl, centerEl, nishiEl);
+
+  if (tateShuusei && yokoShuusei && tateShuusei === yokoShuusei){
+    entries.push(`${KOUUN_RYOUHOU_NAMES[tateShuusei]}（幸運局・縦線と横線の双方が${tateShuusei}性の星で合流して止まる）`);
+  } else {
+    if (tateShuusei){
+      entries.push(`${KOUUN_TANDOKU_NAMES[tateShuusei]}（幸運局・縦線が${tateShuusei}性の星で止まる）`);
+    }
+    if (yokoShuusei){
+      entries.push(`${KOUUN_TANDOKU_NAMES[yokoShuusei]}（幸運局・横線が${yokoShuusei}性の星で止まる）`);
+    }
+  }
+
+  // ---- 相剋局（凶運局）：主星と北/南（縦線）、主星と東/西（横線）が相剋関係にあるか ----
+  function findGekitotsu(endpointEl){
+    if (WUXING_KE[centerEl] === endpointEl) return `${centerEl}→${endpointEl}`;
+    if (WUXING_KE[endpointEl] === centerEl) return `${endpointEl}→${centerEl}`;
+    return null;
+  }
+  const tateGeki = findGekitotsu(kitaEl) || findGekitotsu(minamiEl);
+  const yokoGeki = findGekitotsu(higashiEl) || findGekitotsu(nishiEl);
+  if (tateGeki && KYOUUN_TATE_NAMES[tateGeki]){
+    entries.push(`${KYOUUN_TATE_NAMES[tateGeki]}（凶運局・縦線／${tateGeki.replace('→','剋')}）`);
+  }
+  if (yokoGeki && KYOUUN_YOKO_NAMES[yokoGeki]){
+    entries.push(`${KYOUUN_YOKO_NAMES[yokoGeki]}（凶運局・横線／${yokoGeki.replace('→','剋')}）`);
+  }
+
+  return entries;
+}
+// 十二大従星：長生位置＋回転方向（陽干=時計回り/陰干=反時計回り）の数式で算出
+const JUUNI_STAR_ORDER = ['天貴星','天恍星','天南星','天禄星','天将星','天堂星','天胡星','天極星','天庫星','天馳星','天報星','天印星'];
+// 十二大従星の点数（ユーザー提供資料『十二大従星表』より。1〜12点、点数が高いほど現実面のエネルギーが強い）
+const JUUNI_STAR_POINTS = { '天貴星':9, '天恍星':7, '天南星':10, '天禄星':11, '天将星':12, '天堂星':8, '天胡星':4, '天極星':2, '天庫星':5, '天馳星':1, '天報星':3, '天印星':6 };
+const JUUNI_STAGE_LABEL = ['幼児期','青少年期','青年期','壮年期','頭領期','老人期','病人期','死人の時','墓に入る時','あの世','胎児の時','赤子の時'];
+const LONGSHENG = {'甲':11,'丙':2,'戊':2,'庚':5,'壬':8,'乙':6,'丁':9,'己':9,'辛':0,'癸':3};
+const DIRECTION = {'甲':1,'丙':1,'戊':1,'庚':1,'壬':1,'乙':-1,'丁':-1,'己':-1,'辛':-1,'癸':-1};
+const STAR_FROM_BRANCH = Array.from({length:10}, ()=>Array(12).fill(null));
+const STAGE_FROM_BRANCH = Array.from({length:10}, ()=>Array(12).fill(null));
+STEMS.forEach((stem, stemIdx)=>{
+  const ls = LONGSHENG[stem], d = DIRECTION[stem];
+  for (let s=0;s<12;s++){
+    const branchIdx = ((ls + d*s) % 12 + 12) % 12;
+    STAR_FROM_BRANCH[stemIdx][branchIdx] = JUUNI_STAR_ORDER[s];
+    STAGE_FROM_BRANCH[stemIdx][branchIdx] = JUUNI_STAGE_LABEL[s];
+  }
+});
+const OUSOUKYUUSHI = {
+  '天禄星':'旺','天将星':'旺',
+  '天恍星':'相','天南星':'相',
+  '天堂星':'休','天胡星':'休',
+  '天報星':'囚','天印星':'囚','天貴星':'囚',
+  '天極星':'死','天庫星':'死','天馳星':'死',
+};
+
+function ganzhiName(idx){ return STEMS[idx%10] + BRANCHES[idx%12]; }
+
+function daysSinceEpoch(y,m,d){
+  return Math.floor(Date.UTC(y,m-1,d) / 86400000);
+}
+function getDayGanzhiIndex(y,m,d){
+  return ((daysSinceEpoch(y,m,d) + 17) % 60 + 60) % 60;
+}
+function getYearData(y){
+  const idx = y - CALENDAR_START_YEAR;
+  if (idx < 0 || idx >= window.CALENDAR_DATA.length) return null;
+  const arr = window.CALENDAR_DATA[idx];
+  const months = [];
+  for (let i=0;i<12;i++){
+    months.push({ setsuiriDay: arr[1+i], monthGanzhiIdx: arr[13+i] });
+  }
+  return { yearGanzhiIdx: arr[0], months };
+}
+
+function getMonthPillar(y,m,d){
+  const yd = getYearData(y);
+  if (!yd) return null;
+  const entry = yd.months[m-1];
+  if (d >= entry.setsuiriDay){
+    return { ganzhiIdx: entry.monthGanzhiIdx, setsuiri:{y,m,d:entry.setsuiriDay} };
+  } else if (m === 1){
+    const py = getYearData(y-1);
+    if (!py) return null;
+    const pe = py.months[11];
+    return { ganzhiIdx: pe.monthGanzhiIdx, setsuiri:{y:y-1,m:12,d:pe.setsuiriDay} };
+  } else {
+    const pe = yd.months[m-2];
+    return { ganzhiIdx: pe.monthGanzhiIdx, setsuiri:{y,m:m-1,d:pe.setsuiriDay} };
+  }
+}
+
+function getYearPillar(y,m,d){
+  const yd = getYearData(y);
+  if (!yd) return null;
+  const feb = yd.months[1];
+  if (m === 1 || (m === 2 && d < feb.setsuiriDay)){
+    const py = getYearData(y-1);
+    if (!py) return null;
+    const pf = py.months[1];
+    return { ganzhiIdx: py.yearGanzhiIdx, risshun:{y:y-1,m:2,d:pf.setsuiriDay} };
+  } else {
+    return { ganzhiIdx: yd.yearGanzhiIdx, risshun:{y,m:2,d:feb.setsuiriDay} };
+  }
+}
+
+function getTenchuusatsuBranches(dayGanzhiIdx){
+  const head = Math.floor(dayGanzhiIdx/10)*10;
+  const used = new Set();
+  for (let i=0;i<10;i++) used.add((head+i)%12);
+  const missing = [];
+  for (let b=0;b<12;b++) if (!used.has(b)) missing.push(b);
+  return missing;
+}
+
+// ==================== 身強・身中・身弱・最身強・最身弱 ====================
+// 2026-08-19 ユーザー提供資料『十二大従星法』に基づく正式な分類・判定に全面差し替え
+// （以前の簡易版は別の「旺相休囚死」の一般論を誤って流用していたため、資料の分類とは異なっていた）。
+//
+// 【分類】
+//   強星（3）：天将星・天禄星・天南星 → 現実面・肉体面のエネルギーが最も強い
+//   中星（5）：天貴星・天恍星・天堂星・天印星・天庫星 → 現実・精神とも中程度
+//   弱星（4）：天報星・天胡星・天極星・天馳星 → 現実面では弱いが精神面が強い
+//
+// 【本人の十二大従星3つ（初年期＝年支／中年期＝月支／晩年期＝日支）の組み合わせ判定】
+//   強星が2つ以上（ダブル・トリプル）              → 最身強
+//   強星1つ＋残り2つに弱星を含まない（強星＋中星）  → 身強
+//   強星1つ＋残り2つに弱星を含む（強星＋弱星）      → 身強（身中）
+//   強星0＋弱星0（＝すべて中星）                    → 身中
+//   強星0＋弱星1〜2（中星と弱星の混在）             → 身弱（身中）
+//   弱星3つ（＝すべて弱星）                          → 最身弱
+const SHINKYO_STRONG_STARS = ['天将星', '天禄星', '天南星'];
+const SHINKYO_MID_STARS = ['天貴星', '天恍星', '天堂星', '天印星', '天庫星'];
+const SHINKYO_WEAK_STARS = ['天報星', '天胡星', '天極星', '天馳星'];
+function getShinkyoJudgment(juuniYear, juuniMonth, juuniDay){
+  const juuniList = [
+    { label: '初年期（年支）', star: juuniYear },
+    { label: '中年期（月支）', star: juuniMonth },
+    { label: '晩年期（日支）', star: juuniDay },
+  ];
+  const strongHits = juuniList.filter(j => SHINKYO_STRONG_STARS.includes(j.star));
+  const midHits = juuniList.filter(j => SHINKYO_MID_STARS.includes(j.star));
+  const weakHits = juuniList.filter(j => SHINKYO_WEAK_STARS.includes(j.star));
+
+  let level, sign;
+  if (strongHits.length >= 2){
+    level = '最身強';
+    sign = '+';
+  } else if (strongHits.length === 1){
+    if (weakHits.length === 0){
+      level = '身強';
+    } else {
+      level = '身強（身中）';
+    }
+    sign = '+';
+  } else if (weakHits.length === 3){
+    level = '最身弱';
+    sign = '-';
+  } else if (weakHits.length === 0){
+    level = '身中';
+    sign = '±';
+  } else {
+    level = '身弱（身中）';
+    sign = '-';
+  }
+  const isShinchu = level.includes('身中');
+
+  return {
+    level, sign, isShinchu,
+    strongStars: strongHits,
+    midStars: midHits,
+    weakStars: weakHits,
+  };
+}
+
+function calcMeishiki(y,m,d){
+  if (y < CALENDAR_START_YEAR || y > CALENDAR_END_YEAR){
+    return { error: `対応範囲は ${CALENDAR_START_YEAR}年〜${CALENDAR_END_YEAR}年です。` };
+  }
+  const dayIdx = getDayGanzhiIndex(y,m,d);
+  const dayStemIdx = dayIdx % 10;
+  const dayBranchIdx = dayIdx % 12;
+
+  const monthP = getMonthPillar(y,m,d);
+  const yearP = getYearPillar(y,m,d);
+  if (!monthP || !yearP){
+    return { error: `この日付の計算には ${y-1}年のデータが必要ですが、対応範囲外です（${CALENDAR_START_YEAR}年以降のみ対応。安全のため${CALENDAR_START_YEAR+1}年以降の入力を推奨）。` };
+  }
+  const monthStemIdx = monthP.ganzhiIdx % 10;
+  const monthBranchIdx = monthP.ganzhiIdx % 12;
+  const yearStemIdx = yearP.ganzhiIdx % 10;
+  const yearBranchIdx = yearP.ganzhiIdx % 12;
+
+  // 蔵干：節入り当日を「日数0」とする0始まりの経過日数で、教材『蔵干表』の全日数区分に基づき判定
+  // 教材の説明（命式の出し方）：「生まれた月の節入日」から生まれた日までの日数を、年支・月支・日支いずれの
+  // 蔵干判定にも共通して用いる（年支だけ立春基準にする、日支は常に本元にする、といった特別扱いはしない）。
+  const daysSinceMonthSetsuiri = daysSinceEpoch(y,m,d) - daysSinceEpoch(monthP.setsuiri.y, monthP.setsuiri.m, monthP.setsuiri.d);
+  const monthZoukan = getZoukan(BRANCHES[monthBranchIdx], daysSinceMonthSetsuiri);
+  const yearZoukan = getZoukan(BRANCHES[yearBranchIdx], daysSinceMonthSetsuiri);
+  const dayZoukan = getZoukan(BRANCHES[dayBranchIdx], daysSinceMonthSetsuiri);
+
+  const starYearStem = STAR_FROM_STEM[dayStemIdx][yearStemIdx];
+  const starMonthStem = STAR_FROM_STEM[dayStemIdx][monthStemIdx];
+  const starYearZoukan = STAR_FROM_STEM[dayStemIdx][STEMS.indexOf(yearZoukan.stem)];
+  const starMonthZoukan = STAR_FROM_STEM[dayStemIdx][STEMS.indexOf(monthZoukan.stem)];
+  const starDayZoukan = STAR_FROM_STEM[dayStemIdx][STEMS.indexOf(dayZoukan.stem)];
+
+  const juuniYear = STAR_FROM_BRANCH[dayStemIdx][yearBranchIdx];
+  const juuniMonth = STAR_FROM_BRANCH[dayStemIdx][monthBranchIdx];
+  const juuniDay = STAR_FROM_BRANCH[dayStemIdx][dayBranchIdx];
+  const stageYear = STAGE_FROM_BRANCH[dayStemIdx][yearBranchIdx];
+  const stageMonth = STAGE_FROM_BRANCH[dayStemIdx][monthBranchIdx];
+  const stageDay = STAGE_FROM_BRANCH[dayStemIdx][dayBranchIdx];
+
+  const tenchuIdx = getTenchuusatsuBranches(dayIdx); // 日干支の天中殺グループ（支インデックス2つ）
+  const tenchu = tenchuIdx.map(b=>BRANCHES[b]);
+
+  const shinkyo = getShinkyoJudgment(juuniYear, juuniMonth, juuniDay);
+
+  const guardianKey = STEMS[dayStemIdx];
+  const guardianRow = (window.GUARDIAN_DATA[guardianKey] || {})[BRANCHES[monthBranchIdx]];
+  const kijinRow = (window.KIJIN_DATA[guardianKey] || {})[BRANCHES[monthBranchIdx]];
+  // kijinRow: 忌神の十干配列。null の場合は早見表側が「条件により異なる」として空欄にしている月支（教材原本のまま）
+
+  // 天中殺：日干支・年干支それぞれの旬から所属グループを算出し、他の柱の支との重なり（宿命天中殺）を判定
+  const yearTenchuIdx = getTenchuusatsuBranches(yearP.ganzhiIdx);
+  const yearTenchu = yearTenchuIdx.map(b=>BRANCHES[b]);
+  const seimeiTenchusatsu = {
+    year: tenchuIdx.includes(yearBranchIdx),      // 生年天中殺：年支が日干支の天中殺に重なる
+    month: tenchuIdx.includes(monthBranchIdx),    // 生月天中殺：月支が日干支の天中殺に重なる
+    day: yearTenchuIdx.includes(dayBranchIdx),    // 生日天中殺：日支が年干支の天中殺に重なる
+  };
+
+  return {
+    input: {y,m,d},
+    dayStemIdx, dayBranchIdx,
+    year: { ganzhiIdx: yearP.ganzhiIdx, stemIdx: yearStemIdx, branchIdx: yearBranchIdx, zoukan: yearZoukan, star: starYearStem, starZoukan: starYearZoukan, juuni: juuniYear, stage: stageYear, ousoukyuushi: OUSOUKYUUSHI[juuniYear], ijou: getIjouLabels(yearP.ganzhiIdx, false) },
+    month: { ganzhiIdx: monthP.ganzhiIdx, stemIdx: monthStemIdx, branchIdx: monthBranchIdx, zoukan: monthZoukan, star: starMonthStem, starZoukan: starMonthZoukan, juuni: juuniMonth, stage: stageMonth, ousoukyuushi: OUSOUKYUUSHI[juuniMonth], setsuiri: monthP.setsuiri, ijou: getIjouLabels(monthP.ganzhiIdx, false) },
+    day: { ganzhiIdx: dayIdx, stemIdx: dayStemIdx, branchIdx: dayBranchIdx, zoukan: dayZoukan, starZoukan: starDayZoukan, juuni: juuniDay, stage: stageDay, ousoukyuushi: OUSOUKYUUSHI[juuniDay], ijou: getIjouLabels(dayIdx, true) },
+    tenchuusatsu: tenchu,
+    yearTenchuusatsu: yearTenchu,
+    seimeiTenchusatsu,
+    guardian: guardianRow ? { dayStem: guardianKey, monthBranch: BRANCHES[monthBranchIdx], ...guardianRow, kijin: kijinRow } : null,
+    shinkyo,
+  };
+}
+
+// ==================== 大運法（後天運） ====================
+// 順行・逆行判定：男性×陽年生まれ／女性×陰年生まれ＝順行、その逆＝逆行
+// 起運年齢：節入日までの日数÷3（四捨五入）。日数0（節入り当日生まれ）は例外的に10歳運とする。
+// 大運干支：月柱を起点に六十干支表を順/逆に10年ごとにたどる。
+// 大運の十大主星・十二大従星：宿命の陽占と同じ表を大運干支に流用。
+function getNextSetsuiri(governSetsuiri){
+  let {y, m} = governSetsuiri;
+  let nextM = m + 1, nextY = y;
+  if (nextM > 12){ nextM = 1; nextY = y + 1; }
+  const yd = getYearData(nextY);
+  if (!yd) return null;
+  const entry = yd.months[nextM-1];
+  return { y: nextY, m: nextM, d: entry.setsuiriDay };
+}
+
+function calcDaiun(y, m, d, gender, periodCount){
+  periodCount = periodCount || 8;
+  const meishiki = calcMeishiki(y, m, d);
+  if (meishiki.error) return { error: meishiki.error };
+
+  const yearYinYang = STEM_YINYANG[meishiki.year.stemIdx];
+  let junGyaku;
+  if ((gender === 'M' && yearYinYang === '陽') || (gender === 'F' && yearYinYang === '陰')){
+    junGyaku = '順行';
+  } else {
+    junGyaku = '逆行';
+  }
+  const direction = junGyaku === '順行' ? 1 : -1;
+
+  const govern = meishiki.month.setsuiri; // 月柱を決定した節入り（逆行の起点）
+  let days;
+  if (junGyaku === '順行'){
+    const next = getNextSetsuiri(govern);
+    if (!next) return { error: '大運の起運計算に必要な節入りデータが対応範囲外です。' };
+    days = daysSinceEpoch(next.y, next.m, next.d) - daysSinceEpoch(y, m, d);
+  } else {
+    days = daysSinceEpoch(y, m, d) - daysSinceEpoch(govern.y, govern.m, govern.d);
+  }
+  let startAge = Math.round(days / 3);
+  if (startAge === 0) startAge = 10;
+
+  const monthGanzhiIdx = meishiki.month.ganzhiIdx;
+  const tenchuBranchIdx = getTenchuusatsuBranches(meishiki.day.ganzhiIdx); // 本人の日干支の天中殺グループ（支インデックス）
+  const periods = [];
+  for (let i = 1; i <= periodCount; i++){
+    const ganzhiIdx = ((monthGanzhiIdx + direction * i) % 60 + 60) % 60;
+    const stemIdx = ganzhiIdx % 10;
+    const branchIdx = ganzhiIdx % 12;
+    const ageStart = startAge + (i - 1) * 10;
+    periods.push({
+      index: i,
+      ganzhiIdx, stemIdx, branchIdx,
+      ageStart, ageEnd: ageStart + 9,
+      star: STAR_FROM_STEM[meishiki.dayStemIdx][stemIdx],
+      juuni: STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
+      stage: STAGE_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
+      ousoukyuushi: OUSOUKYUUSHI[STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx]],
+      ijou: getIjouLabels(ganzhiIdx, false),
+      isTenchu: tenchuBranchIdx.includes(branchIdx), // 大運天中殺：この大運の支が本人の天中殺グループに入る
+    });
+  }
+
+  return {
+    junGyaku, startAge, days, governSetsuiri: govern, birthYear: y,
+    periods,
+  };
+}
+
+// ==================== 年運 ====================
+// 単純に暦通りの年干支（年別早見表の年干支ラベルそのもの）に対して、日干を基準に
+// 十大主星・十二大従星を割り出す。立春による年切り替わりの補正は行わない（暦年＝そのまま）。
+function calcNenun(y, m, d){
+  const meishiki = calcMeishiki(y, m, d);
+  if (meishiki.error) return { error: meishiki.error };
+
+  const birthYear = y;
+  const lastYear = Math.min(birthYear + 99, CALENDAR_END_YEAR);
+  const years = [];
+  for (let yy = birthYear; yy <= lastYear; yy++){
+    const yd = getYearData(yy);
+    if (!yd) continue;
+    const ganzhiIdx = yd.yearGanzhiIdx;
+    const stemIdx = ganzhiIdx % 10;
+    const branchIdx = ganzhiIdx % 12;
+    years.push({
+      year: yy,
+      age: yy - birthYear,
+      ganzhiIdx, stemIdx, branchIdx,
+      star: STAR_FROM_STEM[meishiki.dayStemIdx][stemIdx],
+      juuni: STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
+      stage: STAGE_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
+      ousoukyuushi: OUSOUKYUUSHI[STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx]],
+    });
+  }
+  return { birthYear, lastYear, years };
+}
+
+// export
+window.Meishiki = {
+  STEMS, BRANCHES, STEM_YOMI, BRANCH_YOMI, STEM_ELEMENT, STEM_YINYANG, BRANCH_ELEMENT, STAR_ELEMENT,
+  ganzhiName, calcMeishiki, calcDaiun, calcNenun, CALENDAR_START_YEAR, CALENDAR_END_YEAR,
+  getKangouByPillar, getIsohouBranchEntries, getJuukaGokakuEntries,
+  getInjuGakuEntries, getIkkiGakuEntries, applyKangouToElements, getHachikakuEntries,
+  getZakkiZaikanInjuGakuEntries, getKanshiTokushuGokakuEntries, getShiiJunzenEntries,
+  getTokushuMeishikiEntries, JUUNI_STAR_POINTS, getKyokuhouEntries, getKoudouDomain, KOUDOU_DOMAINS,
+  getNishouGakuEntries
+};
+
+})();
+
+(function(){
+const M = window.Meishiki;
+
+function el(tag, cls, html){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function elementDot(elChar){
+  return `<span class="dot el-${elChar}"></span>`;
+}
+
+function elCharSpan(char, isStem){
+  const el = isStem ? M.STEM_ELEMENT[M.STEMS.indexOf(char)] : M.BRANCH_ELEMENT[M.BRANCHES.indexOf(char)];
+  return `<span class="el-${el}">${char}</span>`;
+}
+
+function findSlot(slots, label){
+  return slots.find(s => s.label === label) || null;
+}
+
+function zoukanSlotCellHTML(slot, extraCls){
+  const cls = extraCls ? extraCls + ' ' : '';
+  if (!slot) return `<td class="${cls}empty-cell">　</td>`;
+  if (slot.blank) return `<td class="${cls}blank-cell">↑</td>`;
+  return `<td class="${cls}">${elCharSpan(slot.stem, true)}</td>`;
+}
+
+// ==================== 陰占表（日・月・年） ====================
+function inyouhyouHTML(r){
+  const cols = [r.day, r.month, r.year]; // 日・月・年の順
+  const seimei = r.seimeiTenchusatsu || {};
+  // 列ごとの追加ハイライト種別（異常干支＝紫／生年・生月・生日天中殺＝朱、複数該当時は両方付与）
+  const extraClsFor = (colIdx, p) => {
+    const cls = [];
+    if (p.ijou && p.ijou.length) cls.push('ijou-hl');
+    if (colIdx === 0 && seimei.day) cls.push('seimei-hl');   // 日列＝生日天中殺
+    if (colIdx === 1 && seimei.month) cls.push('seimei-hl'); // 月列＝生月天中殺
+    if (colIdx === 2 && seimei.year) cls.push('seimei-hl');  // 年列＝生年天中殺
+    return cls.join(' ');
+  };
+
+  const kanRow = cols.map((p,i) => `<td class="ch-cell ${extraClsFor(i,p)}">${elCharSpan(M.STEMS[p.stemIdx], true)}</td>`).join('');
+  const shiRow = cols.map((p,i) => `<td class="ch-cell ${extraClsFor(i,p)}">${elCharSpan(M.BRANCHES[p.branchIdx], false)}</td>`).join('');
+  // 干支番号：甲子=1〜癸亥=60（六十干支一覧表の番号に準拠。ganzhiIdxは0始まりのため+1する）
+  const ganzhiNoRow = cols.map((p,i) => `<td class="ganzhi-no-cell ${extraClsFor(i,p)}">${p.ganzhiIdx + 1}</td>`).join('');
+  const zoukanMainRow = cols.map((p,i) => `<td class="ch-cell zoukan-main ${extraClsFor(i,p)}">${elCharSpan(p.zoukan.stem, true)}</td>`).join('');
+
+  const slotLabels = ['初元','中元','本元'];
+  const slotRows = slotLabels.map(label=>{
+    const cells = cols.map((p,i) => {
+      const slot = findSlot(p.zoukan.slots, label);
+      // ハイライトは「本元まで」の指定なので、対象列の初元・中元・本元セルすべてに適用する
+      return zoukanSlotCellHTML(slot, extraClsFor(i,p));
+    }).join('');
+    return `<tr class="r-slot"><th>${label}</th>${cells}</tr>`;
+  }).join('');
+
+  // 天中殺グループ：日・年干支それぞれの旬から所属グループを表記（月は該当なしのため空欄）
+  const tenchuGroupRow = [
+    `<td class="tenchu-group-cell">${r.tenchuusatsu.join('')}</td>`,      // 日
+    `<td class="empty-cell">　</td>`,                                      // 月
+    `<td class="tenchu-group-cell">${r.yearTenchuusatsu.join('')}</td>`,   // 年
+  ].join('');
+
+  // 宿命天中殺：生日（日支が年干支の天中殺に重なる）／生月（月支が日干支の天中殺に重なる）／生年（年支が日干支の天中殺に重なる）
+  const seimeiRow = [
+    r.seimeiTenchusatsu.day ? `<td class="seimei-mark">○</td>` : `<td class="empty-cell">　</td>`,
+    r.seimeiTenchusatsu.month ? `<td class="seimei-mark">○</td>` : `<td class="empty-cell">　</td>`,
+    r.seimeiTenchusatsu.year ? `<td class="seimei-mark">○</td>` : `<td class="empty-cell">　</td>`,
+  ].join('');
+
+  // 異常干支：該当・非該当のみを表記（通常異常干支／暗合異常干支／日座中殺／日居中殺）
+  const ijouRow = cols.map(p => {
+    if (!p.ijou || !p.ijou.length) return `<td class="empty-cell">　</td>`;
+    return `<td class="ijou-label-cell">${p.ijou.join('・')}</td>`;
+  }).join('');
+
+  // 位相法：干合（十干）＋支合・三合・方三位・対沖・刑・破・害（地支）をまとめて表記。
+  // 列区切りはせず、発生箇所を「干合（日・月）」のようにまとめて1セルに表記する。
+  const kangou = M.getKangouByPillar(M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]);
+  const kangouPairOrder = [['日','月'], ['月','年'], ['日','年']]; // 表記順は常に日→月→年
+  const kangouEntries = kangouPairOrder
+    .filter(([a,b]) => kangou[a].some(h => h.partner === b))
+    .map(([a,b]) => `干合（${a}・${b}）`);
+  const branchEntries = M.getIsohouBranchEntries(M.BRANCHES[r.year.branchIdx], M.BRANCHES[r.month.branchIdx], M.BRANCHES[r.day.branchIdx], M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]);
+  const isohouEntries = [...kangouEntries, ...branchEntries];
+  const isohouRow = isohouEntries.length
+    ? `<td colspan="3" class="isohou-label-cell">${isohouEntries.map(e => `<span class="isohou-entry">${e}</span>`).join('')}</td>`
+    : `<td colspan="3" class="empty-cell">　</td>`;
+
+  // 干合変化：干合が成立していても、もともとその五行と同じ場合は見た目上の変化がないため対象外。
+  // （例：甲己合土は、己はもとから土のため変化なし。甲だけが土に変化する）
+  // 列は日・月・年に区切り、実際に元の五行と異なる五行に変化する柱のセルにのみ表記する。
+  const pillarStemIdx = { '日': r.day.stemIdx, '月': r.month.stemIdx, '年': r.year.stemIdx };
+  const kangouHenkaRow = ['日','月','年'].map(key => {
+    const originalElement = M.STEM_ELEMENT[pillarStemIdx[key]];
+    const changed = [...new Set(kangou[key].filter(h => h.element !== originalElement).map(h => h.element))];
+    if (!changed.length) return `<td class="empty-cell">　</td>`;
+    return `<td class="isohou-label-cell">${changed.join('・')}</td>`;
+  }).join('');
+
+  return `
+    <div class="chart-table-wrap">
+      <table class="chart-table">
+        <thead><tr><th class="corner"></th><th>日</th><th>月</th><th>年</th></tr></thead>
+        <tbody>
+          <tr class="r-ganzhi-no"><th>干支番号</th>${ganzhiNoRow}</tr>
+          <tr class="r-kan"><th>干</th>${kanRow}</tr>
+          <tr class="r-shi"><th>支</th>${shiRow}</tr>
+          <tr class="r-zoukan-main"><th>蔵干</th>${zoukanMainRow}</tr>
+          ${slotRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-table-wrap chart-table-wrap-sub">
+      <table class="chart-table">
+        <tbody>
+          <tr class="r-tenchu"><th>天中殺</th>${tenchuGroupRow}</tr>
+          <tr class="r-tenchu-seimei"><th>宿命天中殺</th>${seimeiRow}</tr>
+          <tr class="r-ijou"><th>異常干支</th>${ijouRow}</tr>
+          <tr class="r-isohou"><th>干合変化</th>${kangouHenkaRow}</tr>
+          <tr class="r-isohou"><th>位相法</th>${isohouRow}</tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==================== 陽占表（人体図：①〜⑧のクロス配置） ====================
+// ①年干 ②月干 ③年支蔵干 ④月支蔵干 ⑤日支蔵干（十大主星）
+// ⑥年支＝初年期 ⑦月支＝中年期 ⑧日支＝晩年期（十二大従星）
+function jtCellHTML(pos, starName, isJusei, seimeiCls, point){
+  const cls = seimeiCls ? ` ${seimeiCls}` : '';
+  const pointHTML = (!isJusei && point !== undefined && point !== null) ? `<span class="jt-point">${point}点</span>` : '';
+  return `
+    <div class="jt-cell jt-pos${pos}${cls}">
+      <span class="jt-star ${isJusei ? 'jt-jusei' : 'jt-juuni'}">${starName}</span>
+      ${pointHTML}
+    </div>`;
+}
+
+// 五行メモ：干支6つ（日月年の干・支）を五行に直した早見メモ。
+// 干合変化がある場合は「変化前→変化後」の2枚組で表示する（2026-08-19 ユーザー指定）。
+function gogyouMemoHTML(r){
+  const cols = [r.day, r.month, r.year]; // 日・月・年の順（他の表と統一）
+  const pillarKeyByCol = ['日', '月', '年'];
+  const stemEls = cols.map(p => M.STEM_ELEMENT[p.stemIdx]);
+  const branchEls = cols.map(p => M.BRANCH_ELEMENT[p.branchIdx]);
+
+  const kangou = M.getKangouByPillar(M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]);
+  const afterStemEls = pillarKeyByCol.map((key, i) => {
+    const originalElement = stemEls[i];
+    const changed = [...new Set(kangou[key].filter(h => h.element !== originalElement).map(h => h.element))];
+    return changed.length ? changed[0] : originalElement;
+  });
+  const hasChange = afterStemEls.some((el, i) => el !== stemEls[i]);
+
+  const elTd = (el) => `<td class="el-${el}">${el}</td>`;
+  const buildGrid = (stemsArr) => `
+    <table class="gogyou-table">
+      <tbody>
+        <tr>${stemsArr.map(elTd).join('')}</tr>
+        <tr>${branchEls.map(elTd).join('')}</tr>
+      </tbody>
+    </table>`;
+
+  if (!hasChange){
+    return `
+      <div class="gogyou-memo-wrap">
+        <div class="gogyou-memo-title">五行メモ</div>
+        ${buildGrid(stemEls)}
+      </div>`;
+  }
+
+  return `
+    <div class="gogyou-memo-wrap">
+      <div class="gogyou-memo-title">五行メモ</div>
+      <div class="gogyou-memo-row">
+        <div class="gogyou-col">
+          <div class="gogyou-label">変化前</div>
+          ${buildGrid(stemEls)}
+        </div>
+        <div class="gogyou-arrow">→</div>
+        <div class="gogyou-col">
+          <div class="gogyou-label">変化後</div>
+          ${buildGrid(afterStemEls)}
+        </div>
+      </div>
+    </div>`;
+}
+
+// 完全格（従化五格）：日干以外5つ（年干・月干・年支・月支・日支）の五行から判定。
+// 該当が無ければブロック自体を表示しない（従化五格は数が少ない特殊格のため）。
+function juukaGokakuHTML(r){
+  const dayElement = M.STEM_ELEMENT[r.day.stemIdx];
+  const others = [
+    { label: '年干', el: M.STEM_ELEMENT[r.year.stemIdx] },
+    { label: '月干', el: M.STEM_ELEMENT[r.month.stemIdx] },
+    { label: '年支', el: M.BRANCH_ELEMENT[r.year.branchIdx] },
+    { label: '月支', el: M.BRANCH_ELEMENT[r.month.branchIdx] },
+    { label: '日支', el: M.BRANCH_ELEMENT[r.day.branchIdx] },
+  ];
+  const sixElements = [
+    { label: '年干', el: M.STEM_ELEMENT[r.year.stemIdx] },
+    { label: '月干', el: M.STEM_ELEMENT[r.month.stemIdx] },
+    { label: '日干', el: dayElement },
+    { label: '年支', el: M.BRANCH_ELEMENT[r.year.branchIdx] },
+    { label: '月支', el: M.BRANCH_ELEMENT[r.month.branchIdx] },
+    { label: '日支', el: M.BRANCH_ELEMENT[r.day.branchIdx] },
+  ];
+
+  const yearStemName = M.STEMS[r.year.stemIdx], monthStemName = M.STEMS[r.month.stemIdx], dayStemName = M.STEMS[r.day.stemIdx];
+
+  // 純粋判定でダメだった場合のみ、干合で化けた後の要素セットで再判定し「[虚気]」を付けて採用する
+  const juukaEntries = M.getJuukaGokakuEntries(dayElement, others);
+  const injuEntries = M.getInjuGakuEntries(dayElement, others);
+  const ikkiEntries = M.getIkkiGakuEntries(sixElements);
+
+  let kyokiJuuka = [], kyokiInju = [], kyokiIkki = [];
+  if (!juukaEntries.length || !injuEntries.length || !ikkiEntries.length){
+    const othersAfter = M.applyKangouToElements(yearStemName, monthStemName, dayStemName, others);
+    const sixAfter = M.applyKangouToElements(yearStemName, monthStemName, dayStemName, sixElements);
+    if (!juukaEntries.length) kyokiJuuka = M.getJuukaGokakuEntries(dayElement, othersAfter).map(e => `[虚気]${e}`);
+    if (!injuEntries.length) kyokiInju = M.getInjuGakuEntries(dayElement, othersAfter).map(e => `[虚気]${e}`);
+    if (!ikkiEntries.length) kyokiIkki = M.getIkkiGakuEntries(sixAfter).map(e => `[虚気]${e}`);
+  }
+  const nishouEntries = M.getNishouGakuEntries(sixElements);
+
+  const entries = [
+    ...juukaEntries, ...kyokiJuuka,
+    ...injuEntries, ...kyokiInju,
+    ...ikkiEntries, ...kyokiIkki,
+    ...nishouEntries,
+  ];
+
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>完全格（従化五格・印綬格・一気格・二象格）</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 従化五格・印綬格の判定対象は日干以外の5つ（年干・月干・年支・月支・日支）、一気格・二象格は日干を含めた6つすべて（地支は蔵干ではなく支そのもの）。「[虚気]」は干合によって化けたことで格が成立したことを示します（変化が多い分、純粋な格より下格）。一気格で1箇所だけ異なる五行が混ざる場合、それが印星（一気格の五行を生じる五行）なら一気成因格、洩星（一気格の五行が生じる五行）なら一気洩気格となり、いずれも完全格のままです（財星・官星が混ざる場合のみ一点破格）。二象格は6つがちょうど2種類の五行のみ・3:3の比率で構成される場合に成立します（4:2など他の比率は対象外）。地支側の半会・支合による変化判定は今回未対応です。</div>
+    </div>`;
+}
+
+// 八格法（部分格）：主星（④月支蔵干の十大主星）を軸に判定。該当が無ければブロックごと非表示。
+// 雑気財官印綬格は主星とは別基準（月支の土旺＋年干月干の透干根）のため、判定結果をこのブロックに合算表示する。
+function hachikakuHTML(r){
+  const fiveStars = [r.year.star, r.month.star, r.year.starZoukan, r.month.starZoukan, r.day.starZoukan];
+  const dayHasNiza = r.day.ijou && r.day.ijou.includes('日座');
+  const seimeiMonth = !!(r.seimeiTenchusatsu && r.seimeiTenchusatsu.month);
+  const isohouEntries = M.getIsohouBranchEntries(
+    M.BRANCHES[r.year.branchIdx], M.BRANCHES[r.month.branchIdx], M.BRANCHES[r.day.branchIdx],
+    M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]
+  );
+  const dayKangou = M.getKangouByPillar(M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]);
+  const dayHasKangou = dayKangou['日'].length > 0;
+
+  const hachikakuEntries = M.getHachikakuEntries(fiveStars, dayHasNiza, seimeiMonth, isohouEntries, dayHasKangou);
+  const zakkiEntries = M.getZakkiZaikanInjuGakuEntries(
+    M.BRANCHES[r.month.branchIdx], M.STEMS[r.month.stemIdx], r.dayStemIdx
+  );
+  const entries = [...hachikakuEntries, ...zakkiEntries];
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>八格法（部分格）</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 主星＝月支蔵干の十大主星（陽占人体図④）。判定条件の一部（「他に◯◯がない」の範囲など）は資料の要約から解釈したもので、要検証です。雑気財官印綬格は月支の土旺（辰未戌丑）＋月干の透干根で判定。</div>
+    </div>`;
+}
+
+// 干支特殊格：一気成生格・天干一気格・地支一気格・天干連珠格・地支連珠格・天地連珠格。該当が無ければ非表示。
+function kanshiTokushuHTML(r){
+  const entries = M.getKanshiTokushuGokakuEntries(r.year, r.month, r.day);
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>干支特殊格</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 年・月・日の干支の並び方のみで判定（主星・蔵干は不使用）。一気成生格の特殊名は該当9パターンのみに付与されます。</div>
+    </div>`;
+}
+
+// 四位純全格（四鎮貴格・四正格・四生格）：地支3つが揃った「リーチ」状態を表示。該当なしなら非表示。
+function shiiJunzenHTML(r, daiun){
+  const daiunPeriods = (daiun && !daiun.error) ? daiun.periods : null;
+  const entries = M.getShiiJunzenEntries(
+    M.BRANCHES[r.year.branchIdx], M.BRANCHES[r.month.branchIdx], M.BRANCHES[r.day.branchIdx], daiunPeriods
+  );
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>四位純全格（リーチ）</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 地支3つ（年支・月支・日支）が同グループで揃った「リーチ」状態です。大運で残り1つが巡る期間のみ四位純全格が成立します（時柱がないため地支は最大3つまでの判定）。</div>
+    </div>`;
+}
+
+// 特殊格（実例のある命式パターン）：子逢巳格・冲禄格・干合支刑格・井欄斜格/叉格・子午双包格・
+// 六甲趨乾格/印徳格・王騎龍背格/壬騎三奇格・専印合禄格・八専禄旺格・潤下破格・土局潤下格。
+function tokushuMeishikiHTML(r, daiun, nenun){
+  const isohouEntries = M.getIsohouBranchEntries(
+    M.BRANCHES[r.year.branchIdx], M.BRANCHES[r.month.branchIdx], M.BRANCHES[r.day.branchIdx],
+    M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]
+  );
+  const dayKangou = M.getKangouByPillar(M.STEMS[r.year.stemIdx], M.STEMS[r.month.stemIdx], M.STEMS[r.day.stemIdx]);
+  const dayHasKangou = dayKangou['日'].length > 0;
+  const daiunPeriods = (daiun && !daiun.error) ? daiun.periods : null;
+  const nenunYears = (nenun && !nenun.error) ? nenun.years : null;
+  const entries = M.getTokushuMeishikiEntries(
+    r.year, r.month, r.day, r.dayStemIdx, isohouEntries, dayHasKangou, daiunPeriods, nenunYears
+  );
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>特殊格</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 算命学奥義書p.118〜126の特殊格のうち、判定条件が明確なもののみ実装（干支双連格＝相手の命式が必要、干支持旺格・墓殺格系・閉畢命式系は資料確認待ちのため今回は未対応）。生処集生格の判定には『十二大従星表』の点数（ユーザー提供資料）を使用。</div>
+    </div>`;
+}
+
+// 局法：特殊五局（八相局）・別格（鳳蘭局）。全26局のうち判定条件が明確な6局のみ実装。該当なしなら非表示。
+function kyokuhouHTML(r){
+  const entries = M.getKyokuhouEntries(r.year, r.month, r.day);
+  if (!entries.length) return '';
+  return `
+    <div class="gokaku-block">
+      <h3>局法（全26局）</h3>
+      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
+      <div class="note">※ 算命学_局法_全二十六局の成立条件と運勢体系図＋カラー図（ユーザー提供資料）に基づく。主星＝④月支蔵干、北＝①年干、南＝②月干（縦線）、東＝③年支蔵干、西＝⑤日支蔵干（横線）。特殊五局（八相局）・鳳蘭局は確定条件で判定。相生局（幸運局）は縦線・横線それぞれ3つの星の五行を集合として見て、五行相生の環でつながり止まる終星を判定（カラー図の実例・不成立例で確認済み）。相剋局（凶運局）は主星と縦線・横線いずれかの星との相剋関係で判定（カラー図の通関星表示で確認済み）。</div>
+    </div>`;
+}
+
+// 干支番号(1-60)→円周上の座標。1を真上(12時)にして時計回りに配置。
+function koudouIkiPoint(ganzhiNo, radius, cx, cy){
+  const angleDeg = (ganzhiNo - 1) * 6;
+  const angleRad = angleDeg * Math.PI / 180;
+  return { x: cx + radius * Math.sin(angleRad), y: cy - radius * Math.cos(angleRad), angleDeg };
+}
+
+// 行動領域：年・月・日の干支番号を円周上にプロットし、三角形で結ぶ。
+function koudouIkiHTML(r){
+  const cx = 320, cy = 320, R = 220, RLabel = 248, RDomain = 118;
+
+  const pillars = [
+    { label: '年', num: r.year.ganzhiIdx + 1, color: 'var(--gold-bright)' },
+    { label: '月', num: r.month.ganzhiIdx + 1, color: 'var(--el-fire)' },
+    { label: '日', num: r.day.ganzhiIdx + 1, color: 'var(--el-water)' },
+  ];
+
+  // 60の目盛りと数字（1が真上、時計回り）
+  let ticks = '', numLabels = '';
+  for (let n = 1; n <= 60; n++){
+    const p = koudouIkiPoint(n, R, cx, cy);
+    const pOuter = koudouIkiPoint(n, R + 9, cx, cy);
+    ticks += `<line x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${pOuter.x.toFixed(1)}" y2="${pOuter.y.toFixed(1)}" stroke="var(--paper-dim)" stroke-width="1" opacity="0.55"/>`;
+    const pLabel = koudouIkiPoint(n, RLabel, cx, cy);
+    numLabels += `<text x="${pLabel.x.toFixed(1)}" y="${pLabel.y.toFixed(1)}" font-size="11.5" fill="var(--paper-dim)" text-anchor="middle" dominant-baseline="middle" transform="rotate(${p.angleDeg.toFixed(1)} ${pLabel.x.toFixed(1)} ${pLabel.y.toFixed(1)})">${n}</text>`;
+  }
+
+  // 十字線（4領域に分割：1・16・31・46の位置を通る）
+  const cross = `
+    <line x1="${cx}" y1="${cy-R}" x2="${cx}" y2="${cy+R}" stroke="var(--line)" stroke-width="1"/>
+    <line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="var(--line)" stroke-width="1"/>`;
+
+  // 4領域ラベル（右上=第一, 右下=第二, 左下=第三, 左上=第四）
+  const domainAngles = { '第一領域': 45, '第二領域': 135, '第三領域': 225, '第四領域': 315 };
+  let domainLabels = '';
+  M.KOUDOU_DOMAINS.forEach(d => {
+    const angle = domainAngles[d.name];
+    const rad = angle * Math.PI / 180;
+    const lx = cx + RDomain * Math.sin(rad);
+    const ly = cy - RDomain * Math.cos(rad);
+    domainLabels += `
+      <text x="${lx.toFixed(1)}" y="${(ly-32).toFixed(1)}" font-size="14" fill="var(--paper-dim)" text-anchor="middle">【${d.name}】</text>
+      <text x="${lx.toFixed(1)}" y="${(ly-6).toFixed(1)}" font-size="22" fill="var(--gold)" text-anchor="middle" font-family="Zen Old Mincho, serif">${d.keyword}</text>
+      <text x="${lx.toFixed(1)}" y="${(ly+18).toFixed(1)}" font-size="11" fill="var(--paper-dim)" text-anchor="middle">${d.desc}</text>`;
+  });
+
+  // 年月日の3点＋三角形
+  const pts = pillars.map(p => ({ ...p, ...koudouIkiPoint(p.num, R, cx, cy) }));
+  const polygonPoints = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  let vertexMarkers = '';
+  pts.forEach(p => {
+    vertexMarkers += `
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="6.5" fill="${p.color}" stroke="var(--ink)" stroke-width="1.5"/>`;
+  });
+
+  const svg = `
+    <svg viewBox="0 0 640 640" style="width:100%; max-width:520px; display:block;">
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+      ${cross}
+      ${ticks}
+      ${numLabels}
+      ${domainLabels}
+      <polygon points="${polygonPoints}" fill="rgba(94,158,214,0.22)" stroke="rgba(94,158,214,0.9)" stroke-width="2"/>
+      ${vertexMarkers}
+    </svg>`;
+
+  const summary = pillars.map(p => {
+    const d = M.getKoudouDomain(p.num);
+    return `<div class="koudou-summary-item"><span class="dot" style="background:${p.color}"></span>${p.label}干支＝${M.ganzhiName(p.num - 1)}（No.${p.num}）→ ${d.name}「${d.keyword}」</div>`;
+  }).join('');
+
+  return `
+    <div class="koudou-block">
+      <h3>行動領域</h3>
+      <div class="koudou-svg-wrap">${svg}</div>
+      <div class="koudou-summary">${summary}</div>
+      <div class="note">※ 干支番号（甲子=1〜癸亥=60）を円周上に時計回りに配置し、1を起点に4等分。年・月・日の干支番号を結んだ三角形の位置と広がりで行動領域の傾向を見ます。</div>
+    </div>`;
+}
+
+function youzenhyouHTML(r){
+  const y = r.year, mo = r.month, da = r.day;
+  const seimei = r.seimeiTenchusatsu || {};
+  const yearHl = seimei.year ? 'jt-seimei-hl' : '';
+  const monthHl = seimei.month ? 'jt-seimei-hl' : '';
+
+  // 生年冲殺→①③⑥（年干・年支蔵干・初年期）、生月冲殺→②④⑦（月干・月支蔵干・中年期）に反映。生日冲殺は対象外。
+  const c1 = jtCellHTML(1, y.star, true, yearHl);
+  const c2 = jtCellHTML(2, mo.star, true, monthHl);
+  const c3 = jtCellHTML(3, y.starZoukan, true, yearHl);
+  const c4 = jtCellHTML(4, mo.starZoukan, true, monthHl);
+  const c5 = jtCellHTML(5, da.starZoukan, true);
+  const c6 = jtCellHTML(6, y.juuni, false, yearHl, M.JUUNI_STAR_POINTS[y.juuni]);
+  const c7 = jtCellHTML(7, mo.juuni, false, monthHl, M.JUUNI_STAR_POINTS[mo.juuni]);
+  const c8 = jtCellHTML(8, da.juuni, false, '', M.JUUNI_STAR_POINTS[da.juuni]);
+  const cEmpty = `<div class="jt-cell jt-empty"></div>`;
+
+  return `
+    <div class="jintaizu-wrap">
+      <div class="jintaizu-grid">
+        ${cEmpty}
+        ${c1}
+        ${c6}
+        ${c5}
+        ${c4}
+        ${c3}
+        ${c8}
+        ${c2}
+        ${c7}
+      </div>
+    </div>
+  `;
+}
+
+function daiunTableHTML(daiun){
+  if (daiun.error){
+    return `<div class="block"><p>${daiun.error}</p></div>`;
+  }
+  const rows = daiun.periods.map(p=>{
+    const stemChar = M.STEMS[p.stemIdx], branchChar = M.BRANCHES[p.branchIdx];
+    const stemEl = M.STEM_ELEMENT[p.stemIdx], branchEl = M.BRANCH_ELEMENT[p.branchIdx];
+    const rowCls = [
+      p.ijou && p.ijou.length ? 'daiun-ijou' : '',
+      p.isTenchu ? 'daiun-tenchu' : '',
+    ].filter(Boolean).join(' ');
+    const yearStart = daiun.birthYear + p.ageStart;
+    return `<tr class="${rowCls}">
+      <td class="year-cell">${yearStart}-</td>
+      <td class="age-cell">${p.ageStart}〜${p.ageEnd}歳</td>
+      <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
+      <td>${p.star}</td>
+      <td>${p.juuni}</td>
+    </tr>`;
+  }).join('');
+
+  const hasIjou = daiun.periods.some(p => p.ijou && p.ijou.length);
+  const hasTenchu = daiun.periods.some(p => p.isTenchu);
+  let legend = '';
+  if (hasIjou || hasTenchu){
+    const parts = [];
+    if (hasIjou) parts.push('<span class="legend-item"><span class="legend-swatch legend-ijou"></span>異常干支</span>');
+    if (hasTenchu) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu"></span>大運天中殺</span>');
+    legend = `<div class="daiun-legend">${parts.join('　')}</div>`;
+  }
+
+  return `
+    <div class="daiun-header">
+      <span class="meta">運行：<b>${daiun.junGyaku}</b>　起運年齢：<b>${daiun.startAge}歳</b>（節入りまでの日数 ${daiun.days}日）</span>
+    </div>
+    ${legend}
+    <div class="daiun-table-wrap">
+      <table class="daiun-table">
+        <thead><tr><th>西暦</th><th>年齢</th><th>大運干支</th><th>十大主星</th><th>十二大従星</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function nenunRowHTML(y, todayYear){
+  const stemChar = M.STEMS[y.stemIdx], branchChar = M.BRANCHES[y.branchIdx];
+  const stemEl = M.STEM_ELEMENT[y.stemIdx], branchEl = M.BRANCH_ELEMENT[y.branchIdx];
+  const isToday = y.year === todayYear;
+  return `<tr class="${isToday ? 'nenun-today' : ''}">
+    <td class="age-cell">${y.year}年<span class="nenun-age">（${y.age}歳）</span></td>
+    <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
+    <td>${y.star}</td>
+    <td>${y.juuni}</td>
+  </tr>`;
+}
+
+function nenunTableHTML(nenun){
+  if (nenun.error){
+    return `<div class="block"><p>${nenun.error}</p></div>`;
+  }
+  const todayYear = new Date().getFullYear();
+  const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
+  const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
+
+  const allRows = nenun.years.map(y => nenunRowHTML(y, todayYear)).join('');
+  const defaultRows = nenun.years
+    .filter(y => y.year >= defaultStart && y.year <= defaultEnd)
+    .map(y => nenunRowHTML(y, todayYear)).join('');
+
+  const rangeNote = nenun.lastYear < nenun.birthYear + 99
+    ? `<span class="nenun-note">（データ対応範囲の都合により${nenun.lastYear}年までを表示）</span>`
+    : '';
+
+  return `
+    <div class="nenun-header">
+      <span class="meta">表示中：<b id="nenun-range-label">${defaultStart}〜${defaultEnd}年</b>${rangeNote}</span>
+      <button class="btn-secondary btn-nenun-toggle" id="btn-nenun-toggle" data-expanded="false">生涯分を全て表示</button>
+    </div>
+    <div class="daiun-table-wrap">
+      <table class="daiun-table" id="nenun-table">
+        <thead><tr><th>西暦（年齢）</th><th>年運干支</th><th>十大主星</th><th>十二大従星</th></tr></thead>
+        <tbody id="nenun-tbody-default" style="display:table-row-group;">${defaultRows}</tbody>
+        <tbody id="nenun-tbody-all" style="display:none;">${allRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function buildResultHTML(r, daiun, nenun, name){
+  const dateLabel = `${r.input.y}年${r.input.m}月${r.input.d}日`;
+  const nameLabel = name ? `${name} 様　` : '';
+
+  let guardianHtml = '';
+  if (r.guardian){
+    const kijinStr = r.guardian.kijin === null
+      ? '条件により異なる（火性・水性のバランスで決まるため早見表では一定しません）'
+      : r.guardian.kijin.join('・');
+    guardianHtml = `
+      <div class="guardian-block">
+        <h3>調候の守護神（日干「${r.guardian.dayStem}」× 月支「${r.guardian.monthBranch}」）</h3>
+        <div class="cand">${r.guardian.zoukan}</div>
+        <p>${r.guardian.text}</p>
+        <div class="kijin-row"><span class="kijin-label">忌神</span><span class="kijin-val">${kijinStr}</span></div>
+        <div class="note">※ 早見表に基づく候補です。実際の守護神決定には、他の透干状況・身強身弱・後天運との組み合わせを合わせた考察が必要です（守護神法ノート参照）。</div>
+      </div>`;
+  } else {
+    guardianHtml = `<div class="guardian-block"><p>調候の守護神データが見つかりませんでした。</p></div>`;
+  }
+
+  let shinkyoHtml = '';
+  if (r.shinkyo){
+    const s = r.shinkyo;
+    const detailParts = [
+      `強星：${s.strongStars.length}`,
+      `中星：${s.midStars.length}`,
+      `弱星：${s.weakStars.length}`,
+    ];
+    shinkyoHtml = `
+      <div class="shinkyo-block">
+        <h3>身強・身弱（十二大従星による判定）</h3>
+        <div class="level">${s.level}</div>
+        <div class="detail">${detailParts.join('<br>')}</div>
+      </div>`;
+  }
+
+  return `
+    <div class="meishiki-title">
+      <span>陰占表</span>
+      <span class="date-label">${nameLabel}${dateLabel} 生まれ</span>
+    </div>
+    ${inyouhyouHTML(r)}
+    ${gogyouMemoHTML(r)}
+    ${juukaGokakuHTML(r)}
+    ${hachikakuHTML(r)}
+    ${kanshiTokushuHTML(r)}
+    ${shiiJunzenHTML(r, daiun)}
+    ${tokushuMeishikiHTML(r, daiun, nenun)}
+    ${kyokuhouHTML(r)}
+
+    <div class="meishiki-title">
+      <span>陽占表</span>
+    </div>
+    ${youzenhyouHTML(r)}
+
+    ${shinkyoHtml}
+    ${guardianHtml}
+
+    <div class="meishiki-title">
+      <span>大運（後天運）</span>
+    </div>
+    ${daiunTableHTML(daiun)}
+
+    <div class="meishiki-title">
+      <span>年運</span>
+    </div>
+    ${nenunTableHTML(nenun)}
+    ${koudouIkiHTML(r)}
+
+    <div class="actions">
+      <button class="btn-secondary" id="btn-copy-md">Markdownをコピー（Obsidian用）</button>
+      <span class="copy-feedback" id="copy-feedback">コピーしました</span>
+    </div>
+  `;
+}
+
+function buildMarkdown(r, daiun, genderLabel, nenun, name){
+  const dateLabel = `${r.input.y}年${r.input.m}月${r.input.d}日`;
+  const nameLabel = name ? `${name} 様の` : '';
+  const y = r.year, mo = r.month, da = r.day;
+  const gz = (p)=> M.STEMS[p.stemIdx] + M.BRANCHES[p.branchIdx];
+
+  let md = '';
+  md += `## ${nameLabel}命式（${dateLabel}生まれ・${genderLabel}）\n\n`;
+  md += `| 年柱 | 月柱 | 日柱 |\n`;
+  md += `| :-: | :-: | :-: |\n`;
+  md += `| ${gz(y)} | ${gz(mo)} | ${gz(da)} |\n`;
+  md += `| (No.${y.ganzhiIdx + 1}) | (No.${mo.ganzhiIdx + 1}) | (No.${da.ganzhiIdx + 1}) |\n\n`;
+  md += `**蔵干**：年支＝${y.zoukan.stem}（${y.zoukan.label}）／月支＝${mo.zoukan.stem}（${mo.zoukan.label}）／日支＝${da.zoukan.stem}（${da.zoukan.label}）\n\n`;
+  const gogyouCols = ['日','月','年'];
+  const gogyouStemEls = [da, mo, y].map(p => M.STEM_ELEMENT[p.stemIdx]);
+  const gogyouBranchEls = [da, mo, y].map(p => M.BRANCH_ELEMENT[p.branchIdx]);
+  const kangouGogyou = M.getKangouByPillar(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]);
+  const gogyouAfterStemEls = gogyouCols.map((key, i) => {
+    const originalElement = gogyouStemEls[i];
+    const changed = [...new Set(kangouGogyou[key].filter(h => h.element !== originalElement).map(h => h.element))];
+    return changed.length ? changed[0] : originalElement;
+  });
+  const gogyouHasChange = gogyouAfterStemEls.some((el, i) => el !== gogyouStemEls[i]);
+  md += `**五行メモ**：${gogyouStemEls.join('・')} ／ ${gogyouBranchEls.join('・')}`;
+  if (gogyouHasChange){
+    md += `　→（干合変化後）→　${gogyouAfterStemEls.join('・')} ／ ${gogyouBranchEls.join('・')}`;
+  }
+  md += `\n\n`;
+  const gokakuDayElement = M.STEM_ELEMENT[da.stemIdx];
+  const gokakuOthers = [
+    { label: '年干', el: M.STEM_ELEMENT[y.stemIdx] },
+    { label: '月干', el: M.STEM_ELEMENT[mo.stemIdx] },
+    { label: '年支', el: M.BRANCH_ELEMENT[y.branchIdx] },
+    { label: '月支', el: M.BRANCH_ELEMENT[mo.branchIdx] },
+    { label: '日支', el: M.BRANCH_ELEMENT[da.branchIdx] },
+  ];
+  const gokakuSixElements = [
+    { label: '年干', el: M.STEM_ELEMENT[y.stemIdx] },
+    { label: '月干', el: M.STEM_ELEMENT[mo.stemIdx] },
+    { label: '日干', el: gokakuDayElement },
+    { label: '年支', el: M.BRANCH_ELEMENT[y.branchIdx] },
+    { label: '月支', el: M.BRANCH_ELEMENT[mo.branchIdx] },
+    { label: '日支', el: M.BRANCH_ELEMENT[da.branchIdx] },
+  ];
+  const gokakuJuukaEntries = M.getJuukaGokakuEntries(gokakuDayElement, gokakuOthers);
+  const gokakuInjuEntries = M.getInjuGakuEntries(gokakuDayElement, gokakuOthers);
+  const gokakuIkkiEntries = M.getIkkiGakuEntries(gokakuSixElements);
+  let gokakuKyokiJuuka = [], gokakuKyokiInju = [], gokakuKyokiIkki = [];
+  if (!gokakuJuukaEntries.length || !gokakuInjuEntries.length || !gokakuIkkiEntries.length){
+    const gokakuOthersAfter = M.applyKangouToElements(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx], gokakuOthers);
+    const gokakuSixAfter = M.applyKangouToElements(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx], gokakuSixElements);
+    if (!gokakuJuukaEntries.length) gokakuKyokiJuuka = M.getJuukaGokakuEntries(gokakuDayElement, gokakuOthersAfter).map(e => `[虚気]${e}`);
+    if (!gokakuInjuEntries.length) gokakuKyokiInju = M.getInjuGakuEntries(gokakuDayElement, gokakuOthersAfter).map(e => `[虚気]${e}`);
+    if (!gokakuIkkiEntries.length) gokakuKyokiIkki = M.getIkkiGakuEntries(gokakuSixAfter).map(e => `[虚気]${e}`);
+  }
+  const gokakuEntries = [
+    ...gokakuJuukaEntries, ...gokakuKyokiJuuka,
+    ...gokakuInjuEntries, ...gokakuKyokiInju,
+    ...gokakuIkkiEntries, ...gokakuKyokiIkki,
+    ...M.getNishouGakuEntries(gokakuSixElements),
+  ];
+  if (gokakuEntries.length){
+    md += `**完全格（従化五格・印綬格・一気格・二象格）**：${gokakuEntries.join('／')}\n\n`;
+  }
+  const hachikakuFiveStars = [y.star, mo.star, y.starZoukan, mo.starZoukan, da.starZoukan];
+  const hachikakuDayHasNiza = da.ijou && da.ijou.includes('日座');
+  const hachikakuSeimeiMonth = !!(r.seimeiTenchusatsu && r.seimeiTenchusatsu.month);
+  const hachikakuIsohou = M.getIsohouBranchEntries(
+    M.BRANCHES[y.branchIdx], M.BRANCHES[mo.branchIdx], M.BRANCHES[da.branchIdx],
+    M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]
+  );
+  const hachikakuDayKangou = M.getKangouByPillar(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]);
+  const hachikakuEntries = M.getHachikakuEntries(
+    hachikakuFiveStars, hachikakuDayHasNiza, hachikakuSeimeiMonth, hachikakuIsohou, hachikakuDayKangou['日'].length > 0
+  );
+  const zakkiEntries = M.getZakkiZaikanInjuGakuEntries(M.BRANCHES[mo.branchIdx], M.STEMS[mo.stemIdx], r.dayStemIdx);
+  const hachikakuAllEntries = [...hachikakuEntries, ...zakkiEntries];
+  if (hachikakuAllEntries.length){
+    md += `**八格法（部分格）**：${hachikakuAllEntries.join('／')}\n\n`;
+  }
+  const kanshiTokushuEntries = M.getKanshiTokushuGokakuEntries(r.year, r.month, r.day);
+  if (kanshiTokushuEntries.length){
+    md += `**干支特殊格**：${kanshiTokushuEntries.join('／')}\n\n`;
+  }
+  const shiiJunzenDaiunPeriods = (daiun && !daiun.error) ? daiun.periods : null;
+  const shiiJunzenEntries = M.getShiiJunzenEntries(
+    M.BRANCHES[y.branchIdx], M.BRANCHES[mo.branchIdx], M.BRANCHES[da.branchIdx], shiiJunzenDaiunPeriods
+  );
+  if (shiiJunzenEntries.length){
+    md += `**四位純全格（リーチ）**：${shiiJunzenEntries.join('／')}\n\n`;
+  }
+  const tokushuIsohou = M.getIsohouBranchEntries(
+    M.BRANCHES[y.branchIdx], M.BRANCHES[mo.branchIdx], M.BRANCHES[da.branchIdx],
+    M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]
+  );
+  const tokushuDayKangou = M.getKangouByPillar(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]);
+  const tokushuNenunYears = (nenun && !nenun.error) ? nenun.years : null;
+  const tokushuMeishikiEntries = M.getTokushuMeishikiEntries(
+    r.year, r.month, r.day, r.dayStemIdx, tokushuIsohou, tokushuDayKangou['日'].length > 0, shiiJunzenDaiunPeriods, tokushuNenunYears
+  );
+  if (tokushuMeishikiEntries.length){
+    md += `**特殊格**：${tokushuMeishikiEntries.join('／')}\n\n`;
+  }
+  const kyokuhouEntries = M.getKyokuhouEntries(r.year, r.month, r.day);
+  if (kyokuhouEntries.length){
+    md += `**局法**：${kyokuhouEntries.join('／')}\n\n`;
+  }
+  md += `**陽占（人体図）**：①年干＝${y.star}／②月干＝${mo.star}／③年支蔵干＝${y.starZoukan}／④月支蔵干＝${mo.starZoukan}／⑤日支蔵干＝${da.starZoukan}／⑥初年期(年支)＝${y.juuni}（${y.stage}）／⑦中年期(月支)＝${mo.juuni}（${mo.stage}）／⑧晩年期(日支)＝${da.juuni}（${da.stage}）\n\n`;
+  if (r.shinkyo){
+    const s = r.shinkyo;
+    md += `**身強・身弱**：${s.level}（強星：${s.strongStars.length}／中星：${s.midStars.length}／弱星：${s.weakStars.length}）\n\n`;
+  }
+  md += `**天中殺**：日干支＝${r.tenchuusatsu.join('')}天中殺／年干支＝${r.yearTenchuusatsu.join('')}天中殺\n\n`;
+  const seimeiList = [];
+  if (r.seimeiTenchusatsu.year) seimeiList.push('生年天中殺（年支が日干支の天中殺と重なる）');
+  if (r.seimeiTenchusatsu.month) seimeiList.push('生月天中殺（月支が日干支の天中殺と重なる）');
+  if (r.seimeiTenchusatsu.day) seimeiList.push('生日天中殺（日支が年干支の天中殺と重なる）');
+  if (seimeiList.length){
+    md += `**宿命天中殺**：${seimeiList.join('／')}\n\n`;
+  }
+  const ijouList = [];
+  if (da.ijou && da.ijou.length) ijouList.push(`日柱＝${gz(da)}（${da.ijou.join('・')}）`);
+  if (mo.ijou && mo.ijou.length) ijouList.push(`月柱＝${gz(mo)}（${mo.ijou.join('・')}）`);
+  if (y.ijou && y.ijou.length) ijouList.push(`年柱＝${gz(y)}（${y.ijou.join('・')}）`);
+  if (ijouList.length){
+    md += `**異常干支**：${ijouList.join('／')}\n\n`;
+  }
+  const kangouMd = M.getKangouByPillar(M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]);
+  const kangouPairOrderMd = [['日','月'], ['月','年'], ['日','年']];
+  const kangouListMd = kangouPairOrderMd
+    .filter(([a,b]) => kangouMd[a].some(h => h.partner === b))
+    .map(([a,b]) => `干合（${a}・${b}）`);
+  const pillarStemIdxMd = { '日': da.stemIdx, '月': mo.stemIdx, '年': y.stemIdx };
+  const kangouHenkaListMd = ['日','月','年']
+    .map(key => {
+      const originalElement = M.STEM_ELEMENT[pillarStemIdxMd[key]];
+      const changed = [...new Set(kangouMd[key].filter(h => h.element !== originalElement).map(h => h.element))];
+      return changed.length ? `${key}柱＝${changed.join('・')}` : null;
+    })
+    .filter(Boolean);
+  if (kangouHenkaListMd.length){
+    md += `**干合変化**：${kangouHenkaListMd.join('　')}\n\n`;
+  }
+  const branchEntriesMd = M.getIsohouBranchEntries(M.BRANCHES[y.branchIdx], M.BRANCHES[mo.branchIdx], M.BRANCHES[da.branchIdx], M.STEMS[y.stemIdx], M.STEMS[mo.stemIdx], M.STEMS[da.stemIdx]);
+  const isohouListMd = [...kangouListMd, ...branchEntriesMd];
+  if (isohouListMd.length){
+    md += `**位相法**：${isohouListMd.join('　')}\n\n`;
+  }
+  if (r.guardian){
+    md += `**調候の守護神**（日干「${r.guardian.dayStem}」×月支「${r.guardian.monthBranch}」、${r.guardian.zoukan}）：\n${r.guardian.text}\n\n`;
+    const kijinStr = r.guardian.kijin === null ? '条件により異なる（火性・水性のバランスで決まる）' : r.guardian.kijin.join('・');
+    md += `**忌神**：${kijinStr}\n\n`;
+  }
+  md += `**日干**：${M.STEMS[r.dayStemIdx]}（${M.STEM_ELEMENT[r.dayStemIdx]}性・${M.STEM_YINYANG[r.dayStemIdx]}干）　**月柱節入り**：${mo.setsuiri.y}年${mo.setsuiri.m}月${mo.setsuiri.d}日\n\n`;
+
+  if (daiun && !daiun.error){
+    md += `### 大運（${daiun.junGyaku}／起運${daiun.startAge}歳／節入りまでの日数${daiun.days}日）\n\n`;
+    md += `| 西暦 | 年齢 | 大運干支 | 十大主星 | 十二大従星 | 備考 |\n`;
+    md += `| :-: | :-: | :-: | :-: | :-: | :-: |\n`;
+    daiun.periods.forEach(p=>{
+      const notes = [];
+      if (p.ijou && p.ijou.length) notes.push(`異常干支(${p.ijou.join('・')})`);
+      if (p.isTenchu) notes.push('大運天中殺');
+      const yearStart = daiun.birthYear + p.ageStart;
+      md += `| ${yearStart}- | ${p.ageStart}〜${p.ageEnd}歳 | ${M.STEMS[p.stemIdx]}${M.BRANCHES[p.branchIdx]} | ${p.star} | ${p.juuni} | ${notes.join('・') || '－'} |\n`;
+    });
+    md += `\n`;
+  }
+  if (nenun && !nenun.error){
+    const todayYear = new Date().getFullYear();
+    const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
+    const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
+    md += `### 年運（${defaultStart}〜${defaultEnd}年。全期間はアプリ上で「生涯分を全て表示」より確認できます）\n\n`;
+    md += `| 西暦（年齢） | 年運干支 | 十大主星 | 十二大従星 |\n`;
+    md += `| :-: | :-: | :-: | :-: |\n`;
+    nenun.years.filter(yy=>yy.year>=defaultStart && yy.year<=defaultEnd).forEach(yy=>{
+      md += `| ${yy.year}年（${yy.age}歳） | ${M.STEMS[yy.stemIdx]}${M.BRANCHES[yy.branchIdx]} | ${yy.star} | ${yy.juuni} |\n`;
+    });
+    md += `\n`;
+  }
+  const koudouPillars = [
+    { label: '年', num: y.ganzhiIdx + 1 },
+    { label: '月', num: mo.ganzhiIdx + 1 },
+    { label: '日', num: da.ganzhiIdx + 1 },
+  ];
+  const koudouStr = koudouPillars.map(p => {
+    const d = M.getKoudouDomain(p.num);
+    return `${p.label}＝${M.ganzhiName(p.num - 1)}(No.${p.num}・${d.name}「${d.keyword}」)`;
+  }).join('／');
+  md += `**行動領域**：${koudouStr}\n\n`;
+  return md;
+}
+
+function showError(msg){
+  const box = document.getElementById('error-box');
+  box.textContent = msg;
+  box.style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+}
+function hideError(){
+  document.getElementById('error-box').style.display = 'none';
+}
+
+function run(){
+  try {
+    runInner();
+  } catch (e){
+    // 何らかの理由で計算・描画中に例外が発生した場合、無反応にせず必ず画面に理由を表示する
+    console.error(e);
+    showError('エラーが発生しました：' + (e && e.message ? e.message : String(e)) + '（画面を再読み込みしてもう一度お試しください）');
+  }
+}
+
+function runInner(){
+  const name = document.getElementById('in-name').value.trim();
+  const y = parseInt(document.getElementById('in-year').value, 10);
+  const m = parseInt(document.getElementById('in-month').value, 10);
+  const d = parseInt(document.getElementById('in-day').value, 10);
+  const gender = document.getElementById('in-gender').value;
+  const genderLabel = gender === 'M' ? '男性' : '女性';
+
+  if (!y || !m || !d || m < 1 || m > 12 || d < 1 || d > 31){
+    showError('生年月日を正しく入力してください。');
+    return;
+  }
+  // basic calendar validity check
+  const testDate = new Date(Date.UTC(y, m-1, d));
+  if (testDate.getUTCFullYear() !== y || testDate.getUTCMonth() !== m-1 || testDate.getUTCDate() !== d){
+    showError('存在しない日付です。もう一度確認してください。');
+    return;
+  }
+
+  const r = M.calcMeishiki(y,m,d);
+  if (r.error){
+    showError(r.error);
+    return;
+  }
+  hideError();
+  const daiun = M.calcDaiun(y,m,d,gender);
+  const nenun = M.calcNenun(y,m,d);
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = buildResultHTML(r, daiun, nenun, name);
+  resultDiv.style.display = 'block';
+
+  const toggleBtn = document.getElementById('btn-nenun-toggle');
+  if (toggleBtn){
+    toggleBtn.addEventListener('click', function(){
+      const expanded = toggleBtn.getAttribute('data-expanded') === 'true';
+      const defaultBody = document.getElementById('nenun-tbody-default');
+      const allBody = document.getElementById('nenun-tbody-all');
+      const rangeLabel = document.getElementById('nenun-range-label');
+      if (expanded){
+        defaultBody.style.display = 'table-row-group';
+        allBody.style.display = 'none';
+        toggleBtn.textContent = '生涯分を全て表示';
+        toggleBtn.setAttribute('data-expanded', 'false');
+        const todayYear = new Date().getFullYear();
+        const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
+        const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
+        rangeLabel.textContent = `${defaultStart}〜${defaultEnd}年`;
+      } else {
+        defaultBody.style.display = 'none';
+        allBody.style.display = 'table-row-group';
+        toggleBtn.textContent = '直近の期間のみ表示';
+        toggleBtn.setAttribute('data-expanded', 'true');
+        rangeLabel.textContent = `${nenun.birthYear}〜${nenun.lastYear}年（生涯分）`;
+      }
+    });
+  }
+
+  document.getElementById('btn-copy-md').addEventListener('click', function(){
+    const md = buildMarkdown(r, daiun, genderLabel, nenun, name);
+    navigator.clipboard.writeText(md).then(function(){
+      const fb = document.getElementById('copy-feedback');
+      fb.classList.add('show');
+      setTimeout(()=>fb.classList.remove('show'), 1800);
+    }).catch(function(){
+      // fallback: select text via a temporary textarea
+      const ta = document.createElement('textarea');
+      ta.value = md;
+      document.body.appendChild(ta);
+      ta.select();
+      try{ document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta);
+      const fb = document.getElementById('copy-feedback');
+      fb.classList.add('show');
+      setTimeout(()=>fb.classList.remove('show'), 1800);
+    });
+  });
+
+  resultDiv.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('btn-calc').addEventListener('click', run);
+document.getElementById('in-day').addEventListener('keydown', function(e){ if (e.key === 'Enter') run(); });
+document.getElementById('in-month').addEventListener('keydown', function(e){ if (e.key === 'Enter') run(); });
+document.getElementById('in-year').addEventListener('keydown', function(e){ if (e.key === 'Enter') run(); });
+
+// iOSなどスマートフォンでは、数値入力用キーボードが開いている間「命式を出す」ボタンが
+// 画面外（キーボードの下）に隠れてタップできなくなることがあるため、
+// 入力欄にフォーカスが当たったタイミングでボタンが見える位置まで自動スクロールする。
+['in-year','in-month','in-day'].forEach(function(id){
+  const el = document.getElementById(id);
+  el.addEventListener('focus', function(){
+    setTimeout(function(){
+      const btn = document.getElementById('btn-calc');
+      if (btn) btn.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 300); // キーボードが開くアニメーションの完了を待つ
+  });
+});
+
+})();
+
+</script>
+</body>
+</html>
