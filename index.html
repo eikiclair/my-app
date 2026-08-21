@@ -1281,14 +1281,16 @@ function getHachikakuEntries(fiveStars, dayHasNiza, seimeiMonth, isohouEntries, 
     entries.push('正官格');
   }
 
-  // 偏官格・七殺格・元殺格：主星＝車騎星。鳳閣・調舒があれば偏官格、なければ七殺格。
-  // 七殺格でさらに日支蔵干（⑤）も車騎星なら元殺格を追加。
+  // 偏官格・七殺格・天元殺：主星＝車騎星。鳳閣・調舒があれば偏官格、なければ七殺格。
+  // 七殺格でさらに日支蔵干（⑤）も車騎星なら天元殺を追加。
+  // 2026-08-21 修正：紙資料（原本）では「天元殺」。デジタル化資料（Google Sheets）側の
+  // 「元殺格」表記はユーザーによる転記時の読み取りエラーと判明したため訂正（ユーザー確認済み）。
   if (shusei === '車騎星' && monthClean && !seimeiMonth){
     if (anyStarPresent(fiveStars, ['鳳閣星', '調舒星'])){
       entries.push('偏官格');
     } else {
       entries.push('七殺格');
-      if (fiveStars[4] === '車騎星') entries.push('元殺格');
+      if (fiveStars[4] === '車騎星') entries.push('天元殺');
     }
   }
 
