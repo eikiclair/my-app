@@ -317,6 +317,21 @@ table.daiun-table tr.daiun-ijou.daiun-tenchu{
 .legend-swatch{ display:inline-block; width:12px; height:12px; border-radius:2px; }
 .legend-swatch.legend-ijou{ background: var(--ijou-purple-bg); box-shadow: inset 0 0 0 1px rgba(138,111,176,0.5); }
 .legend-swatch.legend-tenchu{ background: var(--tenchu-bg); box-shadow: inset 0 0 0 1px rgba(184,73,47,0.5); }
+.legend-swatch.legend-tenchu-shift{ background: transparent; box-sizing:border-box; border: 2px solid var(--vermillion); border-radius:1px; }
+
+/* 大運天中殺の移動範囲：対象行をひとつなぎの赤枠で囲む（内側に縦線は出さない） */
+table.daiun-table tbody tr.tenchu-shift-row td:first-child{
+  border-left: 2px solid var(--vermillion);
+}
+table.daiun-table tbody tr.tenchu-shift-row td:last-child{
+  border-right: 2px solid var(--vermillion);
+}
+table.daiun-table tbody tr.tenchu-shift-start td{
+  border-top: 2px solid var(--vermillion);
+}
+table.daiun-table tbody tr.tenchu-shift-end td{
+  border-bottom: 2px solid var(--vermillion);
+}
 
 /* element color coding */
 .el-木{ color: var(--el-wood); }
@@ -740,6 +755,16 @@ table.daiun-table .isohou-cell{
   font-size: 12px;
   color: var(--paper-dim);
   min-width: 82px;
+}
+table.daiun-table td.tenchu-mark-cell{
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--vermillion);
+}
+table.daiun-table td.ijou-mark-cell{
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ijou-purple);
 }
 
 /* ===== 年運 table ===== */
@@ -2064,6 +2089,7 @@ function calcNenun(y, m, d){
 
   const birthYear = y;
   const lastYear = Math.min(birthYear + 99, CALENDAR_END_YEAR);
+  const tenchuBranchIdx = getTenchuusatsuBranches(meishiki.day.ganzhiIdx); // 本人の日干支の天中殺グループ（支インデックス）
   const years = [];
   for (let yy = birthYear; yy <= lastYear; yy++){
     const yd = getYearData(yy);
@@ -2079,6 +2105,8 @@ function calcNenun(y, m, d){
       juuni: STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
       stage: STAGE_FROM_BRANCH[meishiki.dayStemIdx][branchIdx],
       ousoukyuushi: OUSOUKYUUSHI[STAR_FROM_BRANCH[meishiki.dayStemIdx][branchIdx]],
+      ijou: getIjouLabels(ganzhiIdx, false),
+      isTenchu: tenchuBranchIdx.includes(branchIdx), // 年運天中殺：この年運の支が本人の天中殺グループに入る
     });
   }
   return { birthYear, lastYear, years };
@@ -2099,6 +2127,8 @@ window.Meishiki = {
 
 (function(){
 const M = window.Meishiki;
+// 日座冲殺（甲戌＝ganzhiIdx10・乙亥＝ganzhiIdx11）：大運・年運の異常干支列で「日座」と個別表記するために使用
+const NIZA_GANZHI_IDX = [10, 11];
 
 function el(tag, cls, html){
   const e = document.createElement(tag);
@@ -2547,20 +2577,147 @@ function youzenhyouHTML(r){
   `;
 }
 
+// 既存の赤枠群と重なる場合、重なった旬数ぶんを最後の枠の直後にずらしてから追加する
+function resolveAndAddShiftRange(shiftRanges, candidate, lastIndex){
+  let changed = true;
+  while (changed){
+    changed = false;
+    for (const r of shiftRanges){
+      if (candidate.start <= r.end && r.start <= candidate.end){
+        const len = candidate.end - candidate.start;
+        candidate = { start: r.end + 1, end: r.end + 1 + len };
+        changed = true;
+      }
+    }
+  }
+  if (candidate.start <= lastIndex){
+    shiftRanges.push({ start: candidate.start, end: Math.min(candidate.end, lastIndex) });
+  }
+}
+
 function daiunTableHTML(daiun, natal){
   if (daiun.error){
     return `<div class="block"><p>${daiun.error}</p></div>`;
   }
-  const rows = daiun.periods.map(p=>{
+
+  const periods = daiun.periods;
+  const shiftRanges = [];
+  for (let i = 0; i < periods.length; i++){
+    if (!periods[i].isTenchu) continue;
+    if (i > 0 && periods[i-1].isTenchu) continue; // runの先頭でのみ判定
+    let runLen = 1;
+    while (i + runLen < periods.length && periods[i + runLen].isTenchu) runLen++;
+
+    const startIndex = periods[i].index;
+    const lastIndex = periods[periods.length - 1].index;
+
+    if (startIndex === 1){
+      // 初旬が絡む場合のみ、天冲殺の位置から+2旬先へ移動させる（1→3・4／1・2→3・4・5・6）
+      const boxStart = startIndex + 2;
+      const boxEndRaw = boxStart + 2 * runLen - 1;
+      if (boxStart > lastIndex) continue;
+      shiftRanges.push({ start: boxStart, end: Math.min(boxEndRaw, lastIndex) });
+    } else {
+      // 初旬以外は移動させず、天冲殺の行自体（常に2旬セットで回る）を赤枠で囲む。
+      // ただし日座冲殺ペア（甲戌・乙亥）と完全に一致するrunは、後段の日座冲殺ルール
+      // （天冲殺と重なる場合は+2旬で延長）に一本化するためスキップする。
+      if (runLen === 2){
+        const pairKey = [periods[i].ganzhiIdx, periods[i+1].ganzhiIdx].sort((x,y)=>x-y).join(',');
+        if (pairKey === NIZA_GANZHI_IDX.slice().sort((x,y)=>x-y).join(',')) continue;
+      }
+      shiftRanges.push({ start: startIndex, end: Math.min(startIndex + runLen - 1, lastIndex) });
+    }
+  }
+
+  // 初旬の西方・中央・東方いずれかに律音・納音・大半会・天剋地冲が該当する場合、3〜4旬目を赤枠で囲む。
+  // 既存の赤枠（天中殺の移動範囲）と重なる場合は、重複した旬数分をその枠の直後にずらして追加する。
+  // 2026-08-23 追加（初旬のみ・他の旬への拡張は未確認のため保留）：
+  // ・火母に従うルール：初旬の天干が丙／丁のとき、それぞれ戊／己とみなして同条件を判定し直す
+  //   （命式側の干支は変えない）
+  // ・干合ルール：命式自体（年干・月干・日干のいずれか同士）に干合が成立している場合、
+  //   その柱の天干を干合後の変化天干に置き換えて同条件を判定し直す（命式側の支・初旬側は変えない）
+  const KASOO_SUBSTITUTE = { '丙': '戊', '戊': '丙', '丁': '己', '己': '丁' }; // 火母に従う：丙⇔戊、丁⇔己（双方向）
+  const KANGOU_TRANSFORM_STEM = {
+    '甲': '戊', '己': '己', '乙': '辛', '庚': '庚', '丙': '壬',
+    '辛': '癸', '丁': '乙', '壬': '甲', '戊': '丙', '癸': '丁',
+  };
+  const triggerKeywords = ['律音', '納音', '大半会', '天剋地冲'];
+  const hasTrigger = (isohouRow) => [isohouRow.seihou, isohouRow.chuuou, isohouRow.touhou]
+    .some(text => triggerKeywords.some(kw => text.includes(kw)));
+
+  const p0 = periods[0];
+  if (p0){
+    const p0Stem = M.STEMS[p0.stemIdx], p0Branch = M.BRANCHES[p0.branchIdx];
+    let p0Hit = hasTrigger(M.getDaiunNenunIsohouRow(p0Stem, p0Branch, natal));
+
+    // 火母に従うルール
+    if (!p0Hit && KASOO_SUBSTITUTE[p0Stem]){
+      p0Hit = hasTrigger(M.getDaiunNenunIsohouRow(KASOO_SUBSTITUTE[p0Stem], p0Branch, natal));
+    }
+
+    // 干合ルール：命式内の干合が成立している柱の天干を、変化天干に置き換えて判定
+    if (!p0Hit){
+      const natalKangou = M.getKangouByPillar(natal.yearStem, natal.monthStem, natal.dayStem);
+      const pillarStemBranch = {
+        '年': [natal.yearStem, natal.yearBranch],
+        '月': [natal.monthStem, natal.monthBranch],
+        '日': [natal.dayStem, natal.dayBranch],
+      };
+      for (const pillarKey of ['年','月','日']){
+        if (p0Hit) break;
+        if (!natalKangou[pillarKey] || !natalKangou[pillarKey].length) continue;
+        const [origStem, origBranch] = pillarStemBranch[pillarKey];
+        const transformedStem = KANGOU_TRANSFORM_STEM[origStem];
+        if (!transformedStem || transformedStem === origStem) continue;
+        const transformedNatal = { ...natal };
+        if (pillarKey === '年') transformedNatal.yearStem = transformedStem;
+        if (pillarKey === '月') transformedNatal.monthStem = transformedStem;
+        if (pillarKey === '日') transformedNatal.dayStem = transformedStem;
+        p0Hit = hasTrigger(M.getDaiunNenunIsohouRow(p0Stem, p0Branch, transformedNatal));
+      }
+    }
+
+    if (p0Hit){
+      const lastIndex = periods[periods.length - 1].index;
+      resolveAndAddShiftRange(shiftRanges, { start: 3, end: 4 }, lastIndex);
+    }
+  }
+
+  // 日座冲殺（甲戌・乙亥）が隣接するペアで揃って回る箇所にも赤枠を追加する。
+  // ・どちらか一方しか現れない（範囲の境界で片方だけ切れて見える）場合は対象外
+  // ・その支（戌・亥）が本人の天中殺と重なる場合は、4旬分（+2旬）に延長する
+  // ・初旬に該当する場合は未確認のため保留（何もしない）
+  const NIZA_GANZHI_PAIR = NIZA_GANZHI_IDX; // 甲戌=10, 乙亥=11
+  for (let i = 0; i < periods.length - 1; i++){
+    const a = periods[i], b = periods[i+1];
+    const pairKey = [a.ganzhiIdx, b.ganzhiIdx].sort((x,y)=>x-y).join(',');
+    if (pairKey !== NIZA_GANZHI_PAIR.join(',')) continue;
+    if (a.index === 1 || b.index === 1) continue; // 初旬絡みは保留
+    const pairStart = Math.min(a.index, b.index);
+    const pairEnd = Math.max(a.index, b.index);
+    const extend = a.isTenchu || b.isTenchu;
+    const candidate = extend ? { start: pairStart, end: pairStart + 3 } : { start: pairStart, end: pairEnd };
+    const lastIndex = periods[periods.length - 1].index;
+    resolveAndAddShiftRange(shiftRanges, candidate, lastIndex);
+  }
+
+  const rows = periods.map(p=>{
     const stemChar = M.STEMS[p.stemIdx], branchChar = M.BRANCHES[p.branchIdx];
     const stemEl = M.STEM_ELEMENT[p.stemIdx], branchEl = M.BRANCH_ELEMENT[p.branchIdx];
     const rowCls = [
       p.ijou && p.ijou.length ? 'daiun-ijou' : '',
       p.isTenchu ? 'daiun-tenchu' : '',
-    ].filter(Boolean).join(' ');
+    ];
+    const matchedRange = shiftRanges.find(r => p.index >= r.start && p.index <= r.end);
+    if (matchedRange){
+      rowCls.push('tenchu-shift-row');
+      if (p.index === matchedRange.start) rowCls.push('tenchu-shift-start');
+      if (p.index === matchedRange.end) rowCls.push('tenchu-shift-end');
+    }
+    const rowClsStr = rowCls.filter(Boolean).join(' ');
     const yearStart = daiun.birthYear + p.ageStart;
     const isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
-    return `<tr class="${rowCls}">
+    return `<tr class="${rowClsStr}">
       <td class="year-cell">${yearStart}-</td>
       <td class="age-cell">${p.ageStart}〜${p.ageEnd}歳</td>
       <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
@@ -2569,16 +2726,19 @@ function daiunTableHTML(daiun, natal){
       <td class="isohou-cell">${isohou.seihou}</td>
       <td class="isohou-cell">${isohou.chuuou}</td>
       <td class="isohou-cell">${isohou.touhou}</td>
+      <td class="tenchu-mark-cell">${p.isTenchu ? '○' : ''}</td>
+      <td class="ijou-mark-cell">${(p.ijou && p.ijou.length) ? (NIZA_GANZHI_IDX.includes(p.ganzhiIdx) ? '日座' : '○') : ''}</td>
     </tr>`;
   }).join('');
 
-  const hasIjou = daiun.periods.some(p => p.ijou && p.ijou.length);
-  const hasTenchu = daiun.periods.some(p => p.isTenchu);
+  const hasIjou = periods.some(p => p.ijou && p.ijou.length);
+  const hasTenchu = periods.some(p => p.isTenchu);
   let legend = '';
-  if (hasIjou || hasTenchu){
+  if (hasIjou || hasTenchu || shiftRanges.length){
     const parts = [];
     if (hasIjou) parts.push('<span class="legend-item"><span class="legend-swatch legend-ijou"></span>異常干支</span>');
     if (hasTenchu) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu"></span>大運天中殺</span>');
+    if (shiftRanges.length) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu-shift"></span>天中殺移動範囲</span>');
     legend = `<div class="daiun-legend">${parts.join('　')}</div>`;
   }
 
@@ -2589,7 +2749,7 @@ function daiunTableHTML(daiun, natal){
     ${legend}
     <div class="daiun-table-wrap">
       <table class="daiun-table">
-        <thead><tr><th>西暦</th><th>年齢</th><th>大運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th></tr></thead>
+        <thead><tr><th>西暦</th><th>年齢</th><th>大運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th><th>天冲殺</th><th>異常干支</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
@@ -2602,7 +2762,12 @@ function nenunRowHTML(y, todayYear, natal){
   const stemEl = M.STEM_ELEMENT[y.stemIdx], branchEl = M.BRANCH_ELEMENT[y.branchIdx];
   const isToday = y.year === todayYear;
   const isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
-  return `<tr class="${isToday ? 'nenun-today' : ''}">
+  const rowCls = [
+    y.ijou && y.ijou.length ? 'daiun-ijou' : '',
+    y.isTenchu ? 'daiun-tenchu' : '',
+    isToday ? 'nenun-today' : '',
+  ].filter(Boolean).join(' ');
+  return `<tr class="${rowCls}">
     <td class="age-cell">${y.year}年<span class="nenun-age">（${y.age}歳）</span></td>
     <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
     <td>${y.star}</td>
@@ -2610,6 +2775,8 @@ function nenunRowHTML(y, todayYear, natal){
     <td class="isohou-cell">${isohou.seihou}</td>
     <td class="isohou-cell">${isohou.chuuou}</td>
     <td class="isohou-cell">${isohou.touhou}</td>
+    <td class="tenchu-mark-cell">${y.isTenchu ? '○' : ''}</td>
+    <td class="ijou-mark-cell">${(y.ijou && y.ijou.length) ? (NIZA_GANZHI_IDX.includes(y.ganzhiIdx) ? '日座' : '○') : ''}</td>
   </tr>`;
 }
 
@@ -2630,14 +2797,25 @@ function nenunTableHTML(nenun, natal){
     ? `<span class="nenun-note">（データ対応範囲の都合により${nenun.lastYear}年までを表示）</span>`
     : '';
 
+  const hasIjou = nenun.years.some(y => y.ijou && y.ijou.length);
+  const hasTenchu = nenun.years.some(y => y.isTenchu);
+  let legend = '';
+  if (hasIjou || hasTenchu){
+    const parts = [];
+    if (hasIjou) parts.push('<span class="legend-item"><span class="legend-swatch legend-ijou"></span>異常干支</span>');
+    if (hasTenchu) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu"></span>年運天中殺</span>');
+    legend = `<div class="daiun-legend">${parts.join('　')}</div>`;
+  }
+
   return `
     <div class="nenun-header">
       <span class="meta">表示中：<b id="nenun-range-label">${defaultStart}〜${defaultEnd}年</b>${rangeNote}</span>
       <button class="btn-secondary btn-nenun-toggle" id="btn-nenun-toggle" data-expanded="false">生涯分を全て表示</button>
     </div>
+    ${legend}
     <div class="daiun-table-wrap">
       <table class="daiun-table" id="nenun-table">
-        <thead><tr><th>西暦（年齢）</th><th>年運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th></tr></thead>
+        <thead><tr><th>西暦（年齢）</th><th>年運干支</th><th>十大主星</th><th>十二大従星</th><th>西方(日)</th><th>中央(月)</th><th>東方(年)</th><th>天冲殺</th><th>異常干支</th></tr></thead>
         <tbody id="nenun-tbody-default" style="display:table-row-group;">${defaultRows}</tbody>
         <tbody id="nenun-tbody-all" style="display:none;">${allRows}</tbody>
       </table>
