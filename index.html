@@ -1047,7 +1047,7 @@ table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
         <input type="text" id="saved-search" placeholder="名前で絞り込み">
         <button class="btn-tiny" id="btn-export" type="button">エクスポート</button>
         <label class="btn-tiny btn-import-label" for="import-file">インポート</label>
-        <input type="file" id="import-file" accept="application/json" style="display:none;">
+        <input type="file" id="import-file" accept=".json,application/json,text/plain" style="display:none;">
       </div>
       <div class="saved-tag-filter" id="saved-tag-filter"></div>
       <div class="saved-list-scroll">
@@ -4119,11 +4119,24 @@ function importSavedRecordsFromFile(file){
 }
 
 document.getElementById('btn-export').addEventListener('click', exportSavedRecords);
-document.getElementById('import-file').addEventListener('change', function(){
-  const file = this.files && this.files[0];
-  importSavedRecordsFromFile(file);
-  this.value = ''; // 同じファイルを続けて選んでもchangeイベントが発火するようリセット
-});
+(function(){
+  const importInput = document.getElementById('import-file');
+  let processing = false;
+  function handleImportChange(){
+    const file = importInput.files && importInput.files[0];
+    if (!file) return;
+    // 'change'と'input'が同一選択操作内で連続発火するブラウザ対策として、
+    // 同一tick内の二重発火のみをブロックする（次の選択操作は正常に処理される）。
+    if (processing) return;
+    processing = true;
+    importSavedRecordsFromFile(file);
+    importInput.value = ''; // 同じファイルを続けて選んでもイベントが発火するようリセット
+    setTimeout(function(){ processing = false; }, 0);
+  }
+  // 'change'が主だが、一部のiOS Safariバージョンでは'input'のみ発火するケースがあるため両方に対応
+  importInput.addEventListener('change', handleImportChange);
+  importInput.addEventListener('input', handleImportChange);
+})();
 
 renderSavedList('');
 
