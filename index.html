@@ -4059,7 +4059,7 @@ function importSavedRecordsFromFile(file){
     }
 
     const existing = loadSavedRecords();
-    let addedCount = 0, skippedCount = 0, invalidCount = 0;
+    let addedCount = 0, skippedCount = 0, invalidCount = 0, tagMergedCount = 0;
 
     importedRecords.forEach(function(r){
       const y = parseInt(r.y, 10), m = parseInt(r.m, 10), d = parseInt(r.d, 10);
@@ -4069,17 +4069,22 @@ function importSavedRecordsFromFile(file){
         return;
       }
       const name = (r.name || '').toString().trim();
+      const importedTags = Array.isArray(r.tags) ? r.tags.filter(function(t){ return typeof t === 'string' && t.trim(); }) : [];
       const dup = existing.find(function(x){
         return x.name === name && x.y === y && x.m === m && x.d === d && x.gender === gender;
       });
       if (dup){
+        // 命式自体は重複でも、タグはマージ（合体）して既存レコードに反映する。
+        const before = (dup.tags || []).length;
+        dup.tags = Array.from(new Set((dup.tags || []).concat(importedTags)));
+        if (dup.tags.length > before) tagMergedCount++;
         skippedCount++;
         return;
       }
       existing.push({
         id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
         name: name, y: y, m: m, d: d, gender: gender,
-        tags: Array.isArray(r.tags) ? r.tags.filter(function(t){ return typeof t === 'string' && t.trim(); }) : [],
+        tags: importedTags,
         savedAt: (typeof r.savedAt === 'number') ? r.savedAt : Date.now()
       });
       addedCount++;
@@ -4100,6 +4105,7 @@ function importSavedRecordsFromFile(file){
     }
     let msg = `${addedCount}件を読み込みました`;
     if (skippedCount > 0) msg += `（重複${skippedCount}件はスキップ）`;
+    if (tagMergedCount > 0) msg += `（うち${tagMergedCount}件はタグを追加反映）`;
     if (invalidCount > 0) msg += `（不正データ${invalidCount}件は無視）`;
     const fb = document.getElementById('save-feedback');
     fb.textContent = msg;
