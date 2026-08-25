@@ -485,6 +485,13 @@ table.daiun-table tbody tr.tenchu-shift-end td{
   font-size: 18px;
   color: var(--vermillion);
 }
+.gokaku-cond{
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: var(--paper-dim);
+  line-height: 1.6;
+  margin-top: 2px;
+}
 .gokaku-block .note{
   font-size: 11.5px; color: var(--paper-dim); line-height: 1.6;
 }
@@ -543,6 +550,16 @@ table.daiun-table tbody tr.tenchu-shift-end td{
 .saved-count{ color: var(--paper-dim); font-weight:400; font-size:12px; margin-left:6px; letter-spacing:0; }
 .saved-body{ margin-top:18px; }
 .saved-controls{ margin-bottom:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.saved-storage-hint{
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--paper-dim);
+  background: rgba(200,161,94,0.08);
+  border: 1px solid rgba(200,161,94,0.3);
+  border-radius: 3px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
 #saved-search{
   background: var(--ink);
   border: 1px solid var(--line);
@@ -560,6 +577,107 @@ table.daiun-table tbody tr.tenchu-shift-end td{
   box-shadow: 0 0 0 3px rgba(200,161,94,0.15);
 }
 .saved-list{ display:flex; flex-direction:column; gap:8px; }
+.saved-list-scroll{
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.saved-list-scroll::-webkit-scrollbar{ width: 6px; }
+.saved-list-scroll::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 3px; }
+.saved-tag-filter{
+  display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;
+}
+.tag-chip{
+  display:inline-flex; align-items:center; gap:4px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--paper-dim);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.tag-chip:hover{ border-color: var(--gold); color: var(--gold-bright); }
+.tag-chip.active{
+  background: rgba(200,161,94,0.18);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.tag-chip-wrap{ display:inline-flex; align-items:center; gap:2px; }
+.tag-edit-icon{
+  font-size: 11px;
+  color: var(--paper-dim);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s;
+}
+.tag-edit-icon:hover{ opacity: 1; color: var(--gold-bright); }
+.tag-rename-box{
+  display:inline-flex; align-items:center; gap:5px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 3px 6px 3px 10px;
+}
+.tag-rename-input{
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  width: 90px;
+}
+.tag-rename-input:focus{ outline:none; border-color: var(--gold); }
+.saved-item-tags{ display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin-top:4px; }
+.tag-badge{
+  display:inline-flex; align-items:center; gap:4px;
+  background: rgba(200,161,94,0.12);
+  border: 1px solid rgba(200,161,94,0.4);
+  color: var(--gold-bright);
+  font-size: 10.5px;
+  padding: 2px 7px 2px 9px;
+  border-radius: 999px;
+}
+.tag-badge .tag-remove{
+  cursor:pointer; color: var(--paper-dim); font-size:11px; line-height:1;
+  padding: 0 1px;
+}
+.tag-badge .tag-remove:hover{ color: var(--vermillion); }
+.tag-add-btn{
+  background: transparent;
+  border: 1px dashed var(--line);
+  color: var(--paper-dim);
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tag-add-btn:hover{ border-color: var(--gold); color: var(--gold-bright); }
+.tag-picker{
+  display:flex; flex-wrap:wrap; gap:5px; align-items:center;
+  margin-top: 6px;
+  padding: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.tag-picker input{
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  width: 100px;
+}
+.tag-picker input:focus{ outline:none; border-color: var(--gold); }
 .saved-item{
   display:flex; justify-content:space-between; align-items:center; gap:10px;
   padding: 12px 14px;
@@ -756,6 +874,12 @@ table.daiun-table .isohou-cell{
   color: var(--paper-dim);
   min-width: 82px;
 }
+table.daiun-table .isohou-cell .kasoo-note{
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--vermillion);
+}
 table.daiun-table td.tenchu-mark-cell{
   font-weight: 700;
   font-size: 15px;
@@ -780,6 +904,94 @@ table.daiun-table .nenun-age{ font-size:11px; color:var(--paper-dim); }
 table.daiun-table tr.nenun-today{ background: rgba(200,161,94,0.1); }
 table.daiun-table tr.nenun-today td{ color: var(--gold-bright); font-weight:700; }
 table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
+
+/* ===== 辞書機能（鑑定時カンニング用ポップアップ） ===== */
+.dict-term{
+  cursor: pointer;
+  border-bottom: 1px dotted var(--gold);
+  transition: color 0.15s ease;
+}
+.dict-term:hover, .dict-term:active{ color: var(--gold-bright); }
+.dict-overlay{
+  display:none;
+  position: fixed; inset: 0;
+  background: rgba(10,8,6,0.72);
+  z-index: 500;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.dict-overlay.open{ display:flex; }
+.dict-modal{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 84vh;
+  overflow-y: auto;
+  padding: 22px 22px 18px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+}
+.dict-modal-head{
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom: 14px;
+}
+.dict-modal-title{
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--gold-bright);
+}
+.dict-modal-close{
+  background: none; border: none; color: var(--paper-dim);
+  font-size: 22px; line-height:1; cursor:pointer; padding: 2px 6px;
+}
+.dict-modal-close:hover{ color: var(--paper); }
+.dict-stage-row{
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.dict-stage-row.dict-stage-active{
+  border-color: var(--gold);
+  background: rgba(200,161,94,0.1);
+}
+.dict-stage-label{
+  font-size: 11px; color: var(--gold); letter-spacing: 0.05em;
+  margin-bottom: 4px; font-weight: 700;
+}
+.dict-stage-text{ font-size: 14px; color: var(--paper); line-height: 1.6; }
+.dict-modal-divider{
+  border: none; border-top: 1px solid var(--line);
+  margin: 16px 0 12px;
+}
+.dict-modal-section-label{
+  font-size: 12px; color: var(--paper-dim); margin-bottom: 6px;
+}
+.dict-modal textarea.dict-note-input{
+  width: 100%; min-height: 64px; resize: vertical;
+  background: var(--ink-2); border: 1px solid var(--line); border-radius: 8px;
+  color: var(--paper); font-family: var(--font-body); font-size: 13px; padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.dict-modal input.dict-link-input{
+  width: 100%; box-sizing: border-box;
+  background: var(--ink-2); border: 1px solid var(--line); border-radius: 8px;
+  color: var(--paper); font-family: var(--font-body); font-size: 13px; padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.dict-modal-actions{ display:flex; gap: 10px; align-items:center; }
+.dict-save-btn{
+  background: var(--gold); color: var(--ink); border: none; border-radius: 8px;
+  padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.dict-save-btn:hover{ background: var(--gold-bright); }
+.dict-save-status{ font-size: 12px; color: var(--paper-dim); }
+.dict-link-open{
+  display:inline-block; font-size: 13px; color: var(--gold-bright);
+  text-decoration: none; border-bottom: 1px dotted var(--gold-bright);
+}
 </style>
 </head>
 <body>
@@ -830,18 +1042,26 @@ table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
       <button class="btn-secondary" id="saved-toggle" type="button">開く</button>
     </div>
     <div class="saved-body" id="saved-body" style="display:none;">
+      <p class="saved-storage-hint">💡 保存データはこのページのURLごとに記録されます。ダウンロードしたファイルを直接開く（別ウィンドウ・別ファイル）と、このリストとは別の保存領域になり0件に見えることがあります。同じURL（例：公開先のGitHub Pages）で開いてください。変更があると1日1回、自動でバックアップファイルもダウンロードされます。</p>
       <div class="saved-controls">
         <input type="text" id="saved-search" placeholder="名前で絞り込み">
         <button class="btn-tiny" id="btn-export" type="button">エクスポート</button>
         <label class="btn-tiny btn-import-label" for="import-file">インポート</label>
         <input type="file" id="import-file" accept="application/json" style="display:none;">
       </div>
-      <div class="saved-list" id="saved-list"></div>
+      <div class="saved-tag-filter" id="saved-tag-filter"></div>
+      <div class="saved-list-scroll">
+        <div class="saved-list" id="saved-list"></div>
+      </div>
       <p class="saved-empty" id="saved-empty">保存された命式はまだありません。</p>
     </div>
   </div>
 
   <div id="result"></div>
+
+  <div class="dict-overlay" id="dict-overlay">
+    <div class="dict-modal" id="dict-modal" role="dialog" aria-modal="true"></div>
+  </div>
 
   <footer>
     算出根拠：配布教材『４干支暦（算命学暦）』年別早見表・蔵干表（初元・中元・本元、日数0〜20〜）・十大主星表・十二大従星表・守護神法（十干守護神法）・大運法<br>
@@ -1658,12 +1878,11 @@ function getTokushuMeishikiEntries(yearP, monthP, dayP, dayStemIdx, isohouEntrie
   return entries;
 }
 
-// ==================== 局法（特殊五局＝八相局・別格＝鳳蘭局） ====================
+// ==================== 局法（全26局：特殊五局＝八相局5種・別格＝鳳蘭局1種・相生局10種・相剋局10種） ====================
 // 2026-08-20 ユーザー提供資料（算命学_局法_全二十六局の成立条件と運勢体系図）に基づく。
-// 全26局のうち、「人体図の五星（①〜⑤の十大主星）が特定の星のみで構成される」という
-// 判定条件が明確な6局（特殊五局＝八相局5種＋別格＝鳳蘭局1種）のみ実装。
-// 残り20局（相生局10種・相剋局10種）は「人体図の縦線・横線が相生/相剋して止まる」という
-// 図形的アルゴリズムの詳細確認待ちのため今回は未実装。
+// 「人体図の五星（①〜⑤の十大主星）が特定の星のみで構成される」という条件で判定する
+// 特殊五局（八相局5種）・別格（鳳蘭局1種）に加え、「人体図の縦線・横線が相生/相剋して止まる」
+// 図形的アルゴリズムによる相生局（幸運局10種）・相剋局（凶運局10種）も実装済み。全26局対応。
 // ==================== 行動領域（干支番号1〜60を円周上の4領域にマッピング） ====================
 // 2026-08-20 ユーザー提供画像に基づく。干支番号（甲子=1〜癸亥=60）を円周上に時計回りに配置し、
 // 1（真上）を起点に4等分：第一領域(1-15・守備安定)／第二領域(16-30・伝達創造)／
@@ -1820,6 +2039,48 @@ const OUSOUKYUUSHI = {
   '天報星':'囚','天印星':'囚','天貴星':'囚',
   '天極星':'死','天庫星':'死','天馳星':'死',
 };
+
+// ==================== 辞書機能（鑑定時カンニング用） ====================
+// 2026-08-26 ユーザー提供資料『各年代における十二大従星の意味合い』に基づく。
+// 若年期＝⑥初年期(年支)、壮年期＝⑦中年期(月支)、晩年期＝⑧晩年期(日支) に対応。
+// レイヤー1（この定数）：Claudeが原本資料に基づき実装・管理する要約データ。
+// レイヤー2（DICT_OVERRIDE_KEY／localStorage）：クレアさんがアプリ上でその場に書き足す
+// 個人メモ・外部データベース（Obsidian等）へのリンク。二層構造で運用する。
+const DICTIONARY_JUUNI_STAR = {
+  '天馳星': { waka: 'ケガをしやすい。自分と親がシーソーゲームをする。', sou: '女性の場合、家庭崩壊の星。男性は運勢の谷間、一度下がって又上がる。', ban: '孤独になりやすい。子供達との交流が途絶えやすい。' },
+  '天極星': { waka: '要領の良い子。身体が弱い。素直で人によく従い、人から好かれる。', sou: '女性の場合、家庭崩壊。中年期、夫を亡くすか子供（男児）を亡くす（女児ばかりは問題ない）。男性の場合、仕事を変える。', ban: '配偶者運が一番悪い（心の変化が保ちにくい。その反面、子供運は良い）。' },
+  '天報星': { waka: '親離れしにくい。親の影響を受けすぎる。', sou: '壮年期に急変する変転変化の星。急変によって掴んだ運は竜巻運。上がり過ぎるとストンと落ちる。他に身強の星が有ると良い。', ban: '内側（家庭）と外側（社会）とシーソーゲームになる。' },
+  '天胡星': { waka: '感受性の強い子。病弱で体はあまり丈夫ではない。', sou: '途中変化で生まれ変わる急変。', ban: '目下から助けられる。' },
+  '天庫星': { waka: '特権意識とか自尊心が強く、そのため努力家。そしてクールな面を持った子。素直な性格。', sou: '奉仕の星。壮年期にきたら奉仕をしないと運勢が保てない。他人・友人・身内にも墓守の星。', ban: '自分が中心的な存在。奉仕の人生をすると言うより、させられる。長男の役割。御意見番。' },
+  '天印星': { waka: '万人向きの平均的な子。子供らしい子供。', sou: '表面意思が強そうに見えながら人の意見に動かされる。人の話に反発しているようで聞いて従っている。', ban: '人徳のあるお年寄り。養子的な存在。' },
+  '天恍星': { waka: '大人びた子。おしゃまな子。', sou: '夢が多すぎる。大風呂敷を広げるみたいなところがある。', ban: '若々しい晩年期。若年の良き理解者。年をとっても若く見える。' },
+  '天堂星': { waka: '引っ込み思案になる。自尊心は強い。非常に穏やかな子。', sou: '人を諭す。自分は、ろくに知らないのに諭す。自分が年長者のような態度をとる。', ban: '常識的人的を備えた人。まろやかな人。' },
+  '天貴星': { waka: '素直な子供らしい子供。', sou: '変転変化が少ない人生。真面目な努力人間で、そういう人生を歩もうとする。', ban: '配偶者の力に大いに頼れる。しっかりした配偶者を持つ。' },
+  '天南星': { waka: '活力旺盛で動き回りじっとしていない。小さい時スポーツをやらせると良い。', sou: '中身は善人なのに悪ぶるところがあり、無鉄砲に遊んでみたり。', ban: '最後は自分が権力者になる星。エネルギッシュな星。静かな余生と言うわけにはいかないか。' },
+  '天禄星': { waka: '運気は強いが陰気な子になりやすい。少し人を小馬鹿にしたようなところ有り。', sou: '常識的な人間。', ban: '他人が困ろうと自分の家族身内だけを可愛がり自分の家族を守る。他に対する奉仕の精神が良くなる。' },
+  '天将星': { waka: '体が強い子と弱い子に分かれる。精神的に弱いとか病弱とか。', sou: '一か八か、乗るか反るかの人生。開き直ると成功。お荷物が多いほど成功。成功とは満足感が多い。', ban: '配偶者離れをすれば成功。心の中に自己確立が出来れば相手に影響されやすい。' },
+};
+const JUUNI_STAGE_AGE_LABEL = { waka: '若年期', sou: '壮年期', ban: '晩年期' };
+
+// レイヤー2：その場メモ・リンク（localStorage、端末ローカル）
+const DICT_OVERRIDE_KEY = 'meishiki_dict_overrides_v1';
+function getDictOverrides(){
+  try {
+    return JSON.parse(localStorage.getItem(DICT_OVERRIDE_KEY) || '{}');
+  } catch(e) { return {}; }
+}
+function saveDictOverride(term, note, link){
+  try {
+    const all = getDictOverrides();
+    if (!note && !link){
+      delete all[term];
+    } else {
+      all[term] = { note: note || '', link: link || '' };
+    }
+    localStorage.setItem(DICT_OVERRIDE_KEY, JSON.stringify(all));
+    return true;
+  } catch(e) { return false; }
+}
 
 function ganzhiName(idx){ return STEMS[idx%10] + BRANCHES[idx%12]; }
 
@@ -2028,7 +2289,7 @@ function getNextSetsuiri(governSetsuiri){
 }
 
 function calcDaiun(y, m, d, gender, periodCount){
-  periodCount = periodCount || 8;
+  periodCount = periodCount || 9;
   const meishiki = calcMeishiki(y, m, d);
   if (meishiki.error) return { error: meishiki.error };
 
@@ -2120,7 +2381,8 @@ window.Meishiki = {
   getInjuGakuEntries, getIkkiGakuEntries, applyKangouToElements, getHachikakuEntries,
   getZakkiZaikanInjuGakuEntries, getKanshiTokushuGokakuEntries, getShiiJunzenEntries,
   getTokushuMeishikiEntries, JUUNI_STAR_POINTS, getKyokuhouEntries, getKoudouDomain, KOUDOU_DOMAINS,
-  getNishouGakuEntries, getIsohouPairLabel, getDaiunNenunIsohouRow
+  getNishouGakuEntries, getIsohouPairLabel, getDaiunNenunIsohouRow,
+  DICTIONARY_JUUNI_STAR, JUUNI_STAGE_AGE_LABEL, getDictOverrides, saveDictOverride
 };
 
 })();
@@ -2261,12 +2523,13 @@ function inyouhyouHTML(r){
 // ==================== 陽占表（人体図：①〜⑧のクロス配置） ====================
 // ①年干 ②月干 ③年支蔵干 ④月支蔵干 ⑤日支蔵干（十大主星）
 // ⑥年支＝初年期 ⑦月支＝中年期 ⑧日支＝晩年期（十二大従星）
-function jtCellHTML(pos, starName, isJusei, seimeiCls, point){
+function jtCellHTML(pos, starName, isJusei, seimeiCls, point, stage){
   const cls = seimeiCls ? ` ${seimeiCls}` : '';
   const pointHTML = (!isJusei && point !== undefined && point !== null) ? `<span class="jt-point">${point}点</span>` : '';
+  const starHTML = isJusei ? starName : dictSpanJuuniStar(starName, stage);
   return `
     <div class="jt-cell jt-pos${pos}${cls}">
-      <span class="jt-star ${isJusei ? 'jt-jusei' : 'jt-juuni'}">${starName}</span>
+      <span class="jt-star ${isJusei ? 'jt-jusei' : 'jt-juuni'}">${starHTML}</span>
       ${pointHTML}
     </div>`;
 }
@@ -2321,6 +2584,105 @@ function gogyouMemoHTML(r){
     </div>`;
 }
 
+// ==================== 格法の成立条件テキスト ====================
+// 各格法ブロックの表示項目に、成立条件を併記するための対応表。
+// 出典：算命学奥義書_格法成立条件と守護神体系一覧表／算命学「局法」全二十六局の成立条件と運勢体系図
+// （いずれもユーザー提供のGoogle Sheets資料）。キーは表示文字列に対する部分一致で判定するため、
+// 短いキーが長いキーの一部にならないよう、参照時は文字数の長い順にチェックする。
+const GOKAKU_CONDITION_TEXTS = {
+  // 完全格（従化五格・印綬格・一気格・二象格）
+  '従生格': '日干以外の5つ（年干・月干・年支・月支・日支）が、日干が生じる五行（洩星）のみで構成される。',
+  '従財格': '日干以外の5つが、日干が剋する五行（財星）のみで構成される。',
+  '従生財格': '日干以外の5つが、日干が生じる五行（洩星）と剋する五行（財星）の2種類のみで構成される。',
+  '従官格': '日干以外の5つが、日干を剋する五行（官殺）のみで構成される。',
+  '殺印相生格': '日干以外の5つが、日干を剋する官殺と、日干を生じる印星の2種類のみで構成される。',
+  '印綬格': '日干以外の5つすべてが、日干を生じる五行（印星）のみで構成される。',
+  '天干一気格': '年・月・日の天干が、すべて同じ十干で構成される。',
+  '地支一気格': '年・月・日の地支が、すべて同じ十二支で構成される。',
+  '一気成生格': '年・月・日の干支（天干＋地支）が、三柱ともまったく同じ組み合わせで構成される（全9パターンに個別の特殊名あり）。',
+  '一気格': '宿命六つ（年干・月干・日干・年支・月支・日支）が、すべて同じ一つの五行のみで構成される（支合・半会による同質化も可）。',
+  '二象格': '宿命六つが、ちょうど2種類の五行のみで、かつ3:3の比率で構成される（4:2など他の比率は対象外）。',
+  '天地連珠格': '天干連珠格と地支連珠格が同時に成立している（四大貴格の一つ）。',
+  '天干連珠格': '年干が月干を生じ、月干が日干を生じる「年→月→日」の相生の順生ルートが完成している。',
+  '地支連珠格': '年支・月支・日支が、十二支の順番通り（例：子→丑→寅）に並んでいる。',
+  // 八格法（部分格）
+  '正官格': '①主星が牽牛星。②他に車騎・牽牛がない。③貫索・石門・鳳閣・調舒がない。④日座・生月天中殺がない。⑤月支に冲・刑・害・支合・半会がない。',
+  '偏官格': '①主星が車騎星。②鳳閣星または調舒星が最低1つある。③月支に冲・刑・害・支合・半会・生月天中殺がない。',
+  '七殺格': '偏官格の条件を満たしながら、鳳閣星・調舒星が宿命に1つもない。',
+  '天元殺': '七殺格の条件を満たし、さらに日支にも車騎星が出る。',
+  '正財格': '①主星が司禄星。②他に禄存・貫索・石門がない。③月支に冲・刑・害・支合・半会・生月天中殺がない。',
+  '偏財格': '①主星が禄存星。②他に貫索・石門がない。③月支に冲・刑・害・支合・半会・生月天中殺がない。',
+  '正印格': '①主星が玉堂星。②月支に冲・刑・害・支合・半会・生月天中殺がない。③日干の干合がない。④天干に龍高・玉堂がない。⑤禄存・司禄がない。',
+  '偏印格': '①主星が龍高星。②月支に冲・刑・害・支合・半会・生月天中殺がない。③禄存・司禄がない。',
+  '食神格': '①主星が鳳閣星。②月支に冲・刑・害・支合・半会・生月天中殺がない。',
+  '傷官格': '①主星が調舒星。②他に玉堂・龍高がない。③月支に冲・刑・害・支合・半会・生月天中殺がない。',
+  '破官格': '①鳳閣・禄存・司禄・牽牛・玉堂が一切ない。②宿命に「害」と「破」があり、かつ「支合」「半会」がない。',
+  '雑気財官印綬格': '月支が土旺（辰・未・戌・丑）で、月干に財星・官星・印星のいずれかが透干し、その根が月支の蔵干にある。',
+  // 四位純全格（リーチ）
+  '四鎮貴格': '地支に辰・未・戌・丑（四墓）のうち3つが揃い、大運で残り1つが巡って4つ揃う。',
+  '四正格': '地支に子・卯・午・酉（四正）のうち3つが揃い、大運で残り1つが巡って4つ揃う。',
+  '四生格': '地支に寅・巳・申・亥（四勢）のうち3つが揃い、大運で残り1つが巡って4つ揃う。',
+  // 特殊格
+  '子逢巳格': '日干支が甲子で、月干支も甲子（日と年が同じ甲子は準ずる）。',
+  '冲禄格': '宿命に天禄星がなく、天馳星が2つある。',
+  '干合支刑格': '日干が干合し、かつ地支が刑になる（子卯の旺気刑を伴うものが最強）。',
+  '井欄叉格': '井欄斜格の条件を満たしながら、地支に冲動（申子辰を寅午戌で冲去）がある。',
+  '井欄斜格': '日干支が庚子・庚辰・庚申のいずれかで、申子辰の水局三合（または半会）が成立し、冲動がない。',
+  '子午双包格': '地支が子と午の2種類のみで3つとも埋まる（午午子、子午子など）。',
+  '六甲趨乾格': '日干が甲木で、地支に亥がある。',
+  '六甲印徳格': '六甲趨乾格の状態で、地支に亥が2つあり、大運や年運でもう1つ亥が巡って計3つ揃う。',
+  '王騎龍背格': '日干支が壬辰で、年支または月支にもう1つ辰がある。',
+  '壬騎三奇格': '王騎龍背格の状態で、大運や年運でさらにもう1つ辰が巡って計3つ揃う。',
+  '専印合禄格': '日干が癸水で、月干支が庚申。',
+  '八専禄旺格': '日干支が甲寅・乙卯・庚申・辛酉のいずれか。',
+  '潤下破格': '宿命六つのうち土性が1つだけで、残り5つがすべて水性。',
+  '土局潤下格': '日干が戊土で、地支に申子辰の水局三合（または半会）が揃う。',
+  '生処集生格': '①天干（年干・月干）に玉堂星が透干。②日干から日支を見て天貴星。③その玉堂星から日支を見て強い従星（天恍星7点以上）。',
+  // 局法：凶運局10種
+  '推逆局': '縦線（年干－④主星－月干）が水剋火（龍高・玉堂→鳳閣・調舒）で激突する。',
+  '円推局': '横線（年支蔵干－④主星－日支蔵干）が水剋火（龍高・玉堂→鳳閣・調舒）で激突する。',
+  '生殺局': '縦線が火剋金（鳳閣・調舒→車騎・牽牛）で激突する。',
+  '殺局': '横線が火剋金（鳳閣・調舒→車騎・牽牛）で激突する。',
+  '井乱局': '縦線が金剋木（車騎・牽牛→貫索・石門）で激突する。',
+  '乱命局': '横線が金剋木（車騎・牽牛→貫索・石門）で激突する。',
+  '破財局': '縦線が木剋土（貫索・石門→禄存・司禄）で激突する。',
+  '曲財局': '横線が木剋土（貫索・石門→禄存・司禄）で激突する。',
+  '地財局': '縦線が土剋水（禄存・司禄→龍高・玉堂）で激突する。',
+  '叉財局': '横線が土剋水（禄存・司禄→龍高・玉堂）で激突する。',
+  // 局法：幸運局10種
+  '劫法局': '縦線と横線の両方が相生し、共に貫索星・石門星で止まる（芳順局が縦横2つ揃った形）。',
+  '天華局': '縦線と横線の両方が相生し、共に鳳閣星・調舒星で止まる（八寿局が縦横2つ揃った形）。',
+  '連財局': '縦線と横線の両方が相生し、共に禄存星・司禄星で止まる（三麗局が縦横2つ揃った形）。',
+  '法官局': '縦線と横線の両方が相生し、共に車騎星・牽牛星で止まる（相法局が縦横2つ揃った形）。',
+  '命龍局': '縦線と横線の両方が相生し、共に龍高星・玉堂星で止まる（玄流局が縦横2つ揃った形）。',
+  '芳順局': '縦線または横線のどちらかが相生してつながり、貫索星・石門星で止まる。',
+  '八寿局': '縦線または横線のどちらかが相生してつながり、鳳閣星・調舒星で止まる。',
+  '三麗局': '縦線または横線のどちらかが相生してつながり、禄存星・司禄星で止まる。',
+  '相法局': '縦線または横線のどちらかが相生してつながり、車騎星・牽牛星で止まる。',
+  '玄流局': '縦線または横線のどちらかが相生してつながり、龍高星・玉堂星で止まる。',
+  // 局法：特殊五局（八相局）・鳳蘭局
+  '劫局': '人体図が貫索星・石門星（木性）のみで構成される。',
+  '食局': '人体図が鳳閣星・調舒星（火性）のみで構成される。',
+  '財局': '人体図が禄存星・司禄星（土性）のみで構成される。',
+  '官局': '人体図が車騎星・牽牛星（金性）のみで構成される。',
+  '印局': '人体図が龍高星・玉堂星（水性）のみで構成される。',
+  '鳳蘭局': '人体図の五星がすべて完全に同じ星で構成される。',
+};
+const GOKAKU_CONDITION_KEYS = Object.keys(GOKAKU_CONDITION_TEXTS).sort((a, b) => b.length - a.length);
+function findGokakuCondition(entryText){
+  for (const key of GOKAKU_CONDITION_KEYS){
+    if (entryText.includes(key)) return GOKAKU_CONDITION_TEXTS[key];
+  }
+  return null;
+}
+// 格法一覧の共通レンダリング：各項目の下に、対応する成立条件があれば併記する。
+function renderGokakuItems(entries){
+  return entries.map(e => {
+    const cond = findGokakuCondition(e);
+    return `<div class="gokaku-item">${e}${cond ? `<div class="gokaku-cond">${cond}</div>` : ''}</div>`;
+  }).join('');
+}
+
 // 完全格（従化五格）：日干以外5つ（年干・月干・年支・月支・日支）の五行から判定。
 // 該当が無ければブロック自体を表示しない（従化五格は数が少ない特殊格のため）。
 function juukaGokakuHTML(r){
@@ -2369,8 +2731,7 @@ function juukaGokakuHTML(r){
   return `
     <div class="gokaku-block">
       <h3>完全格（従化五格・印綬格・一気格・二象格）</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 従化五格・印綬格の判定対象は日干以外の5つ（年干・月干・年支・月支・日支）、一気格・二象格は日干を含めた6つすべて（地支は蔵干ではなく支そのもの）。「[虚気]」は干合によって化けたことで格が成立したことを示します（変化が多い分、純粋な格より下格）。一気格で1箇所だけ異なる五行が混ざる場合、それが印星（一気格の五行を生じる五行）なら一気成因格、洩星（一気格の五行が生じる五行）なら一気洩気格となり、いずれも完全格のままです（財星・官星が混ざる場合のみ一点破格）。二象格は6つがちょうど2種類の五行のみ・3:3の比率で構成される場合に成立します（4:2など他の比率は対象外）。地支側の半会・支合による変化判定は今回未対応です。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
@@ -2396,8 +2757,7 @@ function hachikakuHTML(r){
   return `
     <div class="gokaku-block">
       <h3>八格法（部分格）</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 主星＝月支蔵干の十大主星（陽占人体図④）。判定条件の一部（「他に◯◯がない」の範囲など）は資料の要約から解釈したもので、要検証です。雑気財官印綬格は月支の土旺（辰未戌丑）＋月干の透干根で判定。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
@@ -2408,8 +2768,7 @@ function kanshiTokushuHTML(r){
   return `
     <div class="gokaku-block">
       <h3>干支特殊格</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 年・月・日の干支の並び方のみで判定（主星・蔵干は不使用）。一気成生格の特殊名は該当9パターンのみに付与されます。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
@@ -2423,8 +2782,7 @@ function shiiJunzenHTML(r, daiun){
   return `
     <div class="gokaku-block">
       <h3>四位純全格（リーチ）</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 地支3つ（年支・月支・日支）が同グループで揃った「リーチ」状態です。大運で残り1つが巡る期間のみ四位純全格が成立します（時柱がないため地支は最大3つまでの判定）。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
@@ -2446,20 +2804,18 @@ function tokushuMeishikiHTML(r, daiun, nenun){
   return `
     <div class="gokaku-block">
       <h3>特殊格</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 算命学奥義書p.118〜126の特殊格のうち、判定条件が明確なもののみ実装（干支双連格＝相手の命式が必要、干支持旺格・墓殺格系・閉畢命式系は資料確認待ちのため今回は未対応）。生処集生格の判定には『十二大従星表』の点数（ユーザー提供資料）を使用。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
-// 局法：特殊五局（八相局）・別格（鳳蘭局）。全26局のうち判定条件が明確な6局のみ実装。該当なしなら非表示。
+// 局法：特殊五局（八相局）・別格（鳳蘭局）・相生局（幸運局）・相剋局（凶運局）の全26局対応。該当なしなら非表示。
 function kyokuhouHTML(r){
   const entries = M.getKyokuhouEntries(r.year, r.month, r.day);
   if (!entries.length) return '';
   return `
     <div class="gokaku-block">
       <h3>局法（全26局）</h3>
-      <div class="gokaku-list">${entries.map(e => `<div class="gokaku-item">${e}</div>`).join('')}</div>
-      <div class="note">※ 算命学_局法_全二十六局の成立条件と運勢体系図＋カラー図（ユーザー提供資料）に基づく。主星＝④月支蔵干、北＝①年干、南＝②月干（縦線）、東＝③年支蔵干、西＝⑤日支蔵干（横線）。特殊五局（八相局）・鳳蘭局は確定条件で判定。相生局（幸運局）は縦線・横線それぞれ3つの星の五行を集合として見て、五行相生の環でつながり止まる終星を判定（カラー図の実例・不成立例で確認済み）。相剋局（凶運局）は主星と縦線・横線いずれかの星との相剋関係で判定（カラー図の通関星表示で確認済み）。</div>
+      <div class="gokaku-list">${renderGokakuItems(entries)}</div>
     </div>`;
 }
 
@@ -2539,7 +2895,6 @@ function koudouIkiHTML(r){
       <h3>行動領域</h3>
       <div class="koudou-svg-wrap">${svg}</div>
       <div class="koudou-summary">${summary}</div>
-      <div class="note">※ 干支番号（甲子=1〜癸亥=60）を円周上に時計回りに配置し、1を起点に4等分。年・月・日の干支番号を結んだ三角形の位置と広がりで行動領域の傾向を見ます。</div>
     </div>`;
 }
 
@@ -2555,9 +2910,9 @@ function youzenhyouHTML(r){
   const c3 = jtCellHTML(3, y.starZoukan, true, yearHl);
   const c4 = jtCellHTML(4, mo.starZoukan, true, monthHl);
   const c5 = jtCellHTML(5, da.starZoukan, true);
-  const c6 = jtCellHTML(6, y.juuni, false, yearHl, M.JUUNI_STAR_POINTS[y.juuni]);
-  const c7 = jtCellHTML(7, mo.juuni, false, monthHl, M.JUUNI_STAR_POINTS[mo.juuni]);
-  const c8 = jtCellHTML(8, da.juuni, false, '', M.JUUNI_STAR_POINTS[da.juuni]);
+  const c6 = jtCellHTML(6, y.juuni, false, yearHl, M.JUUNI_STAR_POINTS[y.juuni], 'waka');
+  const c7 = jtCellHTML(7, mo.juuni, false, monthHl, M.JUUNI_STAR_POINTS[mo.juuni], 'sou');
+  const c8 = jtCellHTML(8, da.juuni, false, '', M.JUUNI_STAR_POINTS[da.juuni], 'ban');
   const cEmpty = `<div class="jt-cell jt-empty"></div>`;
 
   return `
@@ -2612,9 +2967,11 @@ function daiunTableHTML(daiun, natal){
     const lastIndex = periods[periods.length - 1].index;
 
     if (startIndex === 1){
-      // 初旬が絡む場合のみ、天冲殺の位置から+2旬先へ移動させる（1→3・4／1・2→3・4・5・6）
-      const boxStart = startIndex + 2;
-      const boxEndRaw = boxStart + 2 * runLen - 1;
+      // 初旬は+2旬先へ移動（1旬目のみ→3・4／1・2旬目とも→3・4・5・6）。
+      // 移動先の起点は runLen に関わらず常に3旬目固定。
+      const moveAnchor = startIndex + 2; // 移動先の起点（常に3）
+      const boxStart = moveAnchor;
+      const boxEndRaw = moveAnchor + 2 * runLen - 1;
       if (boxStart > lastIndex) continue;
       shiftRanges.push({ start: boxStart, end: Math.min(boxEndRaw, lastIndex) });
     } else {
@@ -2716,13 +3073,26 @@ function daiunTableHTML(daiun, natal){
     }
     const rowClsStr = rowCls.filter(Boolean).join(' ');
     const yearStart = daiun.birthYear + p.ageStart;
-    const isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
+    let isohou = M.getDaiunNenunIsohouRow(stemChar, branchChar, natal);
+
+    // 初旬のみ：火＝土（火母に従う）ルールで新たに条件が成立した列に「※条件名」を注記する
+    if (p.index === 1 && KASOO_SUBSTITUTE[stemChar]){
+      const subIsohou = M.getDaiunNenunIsohouRow(KASOO_SUBSTITUTE[stemChar], branchChar, natal);
+      const annotated = {};
+      ['seihou', 'chuuou', 'touhou'].forEach(col => {
+        const naturalHit = triggerKeywords.some(kw => isohou[col].includes(kw));
+        const subKw = !naturalHit && triggerKeywords.find(kw => subIsohou[col].includes(kw));
+        annotated[col] = subKw ? `${isohou[col]}<span class="kasoo-note">※${subKw}</span>` : isohou[col];
+      });
+      isohou = annotated;
+    }
+
     return `<tr class="${rowClsStr}">
       <td class="year-cell">${yearStart}-</td>
       <td class="age-cell">${p.ageStart}〜${p.ageEnd}歳</td>
       <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
       <td>${p.star}</td>
-      <td>${p.juuni}</td>
+      <td>${dictSpanJuuniStar(p.juuni, null)}</td>
       <td class="isohou-cell">${isohou.seihou}</td>
       <td class="isohou-cell">${isohou.chuuou}</td>
       <td class="isohou-cell">${isohou.touhou}</td>
@@ -2753,11 +3123,24 @@ function daiunTableHTML(daiun, natal){
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <div class="note">※ 西方・中央・東方は、大運の干支と命式の日支・月支・年支それぞれとの位相法（1対1）です。「干合＋」は天干のみで別途干合が成立していることを示します。</div>
   `;
 }
 
-function nenunRowHTML(y, todayYear, natal){
+// 年運：天冲殺・日座冲殺（甲戌・乙亥）の連続区間をそのまま赤枠で囲む（大運のような旬移動はなし）
+function computeNenunFrameRanges(years){
+  const ranges = [];
+  const isFlagged = (y) => y.isTenchu || NIZA_GANZHI_IDX.includes(y.ganzhiIdx);
+  for (let i = 0; i < years.length; i++){
+    if (!isFlagged(years[i])) continue;
+    if (i > 0 && isFlagged(years[i-1])) continue; // runの先頭でのみ判定
+    let runEnd = i;
+    while (runEnd + 1 < years.length && isFlagged(years[runEnd + 1])) runEnd++;
+    ranges.push({ startYear: years[i].year, endYear: years[runEnd].year });
+  }
+  return ranges;
+}
+
+function nenunRowHTML(y, todayYear, natal, frameRanges){
   const stemChar = M.STEMS[y.stemIdx], branchChar = M.BRANCHES[y.branchIdx];
   const stemEl = M.STEM_ELEMENT[y.stemIdx], branchEl = M.BRANCH_ELEMENT[y.branchIdx];
   const isToday = y.year === todayYear;
@@ -2766,12 +3149,18 @@ function nenunRowHTML(y, todayYear, natal){
     y.ijou && y.ijou.length ? 'daiun-ijou' : '',
     y.isTenchu ? 'daiun-tenchu' : '',
     isToday ? 'nenun-today' : '',
-  ].filter(Boolean).join(' ');
-  return `<tr class="${rowCls}">
+  ];
+  const matchedRange = (frameRanges || []).find(r => y.year >= r.startYear && y.year <= r.endYear);
+  if (matchedRange){
+    rowCls.push('tenchu-shift-row');
+    if (y.year === matchedRange.startYear) rowCls.push('tenchu-shift-start');
+    if (y.year === matchedRange.endYear) rowCls.push('tenchu-shift-end');
+  }
+  return `<tr class="${rowCls.filter(Boolean).join(' ')}">
     <td class="age-cell">${y.year}年<span class="nenun-age">（${y.age}歳）</span></td>
     <td class="ganzhi-cell"><span class="el-${stemEl}">${stemChar}</span><span class="el-${branchEl}">${branchChar}</span></td>
     <td>${y.star}</td>
-    <td>${y.juuni}</td>
+    <td>${dictSpanJuuniStar(y.juuni, null)}</td>
     <td class="isohou-cell">${isohou.seihou}</td>
     <td class="isohou-cell">${isohou.chuuou}</td>
     <td class="isohou-cell">${isohou.touhou}</td>
@@ -2788,10 +3177,11 @@ function nenunTableHTML(nenun, natal){
   const defaultStart = Math.max(nenun.birthYear, todayYear - 3);
   const defaultEnd = Math.min(nenun.lastYear, todayYear + 12);
 
-  const allRows = nenun.years.map(y => nenunRowHTML(y, todayYear, natal)).join('');
+  const frameRanges = computeNenunFrameRanges(nenun.years);
+  const allRows = nenun.years.map(y => nenunRowHTML(y, todayYear, natal, frameRanges)).join('');
   const defaultRows = nenun.years
     .filter(y => y.year >= defaultStart && y.year <= defaultEnd)
-    .map(y => nenunRowHTML(y, todayYear, natal)).join('');
+    .map(y => nenunRowHTML(y, todayYear, natal, frameRanges)).join('');
 
   const rangeNote = nenun.lastYear < nenun.birthYear + 99
     ? `<span class="nenun-note">（データ対応範囲の都合により${nenun.lastYear}年までを表示）</span>`
@@ -2804,6 +3194,7 @@ function nenunTableHTML(nenun, natal){
     const parts = [];
     if (hasIjou) parts.push('<span class="legend-item"><span class="legend-swatch legend-ijou"></span>異常干支</span>');
     if (hasTenchu) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu"></span>年運天中殺</span>');
+    if (frameRanges.length) parts.push('<span class="legend-item"><span class="legend-swatch legend-tenchu-shift"></span>天中殺・日座冲殺の期間</span>');
     legend = `<div class="daiun-legend">${parts.join('　')}</div>`;
   }
 
@@ -2820,7 +3211,6 @@ function nenunTableHTML(nenun, natal){
         <tbody id="nenun-tbody-all" style="display:none;">${allRows}</tbody>
       </table>
     </div>
-    <div class="note">※ 西方・中央・東方は、年運の干支と命式の日支・月支・年支それぞれとの位相法（1対1）です。「干合＋」は天干のみで別途干合が成立していることを示します。</div>
   `;
 }
 
@@ -2839,7 +3229,6 @@ function buildResultHTML(r, daiun, nenun, name){
         <div class="cand">${r.guardian.zoukan}</div>
         <p>${r.guardian.text}</p>
         <div class="kijin-row"><span class="kijin-label">忌神</span><span class="kijin-val">${kijinStr}</span></div>
-        <div class="note">※ 早見表に基づく候補です。実際の守護神決定には、他の透干状況・身強身弱・後天運との組み合わせを合わせた考察が必要です（守護神法ノート参照）。</div>
       </div>`;
   } else {
     guardianHtml = `<div class="guardian-block"><p>調候の守護神データが見つかりませんでした。</p></div>`;
@@ -3248,10 +3637,57 @@ function loadSavedRecords(){
 function persistSavedRecords(records){
   try {
     localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(records));
+    maybeAutoBackup(records);
     return true;
   } catch (e){
     console.error('保存データの書き込みに失敗しました', e);
     return false;
+  }
+}
+
+// ==================== 自動バックアップ ====================
+// localStorageはブラウザの「オリジン（URL）」ごとに分離されており、ダウンロードした
+// ファイルを直接開く（file://）と、ファイルごとに別々の保存領域として扱われることがある
+// （特にSafariで顕著）。誤って別領域を開いてしまっても被害を最小限にするため、
+// データに変更があった際、1日1回を上限に自動でバックアップファイルをダウンロードする。
+const AUTO_BACKUP_KEY = 'meishiki_last_autobackup_at';
+const AUTO_BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+function maybeAutoBackup(records){
+  try {
+    if (!records || records.length === 0) return;
+    const lastRaw = localStorage.getItem(AUTO_BACKUP_KEY);
+    const last = lastRaw ? parseInt(lastRaw, 10) : 0;
+    if (Date.now() - last < AUTO_BACKUP_INTERVAL_MS) return;
+
+    const payload = {
+      app: 'meishiki-saved-records',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      autoBackup: true,
+      records: records
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `命式保存データ_自動バックアップ_${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+
+    localStorage.setItem(AUTO_BACKUP_KEY, String(Date.now()));
+
+    const fb = document.getElementById('save-feedback');
+    if (fb){
+      fb.textContent = '自動バックアップを保存しました（Downloadsフォルダ）';
+      fb.classList.add('show');
+      setTimeout(function(){ fb.classList.remove('show'); }, 3000);
+    }
+  } catch (e){
+    console.error('自動バックアップに失敗しました', e);
   }
 }
 
@@ -3266,7 +3702,102 @@ function formatSavedDate(y, m, d, gender){
   return `${y}年${m}月${d}日（${genderLabel}）`;
 }
 
+// タグ管理用の状態（モジュールスコープ）
+let selectedTagFilters = [];
+let openTagPickerId = null;
+let renamingTag = null;
+
+function getAllTags(){
+  const records = loadSavedRecords();
+  const tagSet = new Set();
+  records.forEach(function(r){ (r.tags || []).forEach(function(t){ tagSet.add(t); }); });
+  return Array.from(tagSet).sort(function(a,b){ return a.localeCompare(b, 'ja'); });
+}
+
+function renameTag(oldName, newName){
+  newName = (newName || '').trim();
+  if (!newName || newName === oldName){
+    renamingTag = null;
+    renderSavedList(document.getElementById('saved-search').value);
+    return;
+  }
+  const records = loadSavedRecords();
+  records.forEach(function(r){
+    if (!r.tags || r.tags.indexOf(oldName) === -1) return;
+    const merged = new Set(r.tags.filter(function(t){ return t !== oldName; }));
+    merged.add(newName);
+    r.tags = Array.from(merged);
+  });
+  persistSavedRecords(records);
+  const filterIdx = selectedTagFilters.indexOf(oldName);
+  if (filterIdx !== -1) selectedTagFilters[filterIdx] = newName;
+  renamingTag = null;
+  renderSavedList(document.getElementById('saved-search').value);
+}
+
+function renderTagFilterBar(){
+  const el = document.getElementById('saved-tag-filter');
+  const allTags = getAllTags();
+  if (allTags.length === 0){
+    el.innerHTML = '';
+    el.style.display = 'none';
+    return;
+  }
+  el.style.display = 'flex';
+  el.innerHTML = allTags.map(function(t){
+    if (renamingTag === t){
+      return `<span class="tag-rename-box" data-tag="${escapeHtml(t)}">
+        <input type="text" class="tag-rename-input" value="${escapeHtml(t)}">
+        <button type="button" class="btn-tiny tag-rename-confirm" data-tag="${escapeHtml(t)}">確定</button>
+        <button type="button" class="btn-tiny tag-rename-cancel">取消</button>
+      </span>`;
+    }
+    const active = selectedTagFilters.indexOf(t) !== -1;
+    return `<span class="tag-chip-wrap">
+      <button type="button" class="tag-chip${active ? ' active' : ''}" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>
+      <span class="tag-edit-icon" data-tag="${escapeHtml(t)}" title="タグ名を変更">✎</span>
+    </span>`;
+  }).join('');
+  el.querySelectorAll('.tag-chip').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const tag = this.getAttribute('data-tag');
+      const idx = selectedTagFilters.indexOf(tag);
+      if (idx === -1) selectedTagFilters.push(tag); else selectedTagFilters.splice(idx, 1);
+      renderSavedList(document.getElementById('saved-search').value);
+    });
+  });
+  el.querySelectorAll('.tag-edit-icon').forEach(function(icon){
+    icon.addEventListener('click', function(){
+      renamingTag = this.getAttribute('data-tag');
+      renderSavedList(document.getElementById('saved-search').value);
+      const input = el.querySelector('.tag-rename-input');
+      if (input){ input.focus(); input.select(); }
+    });
+  });
+  el.querySelectorAll('.tag-rename-confirm').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const oldName = this.getAttribute('data-tag');
+      const input = el.querySelector('.tag-rename-input');
+      renameTag(oldName, input ? input.value : '');
+    });
+  });
+  el.querySelectorAll('.tag-rename-cancel').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      renamingTag = null;
+      renderSavedList(document.getElementById('saved-search').value);
+    });
+  });
+  el.querySelectorAll('.tag-rename-input').forEach(function(input){
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') renameTag(this.closest('.tag-rename-box').getAttribute('data-tag'), this.value);
+      if (e.key === 'Escape'){ renamingTag = null; renderSavedList(document.getElementById('saved-search').value); }
+    });
+  });
+}
+
 function renderSavedList(filterText){
+  renderTagFilterBar();
+
   const listEl = document.getElementById('saved-list');
   const emptyEl = document.getElementById('saved-empty');
   const countEl = document.getElementById('saved-count');
@@ -3274,9 +3805,15 @@ function renderSavedList(filterText){
   countEl.textContent = records.length + '件';
 
   const filter = (filterText || '').trim();
-  const filtered = filter
+  let filtered = filter
     ? records.filter(function(r){ return (r.name||'').includes(filter); })
     : records;
+  if (selectedTagFilters.length){
+    filtered = filtered.filter(function(r){
+      const tags = r.tags || [];
+      return selectedTagFilters.some(function(t){ return tags.indexOf(t) !== -1; });
+    });
+  }
 
   if (filtered.length === 0){
     listEl.innerHTML = '';
@@ -3288,12 +3825,31 @@ function renderSavedList(filterText){
   }
   emptyEl.style.display = 'none';
 
+  const allTags = getAllTags();
+
   listEl.innerHTML = filtered.map(function(r){
+    const tags = r.tags || [];
+    const tagBadges = tags.map(function(t){
+      return `<span class="tag-badge">${escapeHtml(t)}<span class="tag-remove" data-id="${r.id}" data-tag="${escapeHtml(t)}">×</span></span>`;
+    }).join('');
+    const pickerOpen = openTagPickerId === r.id;
+    const unassigned = allTags.filter(function(t){ return tags.indexOf(t) === -1; });
+    const picker = pickerOpen ? `
+      <div class="tag-picker" data-id="${r.id}">
+        ${unassigned.map(function(t){ return `<button type="button" class="tag-chip tag-picker-add" data-id="${r.id}" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`; }).join('')}
+        <input type="text" class="tag-new-input" data-id="${r.id}" placeholder="新しいタグ">
+        <button type="button" class="btn-tiny tag-new-confirm" data-id="${r.id}">追加</button>
+      </div>` : '';
     return `
     <div class="saved-item" data-id="${r.id}">
       <div class="saved-item-info">
         <span class="saved-item-name">${r.name ? escapeHtml(r.name) : '（名前未入力）'}</span>
-        <span class="saved-item-date">${formatSavedDate(r.y, r.m, r.d, r.gender)}</span>
+        <span class="saved-item-date">${r.y}年${r.m}月${r.d}日</span>
+        <div class="saved-item-tags">
+          ${tagBadges}
+          <button type="button" class="tag-add-btn" data-id="${r.id}">＋タグ</button>
+        </div>
+        ${picker}
       </div>
       <div class="saved-item-actions">
         <button class="btn-tiny btn-load" data-id="${r.id}">呼び出す</button>
@@ -3308,7 +3864,62 @@ function renderSavedList(filterText){
   listEl.querySelectorAll('.btn-delete').forEach(function(btn){
     btn.addEventListener('click', function(){ deleteSavedRecord(this.getAttribute('data-id')); });
   });
+  listEl.querySelectorAll('.tag-remove').forEach(function(el){
+    el.addEventListener('click', function(){
+      removeTagFromRecord(this.getAttribute('data-id'), this.getAttribute('data-tag'));
+    });
+  });
+  listEl.querySelectorAll('.tag-add-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const id = this.getAttribute('data-id');
+      openTagPickerId = (openTagPickerId === id) ? null : id;
+      renderSavedList(document.getElementById('saved-search').value);
+    });
+  });
+  listEl.querySelectorAll('.tag-picker-add').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      addTagToRecord(this.getAttribute('data-id'), this.getAttribute('data-tag'));
+    });
+  });
+  listEl.querySelectorAll('.tag-new-confirm').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const id = this.getAttribute('data-id');
+      const input = listEl.querySelector('.tag-new-input[data-id="' + id + '"]');
+      if (input && input.value.trim()) addTagToRecord(id, input.value.trim());
+    });
+  });
+  listEl.querySelectorAll('.tag-new-input').forEach(function(input){
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter'){
+        const id = this.getAttribute('data-id');
+        if (this.value.trim()) addTagToRecord(id, this.value.trim());
+      }
+    });
+  });
 }
+
+function removeTagFromRecord(id, tag){
+  const records = loadSavedRecords();
+  const record = records.find(function(r){ return r.id === id; });
+  if (!record || !record.tags) return;
+  record.tags = record.tags.filter(function(t){ return t !== tag; });
+  persistSavedRecords(records);
+  renderSavedList(document.getElementById('saved-search').value);
+}
+
+function addTagToRecord(id, tag){
+  tag = tag.trim();
+  if (!tag) return;
+  const records = loadSavedRecords();
+  const record = records.find(function(r){ return r.id === id; });
+  if (!record) return;
+  record.tags = record.tags || [];
+  if (record.tags.indexOf(tag) === -1) record.tags.push(tag);
+  persistSavedRecords(records);
+  openTagPickerId = null;
+  renderSavedList(document.getElementById('saved-search').value);
+}
+
 
 function saveCurrentRecord(){
   const name = document.getElementById('in-name').value.trim();
@@ -3340,6 +3951,7 @@ function saveCurrentRecord(){
     records.push({
       id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
       name: name, y: y, m: m, d: d, gender: gender,
+      tags: [],
       savedAt: Date.now()
     });
   }
@@ -3467,6 +4079,7 @@ function importSavedRecordsFromFile(file){
       existing.push({
         id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
         name: name, y: y, m: m, d: d, gender: gender,
+        tags: Array.isArray(r.tags) ? r.tags.filter(function(t){ return typeof t === 'string' && t.trim(); }) : [],
         savedAt: (typeof r.savedAt === 'number') ? r.savedAt : Date.now()
       });
       addedCount++;
@@ -3507,6 +4120,105 @@ document.getElementById('import-file').addEventListener('change', function(){
 });
 
 renderSavedList('');
+
+// ==================== 辞書機能（鑑定時カンニング用ポップアップ） ====================
+// レイヤー1（M.DICTIONARY_JUUNI_STAR 等）：Claudeが原本資料に基づき管理する要約データ。
+// レイヤー2（localStorage）：クレアさんがその場で書き足す個人メモ・外部DBへのリンク。
+function escapeHtmlForDict(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+// 十二大従星名をクリック可能なspanに包む。stage（'waka'/'sou'/'ban'/null）を渡すと、
+// その旬に対応する年代を強調表示する。辞書未登録の用語はプレーンテキストのまま返す。
+function dictSpanJuuniStar(starName, stage){
+  if (!starName || !M.DICTIONARY_JUUNI_STAR[starName]) return escapeHtmlForDict(starName);
+  const stageAttr = stage ? ` data-stage="${stage}"` : '';
+  return `<span class="dict-term" data-dict-type="juuniStar" data-term="${escapeHtmlForDict(starName)}"${stageAttr} onclick="openDictModal('juuniStar','${escapeHtmlForDict(starName)}',${stage ? `'${stage}'` : 'null'})">${escapeHtmlForDict(starName)}</span>`;
+}
+
+function renderDictModalJuuniStar(term, stage){
+  const data = M.DICTIONARY_JUUNI_STAR[term];
+  if (!data) return '';
+  const stages = [
+    { key: 'waka', label: M.JUUNI_STAGE_AGE_LABEL.waka, text: data.waka },
+    { key: 'sou', label: M.JUUNI_STAGE_AGE_LABEL.sou, text: data.sou },
+    { key: 'ban', label: M.JUUNI_STAGE_AGE_LABEL.ban, text: data.ban },
+  ];
+  return stages.map(function(s){
+    const activeCls = (stage && s.key === stage) ? ' dict-stage-active' : '';
+    return `
+      <div class="dict-stage-row${activeCls}">
+        <div class="dict-stage-label">${s.label}</div>
+        <div class="dict-stage-text">${escapeHtmlForDict(s.text)}</div>
+      </div>`;
+  }).join('');
+}
+
+const DICT_RENDERERS = {
+  juuniStar: renderDictModalJuuniStar,
+};
+
+function openDictModal(type, term, stage){
+  const renderer = DICT_RENDERERS[type];
+  if (!renderer) return;
+  const bodyHtml = renderer(term, stage);
+  if (!bodyHtml) return;
+
+  const overrides = M.getDictOverrides();
+  const ov = overrides[term] || { note: '', link: '' };
+
+  const modal = document.getElementById('dict-modal');
+  modal.innerHTML = `
+    <div class="dict-modal-head">
+      <div class="dict-modal-title">${escapeHtmlForDict(term)}</div>
+      <button type="button" class="dict-modal-close" id="dict-modal-close-btn" aria-label="閉じる">×</button>
+    </div>
+    ${bodyHtml}
+    <hr class="dict-modal-divider">
+    <div class="dict-modal-section-label">メモ（この端末に保存）</div>
+    <textarea class="dict-note-input" id="dict-note-input" placeholder="鑑定メモを書き足せます...">${escapeHtmlForDict(ov.note)}</textarea>
+    <div class="dict-modal-section-label">リンク（データベース等のURL）</div>
+    <input type="text" class="dict-link-input" id="dict-link-input" placeholder="https://..." value="${escapeHtmlForDict(ov.link)}">
+    ${ov.link ? `<div style="margin-bottom:10px;"><a class="dict-link-open" href="${escapeHtmlForDict(ov.link)}" target="_blank" rel="noopener">リンクを開く ↗</a></div>` : ''}
+    <div class="dict-modal-actions">
+      <button type="button" class="dict-save-btn" id="dict-save-btn">保存</button>
+      <span class="dict-save-status" id="dict-save-status"></span>
+    </div>
+  `;
+
+  document.getElementById('dict-modal-close-btn').addEventListener('click', closeDictModal);
+  document.getElementById('dict-save-btn').addEventListener('click', function(){
+    const note = document.getElementById('dict-note-input').value;
+    const link = document.getElementById('dict-link-input').value.trim();
+    const ok = M.saveDictOverride(term, note, link);
+    const status = document.getElementById('dict-save-status');
+    status.textContent = ok ? '保存しました' : '保存に失敗しました';
+    if (ok){
+      // リンクの「開く」表示を即座に反映
+      openDictModal(type, term, stage);
+      setTimeout(function(){
+        const s = document.getElementById('dict-save-status');
+        if (s) s.textContent = '保存しました';
+      }, 0);
+    }
+  });
+
+  document.getElementById('dict-overlay').classList.add('open');
+}
+
+function closeDictModal(){
+  document.getElementById('dict-overlay').classList.remove('open');
+}
+
+document.getElementById('dict-overlay').addEventListener('click', function(e){
+  if (e.target === this) closeDictModal();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeDictModal();
+});
+window.openDictModal = openDictModal; // インラインonclickから呼べるようグローバル公開
 
 })();
 
