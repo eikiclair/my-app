@@ -733,6 +733,42 @@ table.daiun-table tbody tr.tenchu-shift-end td{
 }
 .copy-feedback.show{ opacity:1; }
 
+/* ===== 逆引き辞書（トップページ） ===== */
+.reverse-panel{ margin-top: 16px; }
+.reverse-tabs{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.reverse-tab{
+  background: transparent; border:1px solid var(--line); color: var(--paper-dim);
+  font-family: var(--font-body); font-size:14px; padding:7px 18px; border-radius:3px; cursor:pointer;
+}
+.reverse-tab.active{ border-color: var(--gold); color: var(--gold-bright); background: rgba(200,161,94,0.12); }
+#reverse-search{
+  background: var(--ink); border:1px solid var(--line); color: var(--paper);
+  font-family: var(--font-body); font-size:14px; padding:9px 12px; border-radius:3px; width:100%; max-width:260px;
+}
+#reverse-search:focus{ outline:none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,161,94,0.15); }
+.reverse-items-wrap{ max-height: 420px; overflow-y:auto; padding-right:4px; }
+.reverse-items{ display:flex; flex-wrap:wrap; gap:6px; }
+.reverse-group{ margin-bottom:12px; }
+.reverse-group-title{ font-size:12px; color: var(--vermillion); letter-spacing:0.08em; margin:4px 0 6px; }
+.reverse-item{
+  background: transparent; border:1px solid var(--line); color: var(--paper);
+  font-family: var(--font-body); font-size:13px; padding:5px 10px; border-radius:3px; cursor:pointer;
+}
+.reverse-item:hover{ border-color: var(--gold); }
+.reverse-item.zero{ opacity:0.4; }
+.reverse-item.selected{ border-color: var(--gold); background: rgba(200,161,94,0.18); color: var(--gold-bright); opacity:1; }
+.reverse-n{ margin-left:6px; font-size:11px; color: var(--paper-dim); }
+.reverse-result{ margin-top:16px; padding-top:14px; border-top:1px dashed var(--line); }
+.reverse-result-title{ font-family: var(--font-serif); font-size:14px; color: var(--gold-bright); margin-bottom:10px; }
+.reverse-result-title .dict-term{ margin-left:10px; font-size:12px; }
+.reverse-people{ display:flex; flex-wrap:wrap; gap:8px; }
+.reverse-person{
+  background: rgba(200,161,94,0.10); border:1px solid var(--gold); color: var(--gold-bright);
+  font-family: var(--font-body); font-size:14px; padding:6px 14px; border-radius:16px; cursor:pointer;
+}
+.reverse-person:hover{ background: rgba(200,161,94,0.25); }
+.reverse-empty{ font-size:12.5px; color: var(--paper-dim); padding:6px 0; }
+
 /* ===== 保存済みの命式パネル ===== */
 .saved-panel{ padding: 24px 28px; }
 .saved-header{
@@ -1288,6 +1324,20 @@ table.daiun-table tr.nenun-today .age-cell{ color: var(--gold-bright); }
         <div class="saved-list" id="saved-list"></div>
       </div>
       <p class="saved-empty" id="saved-empty">保存された命式はまだありません。</p>
+    </div>
+  </div>
+
+  <div class="card saved-panel reverse-panel">
+    <div class="saved-header">
+      <h2>逆引き<span class="saved-count">格法・局法・技法・干支から、保存済みの該当者を探す</span></h2>
+      <button class="btn-secondary" id="reverse-toggle" type="button">開く</button>
+    </div>
+    <div class="saved-body" id="reverse-body" style="display:none;">
+      <div class="reverse-tabs" id="reverse-tabs"></div>
+      <div class="saved-controls">
+        <input type="text" id="reverse-search" placeholder="項目名で絞り込み">
+      </div>
+      <div id="reverse-content"></div>
     </div>
   </div>
 
@@ -2378,7 +2428,7 @@ function getShiiJunzenEntries(yearBranchChar, monthBranchChar, dayBranchChar, da
 // 2026-08-20 ユーザー提供資料（算命学奥義書_格法成立条件と守護神体系一覧表）p.118〜126に基づく。
 // 判定条件が数値・構造的に明確なもののみを実装（干支双連格＝2人分の命式比較が必要なため対象外、
 // 干支持旺格＝旺地対応表なし、墓殺格・夾殺禄丘格＝透干範囲の確認待ち、
-// 閉畢命式・悶畢命式＝条件が不明瞭なため、いずれも今回は未実装）。
+// 閉畢命式・悶畢命式＝2026-09-19に実装）。
 // 生処集生格は『十二大従星表』の点数データ（2026-08-20ユーザー提供）により実装。
 // 大運・年運のどちらかで巡ってくる場合を「※」付きのリーチ表記にする（六甲印徳格・壬騎三奇格）。
 function findReachAge(targetBranchChar, daiunPeriods, nenunYears){
@@ -2509,6 +2559,67 @@ function getTokushuMeishikiEntries(yearP, monthP, dayP, dayStemIdx, isohouEntrie
       }
     });
   }
+
+  // 閉畢命式・悶畢命式（四大凶格）：2026-09-19 クレアさん指定（奥義書 部分格 p.126-127・師匠ブログの条件）。
+// 条件は手元の教材テキストを整理したObsidianノート「閉畢命式・悶畢命式」より。
+//  ①日干が生じるもの（洩星の五行）が透干する
+//  ②①の星を七殺するものが透干する（閉畢命式）／①の星と干合するものが透干する（悶畢命式）
+//  ③両親の星が透干する（母＝玉堂星の干、父＝母の干合相手。父の干合相手が命式に無いときは同じ五行のもう一方の干を代わりに取る）
+//  ④人体図で過去と未来の星が逆転している（北＝頭が鳳閣星・調舒星、南＝腹が龍高星・玉堂星）
+// 透干＝年干・月干に現れること（生処集生格と同じ範囲）。実例（宮崎勤・神谷力・芦田愛菜・GACKT）で検証済み。
+// ノート内の解釈：「玉堂星がある時は母星はそちらが優先」＝宿命（天干・蔵干）に玉堂星の干があれば母は玉堂星の干、無ければ龍高星の干とした。
+{
+  const tenkan = [
+    { label: '年干', idx: yearP.stemIdx },
+    { label: '月干', idx: monthP.stemIdx },
+  ];
+  const posOf = (idx) => {
+    const hit = tenkan.filter(t => t.idx === idx).map(t => t.label);
+    return hit.length ? hit.join('・') : null;
+  };
+  const northStar = yearP.star, southStar = monthP.star; // 人体図の北（頭）・南（腹）
+  const reversed = ['鳳閣星', '調舒星'].includes(northStar) && ['龍高星', '玉堂星'].includes(southStar);
+  if (reversed){
+    const stemOfStar = (starName) => STAR_FROM_STEM[dayStemIdx].findIndex(x => x === starName);
+    // 「玉堂星がある時はそちらが優先」：玉堂星の干が宿命（天干・地支の蔵干）のどこかにあれば母は玉堂星、無ければ龍高星
+    // （加藤綾子さんの実例：玉堂星は蔵干にあり透干していないため、庚＝龍高星があっても母の星は透干していない扱いで非該当）
+    const gyokudouIdx = stemOfStar('玉堂星');
+    const gyokudouChar = STEMS[gyokudouIdx];
+    const hasGyokudou = tenkan.some(t => t.idx === gyokudouIdx)
+      || [yearP, monthP, dayP].some(P => ZOUKAN_SEGMENTS[BRANCHES[P.branchIdx]].some(seg => seg[1] === gyokudouChar));
+    const motherIdx = stemOfStar(hasGyokudou ? '玉堂星' : '龍高星');
+    const motherPos = motherIdx >= 0 ? posOf(motherIdx) : null;
+    let fatherIdx = -1, fatherPos = null;
+    if (motherPos){
+      const partner = (motherIdx + 5) % 10;        // 母の干合相手（甲己・乙庚・丙辛・丁壬・戊癸）
+      const sameElement = partner ^ 1;             // 干合相手と同じ五行のもう一方の干（代わりに取る）
+      if (posOf(partner)){ fatherIdx = partner; fatherPos = posOf(partner); }
+      else if (posOf(sameElement)){ fatherIdx = sameElement; fatherPos = posOf(sameElement); }
+    }
+    if (motherPos && fatherPos){
+      const dayEl = STEM_ELEMENT[dayStemIdx];
+      const seiEl = GOGYOU_SEI_NEXT[dayEl];        // 日干が生じる五行
+      // 格法欄の表示は短く：どの干が①②③に当たるかだけ示す（④の逆転は陽占表で確認できる）
+      const parentText = `母${STEMS[motherIdx]}・父${STEMS[fatherIdx]}`;
+      let heihitsu = null, monhitsu = null;
+      tenkan.forEach(t => {
+        if (STEM_ELEMENT[t.idx] !== seiEl) return;               // ①
+        // ②七殺＝その星を剋す同じ陰陽の干
+        const satsuIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].find(i => i % 2 === t.idx % 2 && STEM_ELEMENT[i] === STEM_KOKU_PREV[STEM_ELEMENT[t.idx]]);
+        if (!heihitsu && satsuIdx !== undefined && posOf(satsuIdx)){
+          heihitsu = `閉畢命式（${t.label}${STEMS[t.idx]}＝日干が生じる星・${posOf(satsuIdx)}${STEMS[satsuIdx]}＝七殺・${parentText}）`;
+        }
+        // ②'干合＝その星と干合する干
+        const gouIdx = (t.idx + 5) % 10;
+        if (!monhitsu && posOf(gouIdx)){
+          monhitsu = `悶畢命式（${t.label}${STEMS[t.idx]}＝日干が生じる星・${posOf(gouIdx)}${STEMS[gouIdx]}＝干合・${parentText}）`;
+        }
+      });
+      if (heihitsu) entries.push(heihitsu);
+      if (monhitsu) entries.push(monhitsu);
+    }
+  }
+}
 
   return entries;
 }
@@ -5171,6 +5282,8 @@ const GOKAKU_CONDITION_TEXTS = {
   '潤下破格': '宿命六つのうち土性が1つだけで、残り5つがすべて水性。',
   '土局潤下格': '日干が戊土で、地支に申子辰の水局三合（または半会）が揃う。',
   '生処集生格': '①天干（年干・月干）に玉堂星が透干。②日干から日支を見て天貴星。③その玉堂星から日支を見て強い従星（天恍星7点以上）。',
+  '閉畢命式': '①日干が生じる星が透干。②その星を七殺する星が透干。③両親の星（母＝玉堂星、父＝母の干合相手）が透干。④人体図の北（頭）が鳳閣星・調舒星、南（腹）が龍高星・玉堂星で、過去と未来が逆転。',
+  '悶畢命式': '①日干が生じる星が透干。②その星と干合する星が透干。③両親の星が透干。④人体図の過去と未来が逆転（③④は閉畢命式と同じ）。',
   // 局法：凶運局10種
   '推逆局': '縦線（年干－④主星－月干）が水剋火（龍高・玉堂→鳳閣・調舒）で激突する。',
   '円推局': '横線（年支蔵干－④主星－日支蔵干）が水剋火（龍高・玉堂→鳳閣・調舒）で激突する。',
@@ -5921,6 +6034,22 @@ const DICTIONARY_GOKAKU = {
     caution: '玉堂星が二つ透干すると価値が下がる（守護神と同じく、二つ透干すると意味合いが薄まる）。強い玉堂星が干合される時、または日支が冲動される時が運勢の悪い時期にあたる',
     detail: '実例（解釈手順）：日干支・壬申（辛は玉堂星、辛から申は天将星、壬から申は天貴星）の命式に大運丙寅が巡ると、天干は丙＝壬干合、地支は申一寅冲となり最悪の大運となる。天干丙が壬（財）を干合し、地支申（配偶者の場所）が冲動されている状況から、①配偶者が病気で倒れて財が出ていく、②財を失って夫婦の仲が悪くなっていく、という二通りの現れ方が考えられるという実占上の解釈手順が示されている。',
   },
+  // ---- 閉畢命式・悶畢命式（2026-09-19追加）：四大凶格。文言は手元の教材テキストを整理したObsidianノートの記述のまま。
+  // 重大事件の加害者を扱った実例（教材内）は辞書には載せていない。
+  '閉畢命式': {
+    core: '教材が「家系を終わらせる命式」と呼ぶ、特殊な条件が重なった型。四大凶格の一つ。この命式が家を継ぐと、その代で家系が終わる（会社が潰れる、子供が生まれないなど、終わり方の形は一定ではない）とされる。七殺が単純に透干するものを「閉畢命式」、七殺が生を干合するものを「悶畢命式」という。',
+    condition: '① 日干が生じるもの（＝家系の流れを表す星）が透干する。　② ①で生じた星を七殺するものが透干する。　③ 両親の星（父母それぞれの星）が透干する。　④ 過去（北＝龍高星・玉堂星）と未来（南＝鳳閣星・調舒星）の十大主星の並びが逆になっている（人体図で親の場所＝頭＝過去、子供の場所＝腹＝未来にあたるが、その配置が逆転している状態）。',
+    features: '家系を終わらせる命式とされ、この命式の持ち主が家を継ぐと家系が終わりを迎えるという。生月天中殺や日座天中殺が家を継ぐと悪いとも言われるが、それらは必ずしも家系が終わるとは限らないのに対し、この閉畢・悶畢命式が家を継ぐと家系の終わりになるとされる点が特徴。条件②の構造は、日干＝自分の代、日干が生じる星＝子供の代を表し、それを七殺する星があることで、自分から子供の代へと続けていきにくい命になる、と説明される。条件③により父母との縁が深く先祖の因縁を強く受け、条件④により過去と未来の星の配置が逆転しているため、家系がうまく繋がっていかない（仕事の上下関係もうまくいきにくい）とされる。',
+    caution: '教材では、この命式の人体図（十大主星）が陰転しているかどうかが鍵になるとし、身強の場合は過保護に育つと陽転しないこと、友人が少なく孤立した育ち方をすると陽転しないこと、守護神にあたる親（父または母）が十分に関わってくれないと陽転しないことなどが説明されている。特に長男・後継者にこの型が出ると、必ずその代で家系が断絶し終わりとなるが、必ずしも重大事件が起きるとは限らず、会社が潰れる、子供が生まれないなど終わり方の形は一定ではないとされる。教材は、この命式が必ず犯罪を犯すという意味ではないが、もし何かを起こすとなると家系が断絶するほどの深刻な出来事になり得ると述べ、犯罪に至る場合は陰占・陽占のポイントとなる部分が「消化できていない」状態であることが共通するとしている。',
+    detail: '実例（教材・師匠ブログ応用講座より）：芦田愛菜さんは閉畢命式の成立例。加藤綾子さんは非該当例で、陰占では親と子の場所が真反対になっており一見悶畢命式に見えるが、定義を一つずつ確認すると当てはまらない（日干が生じる乙木は透干しているが、これを干合する庚金はお母さん〔玉堂星〕ではない。玉堂星がある時はそちらが優先。したがって両親の星が透干していないことになる）。アプリでは、玉堂星の干が宿命（天干・蔵干）にあれば母の星は玉堂星、無ければ龍高星として判定し、透干は年干・月干に現れることとして扱っている。',
+  },
+  '悶畢命式': {
+    core: '教材が「家系を終わらせる命式」と呼ぶ、四大凶格の一つ。七殺が単純に透干するものを「閉畢命式」、七殺が生を干合するものを「悶畢命式」という。',
+    condition: '条件①③④は閉畢命式と同じで、②の「七殺」が「生と干合するもの」となる型。（条件①〜④の内容は閉畢命式の項目を参照）',
+    features: '家系を終わらせる命式とされ、この命式の持ち主が家を継ぐと家系が終わりを迎えるという。生月天中殺や日座天中殺が家を継ぐと悪いとも言われるが、それらは必ずしも家系が終わるとは限らないのに対し、この閉畢・悶畢命式が家を継ぐと家系の終わりになるとされる点が特徴。条件③により父母との縁が深く先祖の因縁を強く受け、条件④により過去と未来の星の配置が逆転しているため、家系がうまく繋がっていかない（仕事の上下関係もうまくいきにくい）とされる。',
+    caution: '教材では、この命式の人体図（十大主星）が陰転しているかどうかが鍵になるとし、身強の場合は過保護に育つと陽転しないこと、友人が少なく孤立した育ち方をすると陽転しないこと、守護神にあたる親（父または母）が十分に関わってくれないと陽転しないことなどが説明されている。特に長男・後継者にこの型が出ると、必ずその代で家系が断絶し終わりとなるが、必ずしも重大事件が起きるとは限らないとされる。',
+    detail: '実例（教材・師匠ブログ応用講座より）：GACKTさんは悶畢命式を持つとされる。芸能人には初旬に何かある命式の方が多いとの所感も付され、家族の中で一人何億も稼ぐ人が出てくると、当然家族の運命も巻き込み変わる。今までの家系が終わり新しい家系が始まる、という消化の仕方もある、という考察が付されている。実践鑑定の例：「どこへ行っても不吉な命式だと言われる」との鑑定相談。命式は北に鳳閣星、南に玉堂星で過去と未来が逆転していることに加え、日干が生じる己土の透干・これを干合する甲木の透干・両親の星（丁火のお母さんは甲木、お父さんは己）の透干をすべて満たす、正真正銘の悶畢命式。',
+  },
   // ---- 技法（2026-09-17追加）：春水・連唐干支・雲龍型・二層干合・三層干合。
   // 局法・格法とは別枠の「技法」だが、辞書の仕組み（renderGokakuItems／resolveDictKey）は共通。
   '春水': {
@@ -6183,7 +6312,12 @@ function resolveDictKey(baseName){
       best = key;
     }
   }
-  return best;
+  if (best) return best;
+  // 辞書の項目名が「官禄同座（天福貴人格）」のように別名を括弧で併記している場合、括弧より前の名前だけでも一致させる
+  for (const key in DICTIONARY_GOKAKU){
+    if (key.startsWith(stripped + '（')) return key;
+  }
+  return null;
 }
 
 const GOKAKU_CONDITION_KEYS = Object.keys(GOKAKU_CONDITION_TEXTS).sort((a, b) => b.length - a.length);
@@ -6201,7 +6335,9 @@ function findGokakuCondition(entryText){
 
 // 完全格・八格法・干支特殊格・特殊格・局法など、命式（年月日の干支）だけで判定できる
 // 技法のエントリをすべて集めて返す。buildResultHTML内の各HTML生成関数と同じロジックを踏襲。
-function getAllStaticPatternEntries(r, gender){
+// 格法・局法・技法の3分類に分けて返す（2026-09-19 トップページの逆引き辞書用）。
+// getAllStaticPatternEntriesはこの3分類を連結しただけで、従来と同じ順序・内容（＋技法に隠し玉を追加）を返す。
+function getStaticPatternEntriesByCategory(r, gender){
   const dayElement = M.STEM_ELEMENT[r.day.stemIdx];
   const others = [
     { label: '年干', el: M.STEM_ELEMENT[r.year.stemIdx] },
@@ -6261,17 +6397,30 @@ function getAllStaticPatternEntries(r, gender){
   const guardianTeiouEntries = M.getGuardianTeiouEntries(r);
   const talentEntries = r.talentArea ? [r.talentArea.type] : [];
 
-  return [
-    ...juukaEntries, ...kyokiJuuka, ...injuEntries, ...kyokiInju, ...ikkiEntries, ...kyokiIkki, ...nishouEntries,
-    ...hachikakuEntries, ...zakkiEntries,
-    ...kanshiTokushuEntries,
-    ...tokushuEntries,
-    ...kyokuhouEntries,
-    ...gihouEntries,
-    ...guardianTenkanEntries,
-    ...guardianTeiouEntries,
-    ...talentEntries,
-  ];
+  // 隠し玉は技法欄とは別表示のためエントリ文字列が無いが、逆引きでは技法として扱う
+  const kakushidamaEntries = M.getKakushidamaEntries(r.year, r.month, r.day).length ? ['隠し玉'] : [];
+
+  return {
+    gokaku: [
+      ...juukaEntries, ...kyokiJuuka, ...injuEntries, ...kyokiInju, ...ikkiEntries, ...kyokiIkki, ...nishouEntries,
+      ...hachikakuEntries, ...zakkiEntries,
+      ...kanshiTokushuEntries,
+      ...tokushuEntries,
+    ],
+    kyokuhou: [...kyokuhouEntries],
+    gihou: [
+      ...gihouEntries,
+      ...guardianTenkanEntries,
+      ...guardianTeiouEntries,
+      ...talentEntries,
+      ...kakushidamaEntries,
+    ],
+  };
+}
+
+function getAllStaticPatternEntries(r, gender){
+  const c = getStaticPatternEntriesByCategory(r, gender);
+  return [...c.gokaku, ...c.kyokuhou, ...c.gihou];
 }
 
 // エントリ文字列から技法の「基本名」を抽出する。
@@ -8649,6 +8798,7 @@ function renderTagFilterBar(){
 
 function renderSavedList(filterText){
   renderTagFilterBar();
+  refreshReverseIfOpen();
 
   const listEl = document.getElementById('saved-list');
   const emptyEl = document.getElementById('saved-empty');
@@ -9091,6 +9241,163 @@ function dictSpanGanzhi(ganzhiIdx){
 // 2026-09-06 クレアさん指定：格法一覧の逆引き（gokaku-match）は命式計算のたびに毎回全件計算する方式だが、
 // 保存データの増加を見据え、こちらはモーダルを開いた瞬間だけ計算する方式で試作する。
 // 感触が良ければ、辞書データが整い次第、格法・局法・技法など他の用語辞書にも同じ方式を展開する予定。
+// ==================== トップページの逆引き辞書（2026-09-19） ====================
+// 格法・局法・技法・干支（日柱・天冲殺グループ別）から、保存済みの命式の中の該当者を探す。
+// 項目を選んでから該当者を表示する（検索ボックス付き）。該当者の名前を押すと、その命式を開く。
+// 大運・年運待ちの「※リーチ」系の項目は、各技法の「該当者」と同じく対象外（命式だけで決まる項目のみ）。
+const REVERSE_TABS = [
+  { id: 'gokaku', label: '格法' },
+  { id: 'kyokuhou', label: '局法' },
+  { id: 'gihou', label: '技法' },
+  { id: 'ganzhi', label: '干支' },
+];
+// 辞書の項目のうち技法として扱うもの（局法＝末尾が「局」、天中殺グループ＝干支タブ、それ以外＝格法）
+const REVERSE_GIHOU_KEYS = new Set([
+  '春水', '連唐干支', '雲龍型', '二層干合', '三層干合', '西天運', '北天運', '東天運', '南天運', '隠し玉',
+  '天干座王', '全天地暗合', '木火通明', '官殺混雑', '争財', '秘恋運', '侮光', '藤羅繋甲', '立地相剋', '立地反剋',
+  '守護神透干', '忌神透干', '守護神帝王', '忌神帝王',
+]);
+function reverseCategoryOfKey(key, fallbackCat){
+  if (key.endsWith('天中殺')) return null;                 // 干支タブ側（日柱の天中殺グループ）
+  if (DICTIONARY_GOKAKU[key]){
+    if (key.endsWith('局')) return 'kyokuhou';
+    if (REVERSE_GIHOU_KEYS.has(key)) return 'gihou';
+    return 'gokaku';
+  }
+  return fallbackCat;                                       // 辞書に未登録の項目は、判定した分類のまま
+}
+// 天冲殺グループ（日柱の旬ごと）。旬の並び：甲子旬→戌亥、甲戌旬→申酉、甲申旬→午未、甲午旬→辰巳、甲辰旬→寅卯、甲寅旬→子丑
+const REVERSE_TENCHU_GROUPS = ['戌亥', '申酉', '午未', '辰巳', '寅卯', '子丑'];
+
+let reverseIndexCache = null;
+function reverseLabelOf(rec){
+  return (rec.name && rec.name.trim()) ? rec.name.trim() : `${rec.y}/${rec.m}/${rec.d}生`;
+}
+// 保存済み全員の判定結果から「分類→項目名→該当者[{id,label}]」の索引を作る。保存データが変わらない間は使い回す。
+function buildReverseIndex(){
+  let records;
+  try { records = loadSavedRecords(); } catch (e){ records = []; }
+  const stamp = JSON.stringify(records.map(r => [r.id, r.name, r.y, r.m, r.d, r.gender]));
+  if (reverseIndexCache && reverseIndexCache.stamp === stamp) return reverseIndexCache;
+  const idx = { stamp, count: records.length, gokaku: {}, kyokuhou: {}, gihou: {}, ganzhi: {} };
+  const add = (cat, key, person) => {
+    if (!idx[cat][key]) idx[cat][key] = [];
+    if (!idx[cat][key].some(p => p.id === person.id)) idx[cat][key].push(person);
+  };
+  records.forEach(rec => {
+    let r;
+    try { r = M.calcMeishiki(rec.y, rec.m, rec.d); } catch (e){ return; }
+    if (!r || r.error) return;
+    const person = { id: rec.id, label: reverseLabelOf(rec) };
+    // 干支：日柱のみ
+    add('ganzhi', M.ganzhiName(r.day.ganzhiIdx), person);
+    // 格法・局法・技法
+    let cats;
+    try { cats = getStaticPatternEntriesByCategory(r, rec.gender); } catch (e){ return; }
+    ['gokaku', 'kyokuhou', 'gihou'].forEach(cat => {
+      cats[cat].forEach(e => {
+        const base = extractPatternBaseName(e);
+        if (!base) return;
+        const key = resolveDictKey(base) || base;
+        const target = reverseCategoryOfKey(key, cat);
+        if (target) add(target, key, person);
+      });
+    });
+  });
+  reverseIndexCache = idx;
+  return idx;
+}
+
+// varにしているのは、保存済み一覧の初回描画（renderSavedList）がこの宣言より前に呼ばれても参照エラーにならないようにするため
+var reverseState = { open: false, tab: 'gokaku', query: '', selected: { gokaku: null, kyokuhou: null, gihou: null, ganzhi: null } };
+
+function reverseItemsOf(tab, idx){
+  if (tab === 'ganzhi') return null;
+  const dictKeys = Object.keys(DICTIONARY_GOKAKU).filter(k => reverseCategoryOfKey(k, null) === tab);
+  const extra = Object.keys(idx[tab]).filter(k => !DICTIONARY_GOKAKU[k]);
+  return dictKeys.concat(extra);
+}
+function reversePeopleHtml(people){
+  if (!people || !people.length) return '<div class="reverse-empty">該当する保存済み人物はいません</div>';
+  return `<div class="reverse-people">${people.map(p =>
+    `<button type="button" class="reverse-person" data-rec-id="${escapeHtml(p.id)}">${escapeHtml(p.label)}</button>`).join('')}</div>`;
+}
+function renderReverse(){
+  const box = document.getElementById('reverse-content');
+  if (!box) return;
+  const idx = buildReverseIndex();
+  const tab = reverseState.tab;
+  const q = reverseState.query.trim();
+  document.querySelectorAll('#reverse-tabs .reverse-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  if (!idx.count){
+    box.innerHTML = '<div class="reverse-empty">保存された命式がまだありません。命式を保存すると、ここから逆引きできます。</div>';
+    return;
+  }
+  const sel = reverseState.selected[tab];
+  let itemsHtml = '', resultHtml = '';
+  if (tab === 'ganzhi'){
+    itemsHtml = REVERSE_TENCHU_GROUPS.map((g, xun) => {
+      const chips = [];
+      for (let i = 0; i < 10; i++){
+        const name = M.ganzhiName(xun * 10 + i);
+        if (q && !name.includes(q)) continue;
+        const n = (idx.ganzhi[name] || []).length;
+        chips.push(`<button type="button" class="reverse-item${n ? '' : ' zero'}${sel === name ? ' selected' : ''}" data-key="${name}">${name}<span class="reverse-n">${n}</span></button>`);
+      }
+      if (!chips.length) return '';
+      return `<div class="reverse-group"><div class="reverse-group-title">${g}天中殺</div><div class="reverse-items">${chips.join('')}</div></div>`;
+    }).join('');
+    if (sel){
+      const people = idx.ganzhi[sel] || [];
+      resultHtml = `<div class="reverse-result-title">日柱が${sel}の人（${people.length}人）
+        <span class="dict-term" onclick="openDictModal('ganzhi','${sel}',null)">辞書を見る</span></div>${reversePeopleHtml(people)}`;
+    }
+  } else {
+    const keys = reverseItemsOf(tab, idx).filter(k => !q || k.includes(q));
+    itemsHtml = `<div class="reverse-items">${keys.map(k => {
+      const n = (idx[tab][k] || []).length;
+      return `<button type="button" class="reverse-item${n ? '' : ' zero'}${sel === k ? ' selected' : ''}" data-key="${escapeHtml(k)}">${escapeHtml(k)}<span class="reverse-n">${n}</span></button>`;
+    }).join('')}</div>` + (keys.length ? '' : '<div class="reverse-empty">該当する項目がありません</div>');
+    if (sel){
+      const people = idx[tab][sel] || [];
+      const dictLink = DICTIONARY_GOKAKU[sel]
+        ? `<span class="dict-term" onclick="openDictModal('gokaku','${escapeHtml(sel)}',null)">辞書を見る</span>` : '';
+      resultHtml = `<div class="reverse-result-title">${escapeHtml(sel)}の該当者（${people.length}人）${dictLink}</div>${reversePeopleHtml(people)}`;
+    }
+  }
+  box.innerHTML = `<div class="reverse-items-wrap">${itemsHtml}</div>
+    <div class="reverse-result">${resultHtml || '<div class="reverse-empty">項目を選ぶと、該当者が表示されます</div>'}</div>`;
+}
+function refreshReverseIfOpen(){ if (reverseState && reverseState.open) renderReverse(); }
+
+(function initReversePanel(){
+  const toggle = document.getElementById('reverse-toggle');
+  const body = document.getElementById('reverse-body');
+  const search = document.getElementById('reverse-search');
+  const tabs = document.getElementById('reverse-tabs');
+  const content = document.getElementById('reverse-content');
+  if (!toggle || !body) return;
+  tabs.innerHTML = REVERSE_TABS.map(t => `<button type="button" class="reverse-tab" data-tab="${t.id}">${t.label}</button>`).join('');
+  toggle.addEventListener('click', function(){
+    reverseState.open = !reverseState.open;
+    body.style.display = reverseState.open ? 'block' : 'none';
+    toggle.textContent = reverseState.open ? '閉じる' : '開く';
+    if (reverseState.open) renderReverse();
+  });
+  tabs.addEventListener('click', function(e){
+    const b = e.target.closest('.reverse-tab'); if (!b) return;
+    reverseState.tab = b.dataset.tab; reverseState.query = ''; search.value = '';
+    renderReverse();
+  });
+  search.addEventListener('input', function(){ reverseState.query = search.value; renderReverse(); });
+  content.addEventListener('click', function(e){
+    const item = e.target.closest('.reverse-item');
+    if (item){ reverseState.selected[reverseState.tab] = item.dataset.key; renderReverse(); return; }
+    const person = e.target.closest('.reverse-person');
+    if (person) loadSavedRecord(person.dataset.recId);
+  });
+})();
+
 function findSavedPeopleWithGanzhi(ganzhiTermName){
   const matches = [];
   let records;
